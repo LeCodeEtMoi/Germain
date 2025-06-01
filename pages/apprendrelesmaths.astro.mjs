@@ -1,0 +1,45 @@
+import { c as createComponent, m as maybeRenderHead, f as renderTemplate } from '../chunks/astro/server_M7ew8Kth.mjs';
+import 'kleur/colors';
+import 'clsx';
+export { renderers } from '../renderers.mjs';
+
+const $$ApprendreLesMaths = createComponent(($$result, $$props, $$slots) => {
+  return renderTemplate`Pour info en rien le projet Germain remplace un cours de mathematiques à l'école . 
+
+Comment apprendres les mathématiques ?
+
+De nos jours des méthodes ont prouvé leur efficassitée , nous allons ici parler des méthodes baser pour les enseignants et des méthodes pour les éléves.
+
+Les méthodes pour les enseignants :
+
+Méthode ACE – ArithmEcole
+
+Cette méthode a été développer en France . Elle pour but de donner du sens aux nombres grâce à la mise en correspondance entre les nombres
+écrits (nombres et calculs) et leur représentation sous forme de grandeurs. Pour
+cela, un entraînement régulier à l’estimation numérique a lieu toute l’année ;
+- Amener les élèves à identifier les types de problèmes et l’équivalence de certaines
+procédures de calcul pour résoudre des problèmes ;
+- Consolider les faits arithmétiques en liaison avec l’acquisition de procédures de
+calcul par une pratique intense et quotidienne du calcul mental ;
+- Expérimenter les mathématiques en maniant différentes représentations
+numériques et procédures de calcul comme la composition/décomposition, le
+groupement par 10, … dans des situations d’apprentissage numériques
+évolutives.
+${maybeRenderHead()}<a href="https://pedagogie-nord.ac-lille.fr/ace-arithmecole-ressources-pour-lenseignant/">Pour plus d'information</a>
+[Mettre ici le lien sur l'apprentissage des mathématiques ]
+				https://www.youtube.com/watch?v=RVB3PBPxMWg`;
+}, "/home/Spike/Documents/Projet Github/Germain/src/pages/ApprendreLesMaths.astro", void 0);
+
+const $$file = "/home/Spike/Documents/Projet Github/Germain/src/pages/ApprendreLesMaths.astro";
+const $$url = "/Germain/ApprendreLesMaths";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+	__proto__: null,
+	default: $$ApprendreLesMaths,
+	file: $$file,
+	url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };
