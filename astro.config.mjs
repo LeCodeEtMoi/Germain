@@ -8,5 +8,5 @@ import react from '@astrojs/react';
 export default defineConfig({
     integrations: [react()],
     site: 'https://lecodeetmoi.github.io/Germain/',
-    base: "/",
+    base: "/Germain/",
   });
