@@ -112,6 +112,3 @@ Avantages de cette méthode :
 Aucune dépendance à un service externe.
 
 Chiffrable en local (avec fail2ban, ssh, VPN, etc.).# Germain
-# Germain
-# Germain
-# Germain
