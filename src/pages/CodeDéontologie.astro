@@ -1,0 +1,72 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, updatedDate, heroImage } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<article>
+				<div class="hero-image">
+					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
+				</div>
+				<div class="prose">
+					<div class="title">
+						<h1>{title}</h1>
+						<hr />
+					</div>
+					Germain a pour mission de rendre les mathématiques accessibles, stimulantes et valorisées auprès du plus grand nombre. En tant que plateforme collaborative ouverte à la participation de passionnés, nous nous engageons à respecter les principes suivants. Toute personne contribuant au site s’engage également à respecter ce code de déontologie.<br>
+
+                    Regle 1 : Respect de la rigueur scientifique
+
+                    <ul>
+                        <li>Les contenus publiés doivent s'appuyer sur des connaissances mathématiques avérées, sourcées si nécessaire.</li>
+                        <li>Toute démonstration, définition ou théorie doit être présentée de manière claire, rigoureuse et sans approximation abusive.</li>
+                        <li>Les contributeurs doivent reconnaître les limites de leurs compétences et éviter de publier du contenu sur un sujet qu’ils ne maîtrisent pas suffisamment.</li>
+                    </ul>
+
+                    Regle 2 : Ouverture et partage des savoirs
+
+                    <ul>
+                        <li>Le site repose sur une philosophie open source : les contributions doivent être partagées librement, dans le respect des licences en vigueur (ex. : licence Creative Commons).</li>
+
+                        <li>Toute contribution est soumise à relecture et peut être modifiée ou améliorée par la communauté.</li>
+                            
+                        <li>Les idées originales, si elles sont publiées, doivent être accompagnées de l'indication claire de leur caractère spéculatif ou expérimental.</li>
+
+                        <li> Les propositions de cours doivent respecter l'identiter graphique de Germain</li>
+                    </ul>
+
+                    Regle 3 : Crédit et attribution
+
+                    <ul>
+                        <li>Les contributeurs doivent citer leurs sources et rendre hommage au travail d’autrui (ouvrages, articles, auteurs, etc.)</li>
+                        <li>Le plagiat est strictement interdit. Tout contenu copié sans autorisation ni mention explicite de la source sera supprimé.</li>
+        
+                    </ul>
+Regle 4 : Modération et responsabilité
+
+                    
+                    <ul>
+                        <li>L’équipe de modération se réserve le droit de refuser, modifier ou supprimer tout contenu qui ne respecte pas ces règles.</li>
+                        <li>Les contributeurs sont responsables de leurs écrits et s'engagent à collaborer avec la communauté pour corriger toute erreur signalée.</li>
+                    </ul>
+                    En participant à Germain, vous contribuez à une communauté mathématique dynamique, accessible et rigoureuse. Merci pour votre engagement !
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
