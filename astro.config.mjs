@@ -6,7 +6,7 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-    integrations: [react()],
     site: 'https://lecodeetmoi.github.io/Germain/',
-    base: "/Germain/",
+    base: '/Germain/',
+    integrations: [react()],
   });
