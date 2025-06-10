@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MathToolbar from '../components/MathToolbar.jsx';
 
 type Coord = [number, number, number];
 
@@ -19,6 +20,7 @@ function equationCartesienne(A: Coord, V: Coord): string {
 
   return terms.join(' ') + ' = 0';
 }
+
 
 
 function randomCoord(): Coord {
@@ -64,6 +66,7 @@ const EquationCartesienne: React.FC = () => {
       <div>
         <button onClick={checkAnswer}>Valider</button>
         <button onClick={newExercise} style={{ marginLeft: '1em' }}>Nouvel exercice</button>
+        <MathToolbar onInsertSymbol={(latex) => setUserInput(prev => prev + latex)} />
       </div>
 
       {showCorrection && (
