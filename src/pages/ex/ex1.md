@@ -10,7 +10,7 @@ heroImage: '/blog-placeholder-3.jpg'
 <h5>Esapce</h5>
 <div class="chapitre">
   <div class="titre">
-    <a href="./ex_1_T">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</a>
+    <a href="/Germain/ex/ex_8_T/">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</a>
   </div>
 </div>
 <h5>Denombrement</h5>
