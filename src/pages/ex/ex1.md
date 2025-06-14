@@ -13,6 +13,16 @@ heroImage: '/blog-placeholder-3.jpg'
     <a href="/Germain/ex/ex_1_T/">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</a>
   </div>
 </div>
+<div class="chapitre">
+  <div class="titre">
+    <a href="/Germain/ex/ex_2_T/">Déterminer si des points sont ou non coplanaires</a>
+  </div>
+</div>
+<div class="chapitre">
+  <div class="titre">
+    <a href="/Germain/ex/ex_3_T/">Déterminer si un point appartient à une droite de l'espace</a>
+  </div>
+</div>
 <h5>Denombrement</h5>
 <div class="chapitre">
   <div class="titre">

@@ -1,0 +1,51 @@
+# Charte de conception des exercices
+
+1. Interface utilisateur
+
+- Tous les exercices utiliseront exclusivement la bibliothèque UI ShadCN pour garantir cohérence visuelle et composants réactifs de haute qualité.
+
+- Les composants UI doivent être accessibles, responsives et stylés avec TailwindCSS conformément aux standards ShadCN.
+
+2. Génération des données
+
+- Toutes les valeurs numériques (coordonnées, paramètres, coefficients, etc.) seront générées aléatoirement à chaque nouveau chargement d’exercice ou action « Nouvelle exercice ».
+
+- Les plages des valeurs aléatoires seront adaptées au contexte mathématique pour garantir des cas pertinents, ni trop simples ni impossibles.
+
+- Cette génération dynamique permet d’avoir une infinité d’exercices similaires mais uniques.
+
+# Chaque exercice contiendra :
+
+- Énoncé dynamique intégrant les valeurs aléatoires, clair et bien formaté.
+
+- Zone de réponse selon le type d’exercice :
+
+    - Input texte libre pour réponse numérique ou littérale.
+
+    - Input radio pour choix parmi plusieurs propositions.
+
+- Bouton « Valider » pour soumettre la réponse.
+
+-  Bouton « Nouvelle exercice » pour régénérer un nouvel exercice avec des valeurs aléatoires.
+
+# Validation des réponses
+
+- Lors du clic sur « Valider », la réponse de l’utilisateur est comparée à la solution correcte calculée en fonction des valeurs générées.
+
+- Si la réponse est correcte :
+
+    - Affichage d’un message de succès clair, positif et encourageant (exemple : « Bravo, vous avez réussi cet exercice ! »).
+
+- Si la réponse est incorrecte :
+
+    - Affichage d’une correction détaillée.
+
+    - La correction expliquera pas à pas la méthode correcte, les erreurs fréquentes possibles, et donnera des conseils pour réussir la prochaine fois.
+
+- L’interface doit être fluide, sans rechargement de page.
+
+- La correction doit être visible immédiatement après validation.
+
+- Le bouton « Nouvelle exercice » doit réinitialiser complètement l’exercice (valeurs, énoncé, réponses, messages).
+
+- Les composants doivent gérer proprement les états d’erreur, succès, et neutralité.
