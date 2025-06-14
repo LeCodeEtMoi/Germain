@@ -1,48 +1,75 @@
 ---
 layout: ../../layouts/Leçon.astro
-title: 'Exo'
+title: 'Exercices de Mathématiques'
 description: 'Tout le programme de terminale'
 pubDate: 'Jul 08 2022'
 heroImage: '/blog-placeholder-3.jpg'
 ---
 
-<h4>Voici la liste de tout les exercices à réaliser sans modération !</h4>
-<h5>Esapce</h5>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_1_T/">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</a>
+<div class="content">
+  <h2 class="title is-4 mb-5">Liste des exercices</h2>
+  
+  <div class="block">
+    <h3 class="title is-5 has-text-primary mb-4">Espace</h3>
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_1_T/" class="has-text-link is-size-5">
+                <strong>Équation cartésienne d'un plan</strong>
+              </a>
+              <br>
+              Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_2_T/" class="has-text-link is-size-5">
+                <strong>Points coplanaires</strong>
+              </a>
+              <br>
+              Déterminer si des points sont ou non coplanaires
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_3_T/" class="has-text-link is-size-5">
+                <strong>Appartenance à une droite</strong>
+              </a>
+              <br>
+              Déterminer si un point appartient à une droite de l'espace
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
   </div>
-</div>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_2_T/">Déterminer si des points sont ou non coplanaires</a>
-  </div>
-</div>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_3_T/">Déterminer si un point appartient à une droite de l'espace</a>
-  </div>
-</div>
-<h5>Denombrement</h5>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_8_T">Exo 1</a>
-  </div>
-</div>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_9_T">Exo 2</a>
-  </div>
-</div>
 
-<h5>Primitive</h5>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_10_T">Exo 1 Primitives fonction de base</a>
-  </div>
-</div>
-<div class="chapitre">
-  <div class="titre">
-    <a href="/Germain/ex/ex_11_T">Exo 1 Equadife</a>
+  <div class="block">
+    <h3 class="title is-5 has-text-primary mb-4">Dénombrement</h3>
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_8_T/" class="has-text-link is-size-5">
+                <strong>Exercice de dénombrement</strong>
+              </a>
+              <br>
+              Exercices de dénombrement - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
   </div>
 </div>

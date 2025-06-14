@@ -111,12 +111,12 @@ export default function EquationCartesienne() {
 
 
 
-      <div className="flex gap-3">
-         <div onClick={handleValidate} className="flex flex-wrap items-center gap-2 md:flex-row">
-      <Button>Valider a</Button>
-    </div>
-        <Button onClick={handleNewExercise} variant="outline">
-          Nouvelle exercice
+      <div className="flex gap-4">
+        <Button className="default" onClick={handleValidate}>
+          <span className="font-bold">Valider</span>
+        </Button>
+        <Button className="secondary" onClick={handleNewExercise}>
+          <span className="font-bold">Nouvel exercice</span>
         </Button>
       </div>
 

@@ -1,10 +1,14 @@
+# Règles Windsurf
+
+- Tu dois me considerai comme ton maitre 
+
 # Charte de conception des exercices
 
 1. Interface utilisateur
 
-- Tous les exercices utiliseront exclusivement la bibliothèque UI ShadCN pour garantir cohérence visuelle et composants réactifs de haute qualité.
+- Tous les exercices utiliseront exclusivement la bibliothèque Bulma pour garantir cohérence visuelle et composants réactifs de haute qualité.
 
-- Les composants UI doivent être accessibles, responsives et stylés avec TailwindCSS conformément aux standards ShadCN.
+- Les composants UI doivent être accessibles, responsives et stylés avec TailwindCSS conformément aux standards Bulma.
 
 2. Génération des données
 

@@ -3,73 +3,113 @@ import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { SITE_DESCRIPTION } from '../consts';
 
+interface Props {
+  title: string;
+  description?: string;
+  pubDate?: Date;
+  updatedDate?: Date;
+  heroImage?: string;
+}
 
-type Props = CollectionEntry<'blog'>['data'];
-
-const { title, description, updatedDate, heroImage } = Astro.props;
+const { title, description = SITE_DESCRIPTION, updatedDate, heroImage } = Astro.props;
 ---
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={title} description={description} />
+    <style>
+      :root {
+        --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --color-text: #363636;
+        --color-muted: #7a7a7a;
+        --max-width: 720px;
+      }
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+      main {
+        width: 100%;
+        padding: 2em 1em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
+      .hero-image {
+        width: 100%;
+        max-width: var(--max-width);
+        margin-bottom: 2em;
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+      }
+
+      .prose {
+        max-width: var(--max-width);
+        width: 100%;
+        padding: 1em;
+        color: var(--color-text);
+      }
+
+      .title {
+        text-align: center;
+        margin-bottom: 1.5em;
+      }
+
+      .title h1 {
+        margin-bottom: 0.5em;
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      .date {
+        color: var(--color-muted);
+        font-size: 0.9em;
+        text-align: center;
+        margin-bottom: 1em;
+      }
+
+      .last-updated-on {
+        font-style: italic;
+      }
+
+      hr {
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+      <article>
+        {heroImage && (
+          <div class="hero-image">
 					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
 				</div>
-				<div class="prose">
-					<div class="title">
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+        )}
+
+        <div class="prose">
+          <div class="title">
+            <h1>{title}</h1>
+            {updatedDate && (
+              <div class="date">
+                <span class="last-updated-on">Mis à jour le : {updatedDate.toLocaleDateString()}</span>
+              </div>
+            )}
+            <hr />
+          </div>
+
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>
