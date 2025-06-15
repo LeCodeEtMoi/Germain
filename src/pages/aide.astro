@@ -1,42 +1,65 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import BaseHead from '@/components/BaseHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
 
-
-type Props = CollectionEntry<'blog'>['data'];
-
-const { title, description, updatedDate, heroImage } = Astro.props;
+const pageTitle = "Aider le Projet Germain";
+const pageDescription = "Découvrez comment vous pouvez contribuer à l'amélioration et à l'enrichissement du projet Germain.";
 ---
+<html lang="fr">
+<head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <Header />
+    <main>
+        <section class="section">
+            <div class="container">
+                <h1 class="title is-2 mt-6 has-text-centered">{pageTitle}</h1>
+                <p class="subtitle is-4 has-text-centered">{pageDescription}</p>
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-	</head>
+                <div class="columns is-centered mt-6">
+                    <div class="column is-8">
+                        <div class="box content">
+                            <h2 class="title is-3">Comment pouvez-vous aider ?</h2>
+                            <p>
+                                Le projet Germain est une initiative ouverte et collaborative. Votre aide est précieuse pour le faire grandir et l'améliorer. Voici plusieurs façons de contribuer :
+                            </p>
+                            <ul>
+                                <li><strong>Signaler des erreurs :</strong> Si vous trouvez une coquille, une erreur mathématique ou une explication peu claire, n'hésitez pas à nous le faire savoir.</li>
+                                <li><strong>Suggérer du contenu :</strong> Vous avez une idée de leçon, d'exercice Partagez-la avec nous !</li>
+                                <li><strong>Améliorer le code :</strong> Si vous avez des compétences en développement web, vous pouvez proposer des améliorations sur notre <a href="https://github.com/LeCodeEtMoi/Germain" target="_blank">dépôt GitHub</a>.</li>
+                            </ul>
+                        </div>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					Tu veux aider ?
+                        <div class="notification is-info is-light">
+                            <h3 class="title is-4">Respect et Éthique</h3>
+                            <p>
+                                Toute contribution ou suggestion doit impérativement respecter notre <a href="/Germain/CodeDéontologie">Code de Déontologie</a>. Nous souhaitons maintenir un environnement d'apprentissage sain, respectueux et constructif pour tous.
+                            </p>
+                        </div>
 
-					
-
-                    
-
-                    
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+                        <div class="box has-text-centered mt-5">
+                            <h3 class="title is-4">Prêt à contribuer ?</h3>
+                            <p>
+                                Pour toute remarque, suggestion ou signalement, envoyez-nous un message. Nous lisons chaque retour avec attention.
+                            </p>
+                            <a href="mailto:germainmaths@tutanota.com" class="button is-primary is-large mt-4">
+                                <span class="icon">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <span>Envoyer un e-mail</span>
+                            </a>
+                            <p class="mt-2">
+                                <a href="mailto:germainmaths@tutanota.com">germainmaths@tutanota.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <Footer />
+</body>
 </html>

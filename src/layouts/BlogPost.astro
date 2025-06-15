@@ -31,8 +31,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     <main>
       <section class="section">
         <div class="container">
-          <article class="box">
-            <header class="has-text-centered mb-5">
+            <header class="has-text-centered mb-6">
               <h1 class="title is-2">{title}</h1>
               <div class="subtitle is-6 has-text-grey">
                 {updatedDate && (
@@ -41,20 +40,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
                 )}
               </div>
             </header>
-
-            {heroImage && (
-              <figure class="image is-16by9 mb-6">
-                <img
-                  src={`${baseUrl}${heroImage.startsWith('/') ? '' : '/'}${heroImage}`}
-                  alt={description || ''}
-                />
-              </figure>
-            )}
-            
             <div class="content is-medium">
               <slot />
             </div>
-          </article>
         </div>
       </section>
     </main>

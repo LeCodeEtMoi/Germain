@@ -1,129 +1,132 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 
 
-type Props = CollectionEntry<'blog'>['data'];
-
-const { title, description, updatedDate, heroImage } = Astro.props;
+const colors = [
+  { name: 'Violet-50', hex: '#f4f3ff' },
+  { name: 'Violet-100', hex: '#ece9fe' },
+  { name: 'Violet-200', hex: '#dbd6fe' },
+  { name: 'Violet-300', hex: '#c1b5fd' },
+  { name: 'Violet-400', hex: '#a28bfa' },
+  { name: 'Violet-500 (Primaire)', hex: '#845cf6' },
+  { name: 'Violet-600', hex: '#743aed' },
+  { name: 'Violet-700', hex: '#6528d9' },
+  { name: 'Violet-800', hex: '#5421b6' },
+  { name: 'Violet-900', hex: '#461d95' },
+  { name: 'Violet-950', hex: '#2a1065' },
+];
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-	</head>
+  <style>
+    .color-box {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .color-swatch {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      margin-right: 1rem;
+      border: 1px solid #dbdbdb;
+    }
+  </style>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					Charte graphique
-					
-                    <div class="t1"><li>Logo</li><br>
+  <section class="section">
+    <div class="container">
+      Oui je sais que je suis pas beau mais c'est pas le but je veux juste que ca fonctionne xD Je ne suis pas encore fini
+      <h1 class="title is-1">Charte Graphique</h1>
+      <p class="subtitle is-3">Guide de style et composants pour le projet <strong>Germain</strong>.</p>
+      <hr />
 
-					<div class="t">Actuellement il n'y a pas de logo </div>
+      <!-- Typographie -->
+      <h2 class="title is-2">Typographie</h2>
+      <div class="box content">
+        <h1 class="title is-1">Titre de niveau 1</h1>
+        <h2 class="title is-2">Titre de niveau 2</h2>
+        <h3 class="title is-3">Titre de niveau 3</h3>
+        <h4 class="title is-4">Titre de niveau 4</h4>
+        <h5 class="title is-5">Titre de niveau 5</h5>
+        <h6 class="title is-6">Titre de niveau 6</h6>
+        <p>Ceci est un paragraphe de texte normal. Il contient du <strong>texte en gras</strong>, <em>du texte en italique</em>, et un <a href="#">lien hypertexte</a>. Les listes sont également stylisées :</p>
+        <ul>
+          <li>Élément de liste 1</li>
+          <li>Élément de liste 2</li>
+          <li>Élément de liste 3</li>
+        </ul>
+      </div>
 
-					<li>Couleurs</li>
-					
+      <!-- Couleurs -->
+      <h2 class="title is-2 mt-6">Palette de Couleurs</h2>
+      <div class="box">
+        <div class="columns is-multiline">
+          {colors.map(color => (
+            <div class="column is-one-third">
+              <div class="color-box">
+                <div class="color-swatch" style={`background-color: ${color.hex};`}></div>
+                <div>
+                  <p class="has-text-weight-bold">{color.name}</p>
+                  <code>{color.hex}</code>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-					
+      <!-- Composants UI -->
+      <h2 class="title is-2 mt-6">Composants d'Interface</h2>
+      
+      <!-- Boutons -->
+      <h3 class="title is-4">Boutons</h3>
+      <div class="box">
+        <div class="field is-grouped">
+          <p class="control"><button class="button is-primary">Primaire</button></p>
+          <p class="control"><button class="button is-link">Lien</button></p>
+          <p class="control"><button class="button is-info">Info</button></p>
+          <p class="control"><button class="button is-success">Succès</button></p>
+          <p class="control"><button class="button is-warning">Avertissement</button></p>
+          <p class="control"><button class="button is-danger">Danger</button></p>
+          <p class="control"><button class="button is-light">Léger</button></p>
+        </div>
+      </div>
 
-					<li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#f4f3ff" />
-						</svg>
-						<code>#f4f3ff</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#ece9fe" />
-						</svg>
-						<code>#ece9fe</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#dbd6fe" />
-						</svg>
-						<code>#dbd6fe</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#c1b5fd" />
-						</svg>
-						<code>#c1b5fd</code>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#a28bfa" />
-						</svg>
-						<code>#a28bfa</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#845cf6" />
-						</svg>
-						<code>#845cf6</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#6528d9" />
-						</svg>
-						<code>#6528d9</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#743aed" />
-						</svg>
-						<code>#743aed</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#5421b6" />
-						</svg>
-						<code>#5421b6</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#461d95" />
-						</svg>
-						<code>#461d95</code>
-					  </li>
-					  <li>
-						<svg class="color-circle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="100" cx="50" cy="50" fill="#2a1065" />
-						</svg>
-						<code>#2a1065</code>
-					  </li>
-					  <div class="t">Pour une meilleur comprention du l'usage des couleurs : <a href="https://uicolors.app/generate/2A1065">ici</a></div>
-					</div>
-                    
-                    - Mise en page 
-                    - Icônes
-                    - Titres , Soustitre ....
-                    -  Textes et liens
-                    - Typographie
-                    - Accessibilité
-                    Voir exemple ici : https://framasoft.org/fr/graphics/
+      <!-- Notifications -->
+      <h3 class="title is-4 mt-5">Notifications</h3>
+      <div class="box">
+        <div class="notification is-primary">
+          <button class="delete"></button>
+          Ceci est une notification <strong>primaire</strong>.
+        </div>
+        <div class="notification is-info is-light">
+          <button class="delete"></button>
+          Ceci est une notification <strong>d'information</strong>.
+        </div>
+        <div class="notification is-success is-light">
+          <button class="delete"></button>
+          Ceci est une notification de <strong>succès</strong>.
+        </div>
+        <div class="notification is-danger is-light">
+          <button class="delete"></button>
+          Ceci est une notification de <strong>danger</strong>.
+        </div>
+      </div>
 
-					<div class="t1"><li>Titre</li></div>
+      <!-- Formulaires -->
+      <h3 class="title is-4 mt-5">Formulaires</h3>
+      <div class="box">
+        <div class="field">
+          <label class="label">Nom</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="ex: Jean Dupont">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <div class="control">
+            <textarea class="textarea" placeholder="Votre message ici..."></textarea>
+          </div>
+        </div>
+      </div>
 
-					<div class="t2"><li>Sous Titre</li></div>
-
-					<div class="propriete">Propriete</div>
-
-					<div class="def">yop</div>
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+    </div>
+  </section>

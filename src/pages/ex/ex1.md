@@ -10,7 +10,7 @@ heroImage: '/blog-placeholder-3.jpg'
   <h2 class="title is-4 mb-5">Liste des exercices</h2>
   
   <div class="block">
-    <h3 class="title is-5 has-text-primary mb-4">Espace</h3>
+    <h3 class="title is-5 mb-4">Espace</h3>
     <div class="box">
       <article class="media">
         <div class="media-content">
@@ -55,7 +55,7 @@ heroImage: '/blog-placeholder-3.jpg'
   </div>
 
   <div class="block">
-    <h3 class="title is-5 has-text-primary mb-4">Dénombrement</h3>
+    <h3 class="title is-5  mb-4">Dénombrement</h3>
     <div class="box">
       <article class="media">
         <div class="media-content">

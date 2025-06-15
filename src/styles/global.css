@@ -1,4 +1,46 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+:root {
+	--color-50: #f6f4fe;
+	--color-100: #ece8fd;
+	--color-200: #dcd3fc;
+	--color-300: #c8b9fb;
+	--color-400: #b39df9;
+	--color-500: #a28bfa;
+	--color-600: #8c6fe9;
+	--color-700: #7753d5;
+	--color-800: #6341b3;
+	--color-900: #523793;
+	--color-950: #332260;
+}
+
+
+
+.is-germain {
+  background-color: var(--color-400); 
+}
+.is-text-germain{
+  color: var(--color-800);
+}
+
+h1{
+  font-size: 60px;
+  font-weight: 800;
+  line-height: 64px;
+}
+
+.hero.is-primary {
+  background-color: var(--primary-color);
+  color: var(--color-50);
+}
+
+.hero.is-primary .title,
+.germain-navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.hero.is-primary .subtitle {
+  color: var(--color-50);
+}
 
 html {
   height: 100%;

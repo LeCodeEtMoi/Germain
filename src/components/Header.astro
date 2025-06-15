@@ -7,21 +7,19 @@ const baseUrl = import.meta.env.BASE_URL;
 const homeUrl = `${baseUrl}Germain/`;
 ---
 
-<header class="navbar is-fixed-top is-light" role="navigation" aria-label="main navigation">
+<nav class="navbar germain-navbar is-fixed-top" role="navigation" aria-label="main navigation">
   <div class="container">
     <div class="navbar-brand">
       <a class="navbar-item" href="/Germain/">
-        <figure class="image is-64x64 mr-2">
+        <figure class="image  mr-2">
           <img 
             class="is-rounded" 
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg/1024px-Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg" 
             alt="Logo Germain"
-            width="64"
-            height="64"
             loading="lazy"
           />
         </figure>
-        <h1 class="title is-4 mb-0">{SITE_TITLE}</h1>
+        <h1 class="title is-3 mb-0">{SITE_TITLE} </h1>
       </a>
 
       <!-- Burger menu pour mobile -->
@@ -39,45 +37,15 @@ const homeUrl = `${baseUrl}Germain/`;
     </div>
 
     <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
+      <div class="navbar-end">
         <HeaderLink href="/Germain/blog" isNavbarItem>Leçons</HeaderLink>
         <HeaderLink href="/Germain/exercices" isNavbarItem>Exercices</HeaderLink>
         <HeaderLink href="/Germain/about" isNavbarItem>À propos</HeaderLink>
-      </div>
 
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a 
-              href="https://m.webtoo.ls/@astro" 
-              class="button is-light" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              title="Mastodon"
-            >
-              <span class="icon">
-                <i class="fab fa-mastodon"></i>
-              </span>
-              <span class="is-sr-only">Mastodon</span>
-            </a>
-            <a 
-              href="https://github.com/LeCodeEtMoi/Germain" 
-              class="button is-light" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              title="GitHub"
-            >
-              <span class="icon">
-                <i class="fab fa-github"></i>
-              </span>
-              <span class="is-sr-only">GitHub</span>
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
-</header>
+</nav>
 
 <!-- Script pour le menu burger -->
 <script>
@@ -109,23 +77,13 @@ const homeUrl = `${baseUrl}Germain/`;
 <style>
   /* Ajustements pour le header fixe */
   body {
-    padding-top: 3.25rem;
-  }
-  
-  /* Style pour le logo */
-  .navbar-item img {
-    max-height: 2.75rem;
+    padding-top: 1.25rem;
   }
   
   /* Ajustement du titre dans la navbar */
   .navbar-item h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 600;
-  }
-  
-  /* Animation pour le menu burger */
-  .navbar-burger {
-    height: auto;
   }
   
   /* Ajustement des boutons sociaux */
@@ -145,13 +103,13 @@ const homeUrl = `${baseUrl}Germain/`;
     }
     
     .navbar-item {
-      padding: 0.75rem 1.5rem;
+      padding: 0.5rem 1rem;
     }
   }
   
   /* Styles spécifiques pour le header */
   .site-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--text);
   }
@@ -171,3 +129,4 @@ const homeUrl = `${baseUrl}Germain/`;
     }
   }
 </style>
+

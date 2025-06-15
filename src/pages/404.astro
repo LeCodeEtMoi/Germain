@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404: Page non trouvée" description="La page que vous cherchez n'existe pas.">
+  <section class="section">
+    <div class="container has-text-centered">
+      <div class="box" style="max-width: 600px; margin: 4rem auto;">
+        <h1 class="title is-1">Oups !</h1>
+        <p class="is-size-4 mb-4">Il semblerait que cette page n'existe pas.</p>
+        <p class="content">
+          Si vous voulez, on a quelques problèmes pour vous occuper : 
+          <a href="https://fr.wikipedia.org/wiki/Probl%C3%A8mes_non_r%C3%A9solus_en_math%C3%A9matiques" target="_blank" rel="noopener noreferrer">
+            Problèmes non résolus en mathématiques
+          </a>
+        </p>
+        <hr>
+        <a href="/Germain/" class="button is-primary">
+          Retour à l'accueil
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

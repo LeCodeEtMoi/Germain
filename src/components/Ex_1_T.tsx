@@ -1,17 +1,6 @@
 import React, { useState } from "react";
-import { Button } from "src/components/ui/button.tsx"; // exemple UI shadcn
-import { Input } from "src/components/ui/input";
-import { Label } from "src/components/ui/label";
 
 type Coord = [number, number, number];
-
-export function ButtonDemo() {
-  return (
-    <div className="flex flex-wrap items-center gap-2 md:flex-row">
-      <Button>Button</Button>
-    </div>
-  )
-}
 
 // Fonction pour générer une équation cartésienne d’un plan
 function equationCartesienne(A: Coord, V: Coord): string {
@@ -56,7 +45,7 @@ export default function EquationCartesienne() {
       setFeedback({
         correct: false,
         message: (
-          <div>
+          <div className="content">
             <p>❌ Oups, une erreur s'est glissée, Maître.</p>
             <p>Le vecteur normal n⃗ = ({V.join(", ")}) est normal au plan.</p>
             <p>La formule du plan est : ax + by + cz + d = 0</p>
@@ -84,47 +73,57 @@ export default function EquationCartesienne() {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow space-y-4">
-      <h2 className="text-xl font-bold">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</h2>
+    <div className="columns is-centered mt-6">
+      <div className="column is-two-thirds">
+        <div className="box content">
+          <h2 className="title is-4">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</h2>
 
-      <div>
-        <p>
-          <strong>Point A :</strong> ({A.join(", ")})
-        </p>
-        <p>
-          <strong>Vecteur normal n⃗ :</strong> ({V.join(", ")})
-        </p>
-      </div>
+          <div className="mb-4">
+            <p>
+              <strong>Point A :</strong> ({A.join(", ")})
+            </p>
+            <p>
+              <strong>Vecteur normal n⃗ :</strong> ({V.join(", ")})
+            </p>
+          </div>
 
-      <div>
-        <Label htmlFor="userInput" className="mb-1 block font-medium">
-          Écris ton équation cartésienne
-        </Label>
-        <Input
-          id="userInput"
-          type="text"
-          placeholder="Ex: 2x - 3y + 4z + 1 = 0"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-        />
-      </div>
+          <div className="field">
+            <label htmlFor="userInput" className="label">
+              Écris ton équation cartésienne
+            </label>
+            <div className="control">
+              <input
+                id="userInput"
+                className="input"
+                type="text"
+                placeholder="Ex: 2x - 3y + 4z + 1 = 0"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+              />
+            </div>
+          </div>
 
+          <div className="field is-grouped is-grouped-centered">
+            <div className="control">
+              <button className="button is-primary" onClick={handleValidate}>
+                Valider
+              </button>
+            </div>
+            <div className="control">
+              <button className="button is-light" onClick={handleNewExercise}>
+                Nouvel exercice
+              </button>
+            </div>
+          </div>
 
-
-      <div className="flex gap-4">
-        <Button className="default" onClick={handleValidate}>
-          <span className="font-bold">Valider</span>
-        </Button>
-        <Button className="secondary" onClick={handleNewExercise}>
-          <span className="font-bold">Nouvel exercice</span>
-        </Button>
-      </div>
-
-      {feedback && (
-        <div className={`p-4 rounded ${feedback.correct ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-          {feedback.message}
+          {feedback && (
+            <div className={`notification ${feedback.correct ? "is-success" : "is-danger"} is-light`}>
+              <button className="delete" onClick={() => setFeedback(null)}></button>
+              {feedback.message}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

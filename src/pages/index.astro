@@ -12,15 +12,21 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	</head>
 	<body>
 		<Header />
-		<section class="hero is-primary is-bold">
-		  <div class="hero-body">
-			<div class="container">
-			  <h1 class="title is-1">Bienvenue sur Germain</h1>
-			  <p class="subtitle is-3">Apprendre les maths et la philosophie avec style !</p>
-			  <a href="/Germain/exercices" class="button is-light is-large">Voir les exercices</a>
-			</div>
-		  </div>
-		</section>
+		<section class="hero is-germain is-bold">
+          <div class="hero-body">
+            <div class="container">
+              <div class="columns is-vcentered">
+                <div class="column">
+                  <h1 class="title is-1">Bienvenue sur Germain</h1>
+                  <p class="subtitle is-3">Renforcez ces aquis avec style !	</p>
+                </div>
+                <div class="column">
+                  <img src="/Germain/public/Mathematics-amico.svg" alt="Mathematics-amico" style="max-width: 400px; display: block; margin: auto;" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 		<section class="section">
 		  <div class="container">
 			<div class="columns">
@@ -29,7 +35,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				  <div class="card-content">
 					<p class="title is-4">Leçons</p>
 					<p class="content">Découvre toutes les leçons pour progresser.</p>
-					<a href="/Germain/blog" class="button is-link">Voir les leçons</a>
+					<a href="/Germain/blog" class="button is-germain">Voir les leçons</a>
 				  </div>
 				</div>
 			  </div>
@@ -38,7 +44,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				  <div class="card-content">
 					<p class="title is-4">Exercices</p>
 					<p class="content">Teste tes connaissances avec nos exercices interactifs.</p>
-					<a href="/Germain/exercices" class="button is-primary">Voir les exercices</a>
+					<a href="/Germain/exercices" class="button is-germain">Voir les exercices</a>
 				  </div>
 				</div>
 			  </div>
@@ -47,7 +53,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				  <div class="card-content">
 					<p class="title is-4">À propos</p>
 					<p class="content">En savoir plus sur le projet Germain.</p>
-					<a href="/Germain/about" class="button is-info">À propos</a>
+					<a href="/Germain/about" class="button is-germain">À propos</a>
 				  </div>
 				</div>
 			  </div>
