@@ -1,5 +1,6 @@
 ---
 
+import Layout from '../layouts/BlogPost.astro';
 
 const colors = [
   { name: 'Violet-50', hex: '#f4f3ff' },
@@ -30,7 +31,9 @@ const colors = [
       border: 1px solid #dbdbdb;
     }
   </style>
-
+<Layout
+  title="À propos"
+>
   <section class="section">
     <div class="container">
       Oui je sais que je suis pas beau mais c'est pas le but je veux juste que ca fonctionne xD Je ne suis pas encore fini
@@ -130,3 +133,4 @@ const colors = [
 
     </div>
   </section>
+</Layout>

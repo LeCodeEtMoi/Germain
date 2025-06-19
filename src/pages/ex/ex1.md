@@ -6,6 +6,12 @@ pubDate: 'Jul 08 2022'
 heroImage: '/blog-placeholder-3.jpg'
 ---
 
+<div class="card">
+<div class="card-content">
+<p> ⚠️ Attention s'il n'y as pas <span class="tag"> Validé </span> ce veux dire que l'exercie peut comporter des erreurs ou n'est pas encore finit ⚠️ </p>
+</div>
+</div>
+
 <div class="content">
   <h2 class="title is-4 mb-5">Liste des exercices</h2>
   
@@ -54,6 +60,12 @@ heroImage: '/blog-placeholder-3.jpg'
     </div>
   </div>
 
+
+
+                  
+
+
+
   <div class="block">
     <h3 class="title is-5  mb-4">Dénombrement</h3>
     <div class="box">
@@ -71,5 +83,22 @@ heroImage: '/blog-placeholder-3.jpg'
         </div>
       </article>
     </div>
+  <h3 class="title is-5  mb-4">Suite numerique</h3>
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_4_T/" class="has-text-link is-size-5">
+                <strong>Exercice de suite numerique</strong>
+              </a>
+              <br>
+              Raisonnement par récurrence - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+
   </div>
 </div>
