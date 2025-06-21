@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-type Point3D = {
+export type Point3D = {
   x: number;
   y: number;
   z: number;
@@ -12,20 +12,16 @@ interface RandomPoint3DProps {
   onGenerate?: (point: Point3D) => void; // callback quand un point est généré
 }
 
-export function RandomPoint3D({ min = 0, max = 10, onGenerate }: RandomPoint3DProps) {
-  const [point, setPoint] = useState<Point3D>(() => generatePoint());
+export const generateRandomPoint = (min: number = 0, max: number = 10): Point3D => {
+  const rand = () => Math.floor(Math.random() * (max - min + 1)) + min;
+  return { x: rand(), y: rand(), z: rand() };
+};
 
-  function generatePoint(): Point3D {
-    const randCoord = () => Math.random() * (max - min) + min;
-    return {
-      x: parseFloat(randCoord().toFixed(2)),
-      y: parseFloat(randCoord().toFixed(2)),
-      z: parseFloat(randCoord().toFixed(2)),
-    };
-  }
+export function RandomPoint3D({ min = 0, max = 10, onGenerate }: RandomPoint3DProps) {
+  const [point, setPoint] = useState<Point3D>(() => generateRandomPoint(min, max));
 
   function handleGenerate() {
-    const newPoint = generatePoint();
+    const newPoint = generateRandomPoint(min, max);
     setPoint(newPoint);
     if (onGenerate) onGenerate(newPoint);
   }

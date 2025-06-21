@@ -1,60 +1,94 @@
 import React from 'react';
 import 'katex/dist/katex.min.css';
+import MathTex from './MathTex';
 import './MathToolbar.css';
 
+interface MathSymbol {
+  latex: string;
+  displayLatex?: string;
+  cursorPos?: number;
+}
+
 interface MathToolbarProps {
-  onInsertSymbol: (symbol: string) => void;
+  onInsertSymbol: (symbol: string, cursorPos?: number) => void;
 }
 const MathToolbar: React.FC<MathToolbarProps> = ({ onInsertSymbol }) => {
-  const symbols = [
-    { label: 'a', latex: 'a' },
-    { label: 'b', latex: 'b' },
-    { label: 'c', latex: 'c' },
-    { label: 'x', latex: 'x' },
-    { label: 'y', latex: 'y' },
-    { label: 'z', latex: 'z' },
-    { label: 'k', latex: 'k' },
-    { label: 'n', latex: 'n' },
-    { label: 'i', latex: 'i' },
-    { label: 'e', latex: 'e' },
-    { label: 'V', latex: 'V' },
-    { label: 'F', latex: 'F' },
-    { label: '+', latex: '+' },
-    { label: '-', latex: '-' },
-    { label: '×', latex: '\\times' },
-    { label: '÷', latex: '\\div' },
-    { label: '| |', latex: '\\left| \\right|' },
-    { label: '√', latex: '\\sqrt{a + 5}' },
-    { label: 'x²', latex: 'x^2' },
-    { label: 'xⁿ', latex: 'x^{n}' },
-    { label: '×10ⁿ', latex: '\\times 10^{n}' },
-    { label: '°', latex: '^\\circ' },
-    { label: '%', latex: '\\%' },
-    { label: ';', latex: ';' },
-    { label: '1', latex: '1' },
-    { label: '2', latex: '2' },
-    { label: '3', latex: '3' },
-    { label: '4', latex: '4' },
-    { label: '5', latex: '5' },
-    { label: '6', latex: '6' },
-    { label: '7', latex: '7' },
-    { label: '8', latex: '8' },
-    { label: '9', latex: '9' },
-    { label: '0', latex: '0' },
-    { label: ',', latex: ',' },
-    { label: 'π', latex: '\\pi' },
-  ];
-
-  const handleSymbolClick = (latex: string) => {
-    onInsertSymbol(latex);
+  const symbolGroups: { [key: string]: MathSymbol[] } = {
+    'Opérations': [
+      { latex: '+' },
+      { latex: '-' },
+      { latex: '\\times' },
+      { latex: '\\div' },
+      { latex: '\\pm' },
+    ],
+    'Relations': [
+      { latex: '=' },
+      { latex: '\\neq' },
+      { latex: '<' },
+      { latex: '>' },
+      { latex: '\\leq' },
+      { latex: '\\geq' },
+    ],
+    'Symboles': [
+      { latex: '\\infty' },
+      { latex: '\\pi' },
+      { latex: '^\\circ' },
+      { latex: '\\%' },
+      { latex: '\\in' },
+      { latex: '\\notin' },
+    ],
+    'Ensembles': [
+      { latex: '\\mathbb{R}' },
+      { latex: '\\mathbb{N}' },
+      { latex: '\\mathbb{Z}' },
+      { latex: '\\mathbb{Q}' },
+      { latex: '\\mathbb{C}' },
+    ],
+    'Structures': [
+      { latex: '\\frac{}{}', displayLatex: '\\frac{a}{b}', cursorPos: 6 },
+      { latex: '\\sqrt{}', displayLatex: '\\sqrt{a}', cursorPos: 6 },
+      { latex: '\\sqrt[]{}', displayLatex: '\\sqrt[n]{a}', cursorPos: 6 },
+      { latex: '^{2}', displayLatex: 'x^2' },
+      { latex: '^{}', displayLatex: 'x^n', cursorPos: 2 },
+      { latex: '_{}', displayLatex: 'x_n', cursorPos: 2 },
+      { latex: '\\left| \\right|', displayLatex: '|a|', cursorPos: 6 },
+    ],
+    'Lettres Grecques': [
+      { latex: '\\alpha' },
+      { latex: '\\beta' },
+      { latex: '\\gamma' },
+      { latex: '\\delta' },
+      { latex: '\\theta' },
+    ],
+    'Calcul': [
+        { latex: '\\lim_{n\\to\\infty}' },
+        { latex: '\\int_{a}^{b}' },
+        { latex: '\\sum_{i=0}^{n}' },
+        { latex: '\\frac{d}{dx}' },
+    ],
+    'Vecteurs': [
+        { latex: '\\vec{}', displayLatex: '\\vec{v}', cursorPos: 5 },
+        { latex: '\\binom{}{}', displayLatex: '\\binom{x}{y}', cursorPos: 7 },
+    ]
   };
 
   return (
     <div className="math-toolbar">
-      {symbols.map((symbol, index) => (
-        <button key={index} onClick={() => handleSymbolClick(symbol.latex)}>
-          <span dangerouslySetInnerHTML={{ __html: symbol.label }} />
-        </button>
+      {Object.entries(symbolGroups).map(([groupName, symbols]) => (
+        <div key={groupName} className="mb-2">
+          <p className="has-text-weight-bold is-size-7">{groupName}</p>
+          <div className="buttons are-small">
+            {symbols.map((symbol, index) => (
+              <button
+                key={index}
+                className="button"
+                onClick={() => onInsertSymbol(symbol.latex, symbol.cursorPos)}
+              >
+                <MathTex tex={symbol.displayLatex || symbol.latex} />
+              </button>
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   );

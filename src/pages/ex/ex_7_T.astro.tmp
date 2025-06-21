@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LineRelationshipCheck from '../../components/Ex_7_T.tsx';
+---
+
+<Layout title="Exercice 7T - Position relative de deux droites">
+  <main>
+    <LineRelationshipCheck client:load />
+  </main>
+</Layout>
