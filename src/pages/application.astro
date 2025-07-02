@@ -1,0 +1,148 @@
+---
+import BaseHead from '@/components/BaseHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchBar from '@/components/SearchBar.astro';
+import Tag from '@/components/Tag.astro';
+
+
+const pageTitle = "Applications des mathématiques";
+const pageDescription = "Découvrez comment les mathématiques s'appliquent dans différents domaines .";
+
+const applications = [
+    {
+        title: "Les maths dans la biologie",
+        subtitle: "Les mathématiques sont utilisées pour comprendre les mécanismes de la vie.",
+        content: "Les mathématiques sont utilisées pour comprendre les processus biologiques et les interactions entre les organismes.",
+        tags: ["Biologie", "Graphe", "Géométrie"],
+        imageUrl: "https://picsum.photos/id/10/800/600"
+    },
+    {
+        title: "Les maths dans l'informatique",
+        subtitle: "Les mathématiques sont utilisées pour concevoir des algorithmes et des systèmes d'information.",
+        content: "Les mathématiques sont utilisées pour concevoir des algorithmes et des systèmes d'information. Les informaticiens mathématiciens utilisent des équations et des modèles pour concevoir des systèmes d'information et des algorithmes pour résoudre des problèmes.",
+        tags: ["Informatique", "Algorithmique", "Système d'information"],
+        imageUrl: "https://picsum.photos/id/42/800/600"
+    },
+    {
+        title: "Les maths dans la physique",
+        subtitle: "Les mathématiques sont utilisées pour comprendre les phénomènes physiques.",
+        content: "Les mathématiques sont utilisées pour comprendre les processus physiques et les interactions entre les particules.",
+        tags: ["Physique", "Mécanique", "Électromagnétisme"],
+        imageUrl: "https://picsum.photos/id/48/800/600"
+    }
+];
+---
+<html lang="fr">
+<head>
+    <BaseHead title={pageTitle} description={pageDescription} />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-content {
+            flex-grow: 1;
+        }
+        .tag.is-active {
+            background-color: hsl(204, 86%, 53%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    <main>
+        <section class="section">
+            <div class="container">
+                <h1 class="title is-2 my-6 has-text-centered">{pageTitle}</h1>
+                <p class="subtitle is-5 has-text-centered">{pageDescription}</p>
+
+                <SearchBar />
+
+                
+
+                <div id="application-cards" class="columns is-multiline">
+                    {applications.map(app => (
+                        <div class="column is-4 application-card" data-tags={app.tags.join(',')}>
+                            <div class="card">
+                                <div class="card-image">
+                                    <figure class="image is-4by3">
+                                        <img src={app.imageUrl} alt={app.title}>
+                                    </figure>
+                                </div>
+                                <div class="card-content">
+                                    <div class="media">
+                                        <div class="media-content">
+                                            <p class="title is-4 mb-5 card-title">{app.title}</p>
+                                            <p class="subtitle is-6">{app.subtitle}</p>
+                                        </div>
+                                    </div>
+                                    <div class="content">
+                                        {app.content}
+                                    </div>
+                                    <div class="tags">
+                                        {app.tags.map(tag => <Tag text={tag} />)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    </main>
+    <Footer />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+            const cards = document.querySelectorAll<HTMLElement>('.application-card');
+            const tags = document.querySelectorAll<HTMLElement>('.tag');
+            let activeTags = new Set<string>();
+
+            function filterCards() {
+                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                
+                cards.forEach(card => {
+                    const titleElement = card.querySelector('.card-title');
+                    const title = titleElement?.textContent?.toLowerCase() || '';
+                    const cardTags = card.dataset.tags?.split(',') || [];
+
+                    const titleMatch = title.includes(searchTerm);
+                    const tagsMatch = activeTags.size === 0 || [...activeTags].every(activeTag => cardTags.includes(activeTag));
+
+                    if (titleMatch && tagsMatch) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            tags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const tagText = tag.textContent;
+                    if (tagText) {
+                        tag.classList.toggle('is-active');
+                        if (activeTags.has(tagText)) {
+                            activeTags.delete(tagText);
+                        } else {
+                            activeTags.add(tagText);
+                        }
+                    }
+                    filterCards();
+                });
+            });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterCards);
+            }
+        });
+    </script>
+</body>
+</html>
+</html>

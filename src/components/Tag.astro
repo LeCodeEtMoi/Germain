@@ -1,0 +1,9 @@
+---
+// src/components/Tag.astro
+export interface Props {
+    text: string;
+}
+
+const { text } = Astro.props;
+---
+<span class="tag is-info is-light mr-2">{text}</span>

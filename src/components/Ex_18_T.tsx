@@ -4,7 +4,7 @@ import 'katex/dist/katex.min.css';
 
 const Ex_18_T = () => {
   const [response, setResponse] = useState('');
-  const [isCorrect, setIsCorrect] = useState(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
   const correctAnswers = ['175'];
@@ -15,7 +15,7 @@ const Ex_18_T = () => {
     setShowExplanation(true);
   };
 
-  const handleOptionChange = (e) => {
+  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResponse(e.target.value);
     setIsCorrect(null);
     setShowExplanation(false);

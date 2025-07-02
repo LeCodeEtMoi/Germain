@@ -4,7 +4,7 @@ import 'katex/dist/katex.min.css';
 
 const Ex_19_T = () => {
   const [response, setResponse] = useState('');
-  const [isCorrect, setIsCorrect] = useState(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
   const correctAnswers = ['u<=100', '100>=u'];

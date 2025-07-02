@@ -8,7 +8,7 @@ heroImage: '/blog-placeholder-3.jpg'
 
 <div class="card">
 <div class="card-content">
-<p> ⚠️ Attention s'il n'y as pas <span class="tag"> Validé </span> ce veux dire que l'exercie peut comporter des erreurs ou n'est pas encore finit ⚠️ </p>
+<p> ⚠️ Attention s'il n'y as pas <span class="tag"> Validé </span> cela veux dire que l'exercie peut comporter des erreurs ou n'est pas encore finit ⚠️ </p>
 </div>
 </div>
 
