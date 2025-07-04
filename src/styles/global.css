@@ -18,6 +18,27 @@ body{
 			font-style: normal;
 }
 
+
+.metier-title {
+  padding-bottom: 1rem;
+} 
+
+.lesson-title {
+  font-size: 2rem;
+  color: white;
+  margin: 0;
+}
+
+.lesson-title-xl {
+  font-size: 4rem;
+  color: white;
+  margin: 0;
+}
+
+.font-Righteous {
+	font-family: "Righteous", sans-serif;
+}
+
 .mission {
   font-size: 20px;
   position: relative;
@@ -172,6 +193,20 @@ strong {
 /* Style pour le surlignement bleu */
 .bg-blue::before {
   background-color: #4693b9;
+  content: "";
+  position: absolute;
+  width: calc(100% + 4px);
+  height: 60%;
+  left: -2px;
+  bottom: 0;
+  z-index: -1;
+  transform: rotate(-2deg);
+  border-radius: 2px;
+}
+
+/* Style pour le surlignement violette */
+.bg-purple::before {
+  background-color: var(--color-500);
   content: "";
   position: absolute;
   width: calc(100% + 4px);

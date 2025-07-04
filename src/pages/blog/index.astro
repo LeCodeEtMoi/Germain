@@ -36,18 +36,19 @@ const pageTitle = "Leçons";
 		<Header />
 
 			<!-- Section "hero" pour afficher le titre de la page de manière proéminente -->
-			<section class="hero is-germain">
+			<section class="hero bg-black">
 				<div class="hero-body">
-					<div class="container">
-						<h1 class="title mt-6">
-							{pageTitle}
-						</h1>
+					<div class="container font-Righteous ">
+							
+							<h1><strong class="righteous-regular lesson-title-xl bg-purple">{pageTitle}</strong></h1>
+
+						
 					</div>
 				</div>
-			</section>
+			
 
 			<!-- Contenu principal de la page -->
-			<main class="section">
+			<main class="section bg-black" >
 				<div class="container">
 					<!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive -->
 					<div class="columns is-multiline">
@@ -56,11 +57,13 @@ const pageTitle = "Leçons";
 							posts.map((post) => (
 									// Chaque article est affiché dans une colonne qui prend 1/3 de la largeur sur grand écran
 									<div class="column is-4">
-										{/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
 										<a href={`/Germain/blog/${post.id}/`}>
+										<h1><strong class="righteous-regular lesson-title bg-green">{post.data.title}</strong></h1>
+										{/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
+										
 											{/* Affichage de l'image principale (heroImage) et du titre de l'article */}
 										<img class="" width={720} height={360} src={post.data.heroImage} alt="" />
-											<h4 class="title">{post.data.title}</h4>
+											
 										</a>
 									</div>
 							))
@@ -68,7 +71,7 @@ const pageTitle = "Leçons";
 					</div>
 				</div>
 			</main>
-		
+		</section>
 		<!-- Inclusion du composant Footer (pied de page) -->
 		<Footer />
 	</body>

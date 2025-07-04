@@ -1,15 +1,60 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+// Importation des composants réutilisables (en-tête, pied de page, etc.)
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+// Importation des constantes globales du site (titre, description)
+import { SITE_TITLE, SITE_DESCRIPTION }  from '../consts';
+const pageTitle = "Maths et métier";
 ---
+<!-- --- Template (partie HTML) --- -->
+<!doctype html>
+<html lang="fr">
+	<head>
+		<!-- Utilisation du composant BaseHead pour générer les balises <head> communes (meta, title, etc.) -->
+		<BaseHead title={pageTitle}/>
+		<!-- Liens vers les feuilles de style externes (CDN) pour Bulma et Font-Awesome -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	</head>
+	<body>
+		<!-- Inclusion du composant Header (barre de navigation) -->
+		<Header />
 
-<Layout
-  title="Maths et metier"
-  description="Découvrez comment les mathématiques s'appliquent dans différents métiers."
-  pubDate={new Date()}
->
-  <section class="content is-medium">
-    Regardons de plus près comment les mathématiques s'applique dans tout ces métiers différents 
-  </section>
-  
-</Layout>
+			<!-- Section "hero" pour afficher le titre de la page de manière proéminente -->
+			<section class="hero bg-black">
+				<div class="hero-body">
+					<div class="container font-Righteous ">
+							
+							<h1><strong class="righteous-regular lesson-title-xl bg-purple">{pageTitle}</strong></h1>
+            <p class="subtitle has-text-left has-text-white">Découvrez comment les mathématiques s'appliquent dans différents domaines .</p> 
+						
+					</div>
+				</div>
+			
 
+			<!-- Contenu principal de la page -->
+			<main class="section bg-black" >
+				<div class="container">
+					<!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive -->
+					<div class="columns is-multiline has-text-white">
+						<div class="metier-title">
+              <a href="/Germain/MathsEtMetier/MédiateurScientifique">
+              <h1><strong class="righteous-regular lesson-title bg-green font-Righteous">Médiateur scientifique à Planete Sciences Occitanie</strong></h1>
+              <p class="subtitle has-text-left has-text-white">Mon métier se rapproche d'intervenant technique / animateur scientifique et technique. La péda à planete science est de passez par des projets techniques que les enfants réalisent, et que c'est en réalisant ce projet que les enfants acquieront des connaissances scientifiques.
+                Cette démarche me pose parfois probleme, notamment car c'est une vision tres utilitaire des sciences, un point de vue d'ingénieur∙e, car cela ne me permet pas de parler de trucs "inutiles" comme les mathématiques des rubik's cubes ou d'écologie. Et puis je trouve cela problématique de toujours s'attacher à l'utilitité, car ça se trouve, un truc que l'on trouve inutile maintenant sera peut-etre utile dans 100 ans. et puis c'est cool aussi des fois de faire des trucs qui ne servent à rien, pourvu que l'on trouve cela drole</p>
+              </div>
+              </a>  
+              <div class="metier-title">
+                <h1><strong class="righteous-regular lesson-title bg-green font-Righteous">Médiateur scientifique à Planete Sciences Occitanie</strong></h1>
+                <p class="subtitle has-text-left has-text-white">Mon métier se rapproche d'intervenant technique / animateur scientifique et technique. La péda à planete science est de passez par des projets techniques que les enfants réalisent, et que c'est en réalisant ce projet que les enfants acquieront des connaissances scientifiques.
+                  Cette démarche me pose parfois probleme, notamment car c'est une vision tres utilitaire des sciences, un point de vue d'ingénieur∙e, car cela ne me permet pas de parler de trucs "inutiles" comme les mathématiques des rubik's cubes ou d'écologie. Et puis je trouve cela problématique de toujours s'attacher à l'utilitité, car ça se trouve, un truc que l'on trouve inutile maintenant sera peut-etre utile dans 100 ans. et puis c'est cool aussi des fois de faire des trucs qui ne servent à rien, pourvu que l'on trouve cela drole</p>
+                </div>
+					</div>
+				</div>
+			</main>
+		</section>
+		<!-- Inclusion du composant Footer (pied de page) -->
+		<Footer />
+	</body>
+</html>

@@ -1,62 +1,78 @@
 ---
+// --- Frontmatter (partie script) ---
+// Importation des composants réutilisables (en-tête, pied de page, etc.)
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+// Importation des constantes globales du site (titre, description)
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+// Importation de la fonction d'Astro pour récupérer des collections de contenu (ex: articles de blog)
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+
+// Récupération de tous les articles de la collection 'blog' (qui se trouve dans src/content/blog)
+// La fonction est asynchrone, d'où le 'await'.
+const posts = (await getCollection('blog')).sort(
+	// Tri des articles du plus récent au plus ancien en se basant sur la date de publication (pubDate)
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// Définition du titre de la page
+const pageTitle = "Exercices";
 ---
+
+<!-- --- Template (partie HTML) --- -->
 <!doctype html>
 <html lang="fr">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-  </head>
-  <body class="has-background-light">
-    <Header />
+	<head>
+		<!-- Utilisation du composant BaseHead pour générer les balises <head> communes (meta, title, etc.) -->
+		<BaseHead title={pageTitle}/>
+		<!-- Liens vers les feuilles de style externes (CDN) pour Bulma et Font-Awesome -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+	</head>
+	<body>
+		<!-- Inclusion du composant Header (barre de navigation) -->
+		<Header />
 
-    <main class="section">
-      <div class="container">
-        <div class="box has-background-white">
+			<!-- Section "hero" pour afficher le titre de la page de manière proéminente -->
+			<section class="hero bg-black">
+				<div class="hero-body">
+					<div class="container font-Righteous ">
+							
+							<h1><strong class="righteous-regular lesson-title-xl bg-purple">{pageTitle}</strong></h1>
 
+						
+					</div>
+				</div>
+			
 
-          <main class="section">
-            <div class="container">
-              <!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive -->
-              <div class="columns is-multiline">
-                {
-                  // Itération sur le tableau 'posts' récupéré plus haut
-    
-                      // Chaque article est affiché dans une colonne qui prend 1/3 de la largeur sur grand écran
-                      <div class="column is-4">
-                        {/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
-                        <a href="/Germain/ex/ex1">
-                          {/* Affichage de l'image principale (heroImage) et du titre de l'article */}
-                        <img class="" width={720} height={360} src="/Germain/Formula-amico.svg" alt="" />
-                          <h4 class="title">Terminale</h4>
-                        </a>
-                      </div>
-                      <div class="column is-4">
-                        {/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
-                        <a href="/Germain/ex/ex1">
-                          {/* Affichage de l'image principale (heroImage) et du titre de l'article */}
-                        <img class="" width={720} height={360} src="/Germain/Raising hand-amico.svg" alt="" />
-                          <h4 class="title">Première</h4>
-                        </a>
-                      </div>
-                      <div class="column is-4">
-                        {/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
-                        <a href="/Germain/ex/ex1">
-                          {/* Affichage de l'image principale (heroImage) et du titre de l'article */}
-                        <img class="" width={720} height={360} src="/Germain/Nerd-amico.svg" alt="" />
-                          <h4 class="title">Seconde</h4>
-                        </a>
-                      </div>
-                      
-                }
-              </div>
-            </div>
-          </main>
-    </main>
-
-    <Footer />
-  </body>
+			<!-- Contenu principal de la page -->
+			<main class="section bg-black" >
+				<div class="container">
+					<!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive -->
+					<div class="columns is-multiline">
+						{
+							// Itération sur le tableau 'posts' récupéré plus haut
+							posts.map((post) => (
+									// Chaque article est affiché dans une colonne qui prend 1/3 de la largeur sur grand écran
+									<div class="column is-4">
+										<a href={`/Germain/blog/${post.id}/`}>
+										<h1><strong class="righteous-regular lesson-title bg-green">{post.data.title}</strong></h1>
+										{/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
+										
+											{/* Affichage de l'image principale (heroImage) et du titre de l'article */}
+										<img class="" width={720} height={360} src={post.data.heroImage} alt="" />
+											
+										</a>
+									</div>
+							))
+						}
+					</div>
+				</div>
+			</main>
+		</section>
+		<!-- Inclusion du composant Footer (pied de page) -->
+		<Footer />
+	</body>
 </html>
