@@ -1,116 +1,147 @@
----
+--- 
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+	<link href="/src/styles/bulma.min.css	" rel="stylesheet">
+
+	<style>
+		section{
+			height: 100vh;
+		}
 		
-		<section class="hero is-germain is-bold">
+		h1 {
+			font-size: 60px;
+			text-align: left;
+			color: transparent;
+			background-image: linear-gradient(60deg, #a28bfa, #6528d9);
+			background-clip: text;
+		}
+
+		.righteous-regular {
 			
-          <div class="hero-body">
-            <div class="container">
-              <div class="columns is-vcentered">
-                <div class="column">
-                  <h1 class="title is-1">Bienvenue sur Germain</h1>
-                  <p class="subtitle is-3">Renforcez ces aquis avec style !	</p>
-                </div>
-                <div class="column">
-                  <img src="/Germain/Mathematics-amico.svg" alt="Mathematics-amico" style="max-width: 400px; display: block; margin: auto;" />
-                </div>
-              </div>
-            </div>
-          </div>
-		  <div class="notification is-link is-light">
-			<div class="title is-4">Attention le site Germain est en cours de création :)</div>
-		  </div>
-        </section>
-		<section class="section">
-		  <div class="container">
-			<div class="columns">
-			  <div class="column">
-				<div class="card">
-				  <div class="card-content">
-					<p class="title is-4">Leçons</p>
-					<p class="content">Découvre toutes les leçons pour progresser.</p>
-					<a href="/Germain/blog" class="button is-germain">Voir les leçons</a>
-				  </div>
-				</div>
-			  </div>
-			  <div class="column">
-				<div class="card">
-				  <div class="card-content">
-					<p class="title is-4">Exercices</p>
-					<p class="content">Teste tes connaissances avec nos exercices interactifs.</p>
-					<a href="/Germain/exercices" class="button is-germain">Voir les exercices</a>
-				  </div>
-				</div>
-			  </div>
-			  <div class="column">
-				<div class="card">
-				  <div class="card-content">
-					<p class="title is-4">À propos</p>
-					<p class="content">En savoir plus sur le projet Germain.</p>
-					<a href="/Germain/about" class="button is-germain">À propos</a>
-				  </div>
-				</div>
-			  </div>
-			</div>
-		  </div>
-		</section>
+		}
 
-		<section class="section">
-			<div class="container">
-				<div class="columns">
-					<div class="column">
-						<div class="card">
-							<div class="card-content">
-								<p class="title is-4">Germain se donne plusieur missions :</p>
-								<p class="content">
-									<li>Donner au néophyte et a toutes les autre personnes d'aimer les mathématique</li>
-									<li>Permettre à quiconque de s'améliorer dans un domaine lié aux mathématiques</li>
-									<a href="/Germain/apprentissage">Es ce que vous savez vraiment apprendre les maths ?</a> 
-									
-								</p>
-								
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+		.lesson-title {
+			font-size: 2rem;
+			color: white;
+			margin: 0;
+		}
 
+		.title1 {
+			margin-bottom: 1.5em;
+			font-size: 3rem;
+			
+		}
+
+	</style>
+
+<section class="hero my-6">
+  <div class="hero-body">
+    <div class="columns is-vcentered is-centered">
+      
+      <!-- Colonne Texte -->
+      <div class="column is-4 has-text-centered">
+        <div>
+          <h1 class="righteous-regular title">Germain</h1>
+          <p class="subtitle has-text-left">Renforcer vos acquis avec style</p>
+        </div>
+      </div>
+
+      <!-- Colonne Image -->
+      <div class="column is-4 has-text-centered">
+        <figure class="image is-500x500">
+          <img src="Mathematics-amico.svg" alt="Mathematics-amico" style="max-width: 100%; height: auto;">
+        </figure>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="bg-black">
+		<div class="container">
+			<div class="gradient-cards">
+			  <div class="card-germain">
+				<div class="container-card bg-green-box">
+					  <div style="display: flex; align-items: center; gap: 10px;">
+						<h1><strong class="righteous-regular lesson-title bg-green">Leçon</strong></h1>
+					  </div>
+				  <p class="card-description ">Des leçons réalisées par des passionné pour passionner. Il est beacoup plus simple d'apprendre une notion quand on a du plaisir à l'apprendre. </p>
+				</div>	</div>	
+			</div>
+		</div>
+
+		
 		<div class="columns">
-			<div class="column"></div>
+			<div class="column is-6"></div>
 			<div class="column">
-				<h2 class="title is-4">Des exercices infini	 </h2><br>
-				<p class="subtitle is-5">
-				La pratique est essentielle pour maitriser les mathématiques. C'est pourquoi Germain vous permet de faire des exercices infinis grace à des valeurs aléatoires. Ainsi, vous ne ferez jamais deux fois le même exercice et vous pourrez vous améliorer sans vous lasser. De plus, le fait de faire des exercices vous donnera envie de vous améliorer encore plus.
-				</p>
-			</div>
-			<div class="column"><img src="/Germain/Work in progress-amico.svg" alt="Work in progress-amico"></div>
-			<div class="column"></div>
-		  </div><br>
-		  <div class="columns">
-			<div class="column"></div>
-			<div class="column"><img src="/Germain/Professor-amico.svg" alt="Professor-amico"></div>
-			<div class="column">
-				<h2 class="title is-4">Des leçons pour tous les niveaux</h2>
-				<p class="subtitle is-5">
-					Plongez dans l'univers des mathématiques avec Germain ! Nos leçons, conçues pour tous les niveaux, transforment l'apprentissage en une aventure passionnante. Grâce à des exemples pratiques et des exercices interactifs, vous maîtriserez chaque concept à votre rythme. Préparez-vous à découvrir le plaisir d'apprendre et de progresser sans limites. Avec Germain, les maths n'auront jamais été aussi accessibles et stimulantes !
-				</p>
-			</div>
-			<div class="column"></div>
+				<div class="container has-text-left">
+				<div class="gradient-cards">
+				  <div class="card-germain">
+					<div class="container-card">
+						  <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start; width: 100%;">
+							<h1><strong class="righteous-regular lesson-title bg-blue">Exercices</strong></h1>
+						  </div>
+					  <p class="card-description">Des exercices composée d'aléatoire pour ne jamais refaire le même exercices avec les même valeurs . </p>
+					</div>	</div>	
+				</div>
+			</div></div>
 		  </div>
+</section>
+<section class="has-text-centered">
+		<div class="container my-6">
+			<div class="righteous-regular title1">Notre mission</div>
+			<ol class="has-text-centered">
+				<li class=" mission py-3">Donner au néophyte et a toutes les autre personnes d'aimer les mathématiques</li>
+				<li class=" mission py-3">Permettre à quiconque de s'améliorer dans un domaine lié aux mathématiques</li>	
+			</ol>
+</section>	
+<section class="bg-black">
+		<div class="container">
+			<div class="gradient-cards">
+			  <div class="card-germain">
+				<div class="container-card bg-green-box">
+					  <div style="display: flex; align-items: center; gap: 10px;">
+						<h1><strong class="righteous-regular lesson-title bg-green">Germain open source</strong></h1>
+					  </div>
+				  <p class="card-description ">Germain est un projet open source, c'est à dire que tout le monde peut contribuer à son développement. Plus nous avons de retour, plus nous pouvons améliorer Germain et permettre une meilleur immersion dans le pays des maths.</p>
+				</div>	</div>	
+			</div>
+		</div>
+		<div class="columns">
+			<div class="column is-6"></div>
+			<div class="column">
+				<div class="container has-text-left">
+				<div class="gradient-cards">
+				  <div class="card-germain">
+					<div class="container-card">
+						  <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start; width: 100%;">
+							<h1><strong class="righteous-regular lesson-title bg-blue">Coup de pouce ?</strong></h1>
+						  </div>
+					  <p class="card-description">Si vous avez le temps pour une simple relecture , partager votre expérience des maths dans votre métier, vous êtes passionné dans un domaine présis et vous voulez nous le faire partager, une idée de leçon ou d'exercice, n'hésitez pas à nous le faire savoir.Tout aide est important pour que le projet puisse grandir et s'améliorer. 
+						Pour nous aider : <a style="color: #4693b9;" href="/Germain/aide">c'est ici que cela ce passe</a>
+					  </p>
+					  
+					</div>	</div>	
+				</div>
+			</div></div>
+		  </div>
+</section>
+  <body>
+    <Header />
 
-
-		<Footer />
-	  </body>
-	</html>
+    <Footer />
+  </body>
+</html>
