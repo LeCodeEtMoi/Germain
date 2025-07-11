@@ -31,6 +31,12 @@ const pageTitle = "Leçons";
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 	</head>
+	<style>
+		section{
+			height: 100vh;
+			width:100%;
+		}
+	</style>
 	<body>
 		<!-- Inclusion du composant Header (barre de navigation) -->
 		<Header />
@@ -60,7 +66,7 @@ const pageTitle = "Leçons";
 										<a href={`/Germain/blog/${post.id}/`}>
 										<h1><strong class="righteous-regular lesson-title bg-green">{post.data.title}</strong></h1>
 										{/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
-										
+											
 											{/* Affichage de l'image principale (heroImage) et du titre de l'article */}
 										<img class="" width={720} height={360} src={post.data.heroImage} alt="" />
 											

@@ -58,6 +58,19 @@ heroImage: '/blog-placeholder-3.jpg'
           </div>
         </div>
       </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_19_T/" class="has-text-link is-size-5">
+                <strong>Analyse d'algorithme (Seuil)</strong>
+              </a>
+              <br>
+              Déterminer ce que retourne une fonction Python qui calcule un seuil.
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 
@@ -174,6 +187,19 @@ heroImage: '/blog-placeholder-3.jpg'
           </div>
         </div>
       </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_21_T/" class="has-text-link is-size-5">
+                <strong>Étudier la continuite et la dérivabilité en un point </strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
 
                   
@@ -195,8 +221,226 @@ heroImage: '/blog-placeholder-3.jpg'
           </div>
         </div>
       </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_9_T/" class="has-text-link is-size-5">
+                <strong>Exercice de dénombrement</strong>
+              </a>
+              <br>
+              Exercices de dénombrement - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
-  <h3 class="title is-5  mb-4">Suite numerique</h3>
+
+  <h3 class="title is-5  mb-4">Limites de fonction</h3>
+    <div class="box">
+     <p>En cours de réalisation</p>
+    </div>
+
+  <h3 class="title is-5  mb-4">Fonction cosinus et sinus</h3>
+    <div class="box">
+     <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_22_T/" class="has-text-link is-size-5">
+                <strong>Connaitre les valeur remarquables de sin et cos</strong>
+              </a>
+              <br>
+              Compléter une fonction Python pour trouver un seuil dans une suite.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_23_T/" class="has-text-link is-size-5">
+                <strong>Equation trigonométrique</strong>
+              </a>
+              <br>
+              Résoudre une équation trigonométrique.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_2 4_T/" class="has-text-link is-size-5">
+                <strong>Inequation trigonométrique</strong>
+              </a>
+              <br>
+              Résoudre une inéquation trigonométrique.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_25_T/" class="has-text-link is-size-5">
+                <strong>Étude de fonction trigonométrique</strong>
+              </a>
+              <br>
+              Étudier une fonction trigonométrique.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_26_T/" class="has-text-link is-size-5">
+                <strong>Resoudre une inequation trigonometrique de degré 3</strong>
+              </a>
+              <br>
+              Résoudre une inéquation trigonométrique de degré 3.
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+
+<h3 class="title is-5  mb-4">Continuité</h3>
+    <div class="box">
+     <p>En cours de réalisation</p>
+    </div>
+<h3 class="title is-5  mb-4">Derivation et convexité</h3>
+    <div class="box">
+     <p>En cours de réalisation</p>
+    </div>
+<h3 class="title is-5  mb-4">Fonction logarithme népérien</h3>
+    <div class="box">
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_27_T/" class="has-text-link is-size-5">
+                <strong>Résoudre une équation ou inéquation avec ln ou exp </strong>
+              </a>
+              <br>
+              Résoudre une équation ou inéquation avec ln ou exp.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_28_T/" class="has-text-link is-size-5">
+                <strong>Résoudre une équation ou inéquation avec ln ou exp (plus difficile)</strong>
+              </a>
+              <br>
+              Résoudre une équation ou inéquation avec ln ou exp.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_29_T/" class="has-text-link is-size-5">
+                <strong>Résoudre une équation ou inéquation avec ln ou exp (plus difficile)</strong>
+              </a>
+              <br>
+              Résoudre une équation ou inéquation avec ln ou exp.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_30_T/" class="has-text-link is-size-5">
+                <strong>Étuider une fonction à l'aide d'une fonction auxiliaire</strong>
+              </a>
+              <br>
+              Étuider une fonction à l'aide d'une fonction auxiliaire.
+            </p>  
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_31_T/" class="has-text-link is-size-5">
+                <strong>Étuider une fonction à l'aide d'une fonction auxiliaire</strong>
+              </a>
+              <br>
+              Étuider une fonction à l'aide d'une fonction auxiliaire.
+            </p>  
+          </div>
+        </div>  
+      </article>
+       
+    </div>
+<h3 class="title is-5  mb-4">Primitive et équation differentielle</h3>
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_11_T/" class="has-text-link is-size-5">
+                <strong>Exercice de primitive</strong>
+              </a>
+              <br>
+              Calcul de primitive
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_32_T/" class="has-text-link is-size-5">
+                <strong>Reconnaissance d'une fonction usuelle</strong>
+              </a>
+              <br>
+              Reconnaissance d'une fonction usuelle
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_33_T/" class="has-text-link is-size-5">
+                <strong>Étuider une fonction à l'aide d'une fonction auxiliaire</strong>
+              </a>
+              <br>
+              Étuider une fonction à l'aide d'une fonction auxiliaire.
+            </p>  
+          </div>
+        </div>  
+      </article>  
+    </div>
+<h3 class="title is-5  mb-4">Calcule Integrale</h3>
+    <div class="box">
+     <p>En cours de réalisation</p>
+    </div>
+<h3 class="title is-5  mb-4">Variables aléatoire et loi des grands nombre</h3>
+    <div class="box">
+     <p>En cours de réalisation</p>
+    </div>
+
+    
+    
+  <h3 class="title is-5  mb-4">Suite numerique et récurence</h3>
     <div class="box">
       <article class="media">
         <div class="media-content">
