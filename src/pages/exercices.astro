@@ -42,11 +42,11 @@ const pageTitle = "Exercices";
 		<Header />
 
 			<!-- Section "hero" pour afficher le titre de la page de manière proéminente -->
-			<section class="hero bg-black">
+			<section class="hero">
 				<div class="hero-body">
 					<div class="container font-Righteous ">
 							
-							<h1><strong class="righteous-regular lesson-title-xl bg-purple">{pageTitle}</strong></h1>
+							<h1><strong class="righteous-regular lesson-title ">{pageTitle}</strong></h1>
 
 						
 					</div>
@@ -54,7 +54,7 @@ const pageTitle = "Exercices";
 			
 
 			<!-- Contenu principal de la page -->
-			<main class="section bg-black" >
+			<main class="section" >
 				<div class="container">
 					<!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive -->
 					<div class="columns is-multiline">
@@ -64,7 +64,7 @@ const pageTitle = "Exercices";
 									// Chaque article est affiché dans une colonne qui prend 1/3 de la largeur sur grand écran
 									<div class="column is-4">
 										<a href={`/Germain/ex/ex1`}>
-										<h1><strong class="righteous-regular lesson-title bg-green">{post.data.title}</strong></h1>
+										<h1><strong class="righteous-regular lesson-title "><span class="righteous">X</span> {post.data.title}</strong></h1>
 										{/* Création d'un lien vers la page de détail de l'article. L'URL est construite avec l'ID du post. */}
 										
 											{/* Affichage de l'image principale (heroImage) et du titre de l'article */}

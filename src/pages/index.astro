@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Outils from '../components/Outils.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
@@ -20,9 +21,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	<style>
 		
 		section{
-  height: 100vh;
-}
-
+			height: 100vh;
+				
+			}
+		.section{
+			padding: 8.3%;
+		}
 		
 		h1 {
 			font-size: 60px;
@@ -32,18 +36,49 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			background-clip: text;
 		}
 
-		.righteous-regular {
-			
-		}
 
 		
-
-		.title1 {
-			margin-bottom: 1.5em;
-			font-size: 3rem;
-			
+		h2 {
+			font-size:2rem;
+			margin-bottom: 1rem;
 		}
 
+
+
+        .section h2 {
+            font-family: 'Righteous', sans-serif;
+        }
+		.righteous{
+			font-family: 'Righteous', sans-serif;
+		}
+		
+        .container {
+			
+            background-color: #fff;
+            border-radius: 5px;
+            width: 100%;
+            height: 35rem;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+		.text{
+		text-align: justify;
+
+		}
+        .item {
+			width: 100%;
+            padding-right: 30px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+		li{
+			font-size: 3rem;
+		}
 	</style>
 
 <section class="hero my-6">
@@ -53,7 +88,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
       <!-- Colonne Texte -->
       <div class="column is-4 has-text-centered">
         <div>
-          <h1 class="righteous-regular title">Germain</h1>
+          <h1 class="righteous title">Germain</h1>
           <p class="subtitle has-text-left">Renforcer vos acquis avec style</p>
         </div>
       </div>
@@ -69,78 +104,50 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
   </div>
 </section>
 
-<section class="bg-black">
-		<div class="container">
-			<div class="gradient-cards">
-			  <div class="card-germain">
-				<div class="container-card bg-green-box">
-					  <div style="display: flex; align-items: center; gap: 10px;">
-						<h1><strong class="righteous-regular lesson-title bg-green font-Righteous">Leçon</strong></h1>
-					  </div>
-				  <p class="card-description ">Des leçons réalisées par des passionné pour passionner. Il est beacoup plus simple d'apprendre une notion quand on a du plaisir à l'apprendre. </p>
-				</div>	</div>	
-			</div>
-		</div>
+<section class="section">
+    <h2>// Des outils pour renforcer vos acquis</h2>
 
-		
-		<div class="columns">
-			<div class="column is-6"></div>
-			<div class="column">
-				<div class="container has-text-left">
-				<div class="gradient-cards">
-				  <div class="card-germain">
-					<div class="container-card">
-						  <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start; width: 100%;">
-							<h1><strong class="righteous-regular lesson-title bg-blue">Exercices</strong></h1>
-						  </div>
-					  <p class="card-description">Des exercices composée d'aléatoire pour ne jamais refaire le même exercices avec les même valeurs . </p>
-					</div>	</div>	
-				</div>
-			</div></div>
-		  </div>
+    <div class="container">
+        <div class="item">
+            <img style="width:70%" ="contentImage" src="Professor-amico.svg">
+        </div>
+        <div class="item text">
+            <h2>// Leçon</h2>
+            <p>Des leçons réalisées par des passionnés pour passionner. Il est beaucoup plus simple d'apprendre une notion quand on a du plaisir à l'apprendre.</p>
+        </div>
+    </div>
 </section>
-<section class="has-text-centered">
-		<div class="container my-6">
-			<div class="righteous-regular title1 ">Notre mission</div>
-			<ol class="has-text-centered">
-				<li class=" mission py-3">Donner au néophyte et a toutes les autre personnes d'aimer les mathématiques</li>
-				<li class=" mission py-3">Permettre à quiconque de s'améliorer dans un domaine lié aux mathématiques</li>	
-			</ol>
+
+
+
+
+<section class="section">
+	<h2 style="font-size: 3.4rem">// Notre mission</h2>
+			<ul>
+				<li class=""><span class="righteous">X</span> Donner au néophyte et a toutes les autre personnes la possibilité d'aimer les mathématiques</li>
+				<li class=""><span class="righteous">X</span> Permettre à quiconque de s'améliorer dans un domaine lié aux mathématiques</li>	
+			</ul>
+	 <ul>
+
 </section>	
-<section class="bg-black">
-		<div class="container">
-			<div class="gradient-cards">
-			  <div class="card-germain">
-				<div class="container-card bg-green-box">
-					  <div style="display: flex; align-items: center; gap: 10px;">
-						<h1><strong class="righteous-regular lesson-title bg-green font-Righteous">Germain open source</strong></h1>
-					  </div>
-				  <p class="card-description ">Germain est un projet open source, c'est à dire que tout le monde peut contribuer à son développement. Plus nous avons de retour, plus nous pouvons améliorer Germain et permettre une meilleur immersion dans le pays des maths.</p>
-				</div>	</div>	
+<section class="section">
+
+		<div class="columns">
+			<div class="column">
+				<h2>// Germain open source</h2>
+				<p style="text-align: justify; width: 50%;">Germain est un projet open source, c'est à dire que tout le monde peut contribuer à son développement. Plus nous avons de retour, plus nous pouvons améliorer Germain et permettre une meilleur immersion dans le pays des maths.</p>
+			</div>
+			<div class="column">
+				<h2>// Coup de pouce ?</h2>
+				<p style="text-align: justify;width: 50%;">Si vous avez le temps pour une simple relecture , partager votre expérience des maths dans votre métier, vous êtes passionné dans un domaine présis et vous voulez nous le faire partager, une idée de leçon ou d'exercice, n'hésitez pas à nous le faire savoir.Toute aide est important pour que le projet puisse grandir et s'améliorer. Pour nous aider : <a href="/Germain/aide">c'est ici que cela ce passe</a></p>
 			</div>
 		</div>
-		<div class="columns">
-			<div class="column is-6"></div>
-			<div class="column">
-				<div class="container has-text-left">
-				<div class="gradient-cards">
-				  <div class="card-germain">
-					<div class="container-card">
-						  <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start; width: 100%;">
-							<h1><strong class="righteous-regular lesson-title bg-blue font-Righteous">Coup de pouce ?</strong></h1>
-						  </div>
-					  <p class="card-description">Si vous avez le temps pour une simple relecture , partager votre expérience des maths dans votre métier, vous êtes passionné dans un domaine présis et vous voulez nous le faire partager, une idée de leçon ou d'exercice, n'hésitez pas à nous le faire savoir.Toute aide est important pour que le projet puisse grandir et s'améliorer. 
-						Pour nous aider : <a style="color: #4693b9;" href="/Germain/aide">c'est ici que cela ce passe</a>
-					  </p>
-					  
-					</div>	</div>	
-				</div>
-			</div></div>
-		  </div>
+		
 </section>
   <body>
     <Header />
 
     <Footer />
   </body>
+  
 </html>

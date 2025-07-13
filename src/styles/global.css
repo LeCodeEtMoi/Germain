@@ -18,14 +18,23 @@ body{
 			font-style: normal;
 }
 
+/** **/
+
+.righteous{
+			font-family: 'Righteous', sans-serif;
+		}
+
+
+
+
 
 .metier-title {
   padding-bottom: 1rem;
 } 
 
 .lesson-title {
+  
   font-size: 2rem;
-  color: white;
   margin: 0;
 }
 
@@ -61,64 +70,12 @@ body{
   transition: all 0.3s ease;
 }
 
-/* Heart */
-#heart {
-  position: absolute;   
-  width: 100px;
-  height: 90px;
-  display: flex;
-  align-items: flex-end;
-  margin-left: auto;
-  margin-right: 20px;
-}
-#heart:before,
-#heart:after {
-  content: "";
-  position: absolute;
-  width: 50px;
-  height: 80px;
-  background: #46b96c;
-  border-radius: 50px 50px 0 0;
-  bottom: 0;
-}
-#heart:before {
-  right: 0;
-  transform: rotate(-45deg);
-  transform-origin: 0 100%;
-}
-#heart:after {
-  left: 0;
-  transform: rotate(45deg);
-  transform-origin: 100% 100%;
-}
-
 
 .bg-black {
 	background-color: #1c1c1c;
 }
 
-.container {
-  width: 1200px !important;
-  padding: 0 !important;
-  margin-right: auto;
-  margin-left: auto;
 
- 
-
-  @media screen and (min-width: 992px) and (max-width: 1439px) {
-    max-width: 1279px !important;
-    padding: 0 !important;
-    margin: 0 80px !important;
-    width: auto !important;
-  }
-
-  @media screen and (max-width: 991px) {
-    max-width: 959px !important;
-    margin: 0 16px !important;
-    padding: 0 !important;
-    width: auto !important;
-  }
-}
 
 .gradient-cards {
   display: grid;
@@ -159,14 +116,6 @@ body{
 }
 
 /*  https://codepen.io/alvarotrigo/pen/oNpvMbb */
-
-
-strong {
-  position: relative;
-  z-index: 1;
-  color: #fff;
-}
-
 
 
 /* Style de base pour le surlignement */
@@ -253,7 +202,6 @@ strong {
 
 .card-description {
   font-weight: 600;
-  color: #fff;
   line-height: 32px;
   max-width: 470px;
   font-size: 20px;
