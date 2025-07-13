@@ -1,0 +1,1 @@
+import{j as o}from"./jsx-runtime.D_zvdyIk.js";import"./index.BVOCwoKb.js";import{k as e}from"./katex.DavKb-2H.js";/* empty css                         */const p=({tex:r})=>{const t=e.renderToString(r,{throwOnError:!1});return o.jsx("span",{dangerouslySetInnerHTML:{__html:t}})};export{p as M};
