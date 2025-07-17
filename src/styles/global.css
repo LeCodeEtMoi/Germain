@@ -26,17 +26,20 @@ body{
 
 
 
-
+strong{
+  color: var(--color-300);
+}
 
 .metier-title {
   padding-bottom: 1rem;
-} 
+}
 
 .lesson-title {
-  
   font-size: 2rem;
   margin: 0;
+  color: #7753d5;
 }
+
 
 .lesson-title-xl {
   font-size: 4rem;
@@ -187,8 +190,6 @@ strong {
   z-index: -1;
   border-radius: 45px;
 }
-
-
 
 .card-title {
   font-weight: 600;

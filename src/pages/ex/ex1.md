@@ -427,15 +427,117 @@ heroImage: '/blog-placeholder-3.jpg'
             </p>  
           </div>
         </div>  
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_34_T/" class="has-text-link is-size-5">
+                <strong>Résoudre une équation differencielle du type ay′=by+c</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
       </article>  
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_35_T/" class="has-text-link is-size-5">
+                <strong>Modélisation d’un médicament dans le sang</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
     </div>
 <h3 class="title is-5  mb-4">Calcule Integrale</h3>
     <div class="box">
-     <p>En cours de réalisation</p>
+     <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_36_T/" class="has-text-link is-size-5">
+                <strong>Calcule integrale classique</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_37_T/" class="has-text-link is-size-5">
+                <strong>Calcule integrale plus dure</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_38_T/" class="has-text-link is-size-5">
+                <strong>Calcule integrale par partie</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_39_T/" class="has-text-link is-size-5">
+                <strong>Calcule d'air avec une integrale</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_40_T/" class="has-text-link is-size-5">
+                <strong>Majoré ou minorer une integrale</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
     </div>
 <h3 class="title is-5  mb-4">Variables aléatoire et loi des grands nombre</h3>
     <div class="box">
-     <p>En cours de réalisation</p>
+     <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_41_T/" class="has-text-link is-size-5">
+                <strong>Calcule esperance variance </strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
     </div>
 
     

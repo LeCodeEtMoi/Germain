@@ -4,7 +4,7 @@ description: 'Tout le programme de terminale'
 pubDate: 'May 30 2025'
 heroImage: '/Germain/Formula-amico.svg'
 ---
-
+<section class="hero">
 <div class="content">
   <div class="block">
     <div class="box">
@@ -37,4 +37,5 @@ heroImage: '/Germain/Formula-amico.svg'
     </div>
   </div>
 </div>
+</section>
 

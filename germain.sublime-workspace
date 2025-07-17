@@ -1,0 +1,778 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"w",
+				"white"
+			],
+			[
+				"mar",
+				"margin"
+			],
+			[
+				"m",
+				"my-3"
+			],
+			[
+				"my-",
+				"my-3"
+			],
+			[
+				"l",
+				"link"
+			],
+			[
+				"background-",
+				"background-color"
+			],
+			[
+				"Bleu",
+				"BleuClair"
+			],
+			[
+				"B",
+				"BleuClair"
+			],
+			[
+				"nom",
+				"le_nom_du_dossier"
+			],
+			[
+				"mo",
+				"moyenne_dico"
+			],
+			[
+				"da",
+				"datetime"
+			],
+			[
+				"aff",
+				"afficher_livre"
+			],
+			[
+				"rec",
+				"recuperer_livre"
+			],
+			[
+				"NO",
+				"nom_de_la_table"
+			],
+			[
+				"border",
+				"border-radius"
+			],
+			[
+				"e",
+				"element2"
+			],
+			[
+				"whi",
+				"width"
+			],
+			[
+				"atta",
+				"super_attaque_utilisation"
+			],
+			[
+				"c",
+				"choix"
+			],
+			[
+				"ch",
+				"choix_arme"
+			],
+			[
+				"main",
+				"main2"
+			],
+			[
+				"t",
+				"taille_mot"
+			],
+			[
+				"taille",
+				"taille_mot"
+			],
+			[
+				"s",
+				"salle"
+			],
+			[
+				"def",
+				"defiler"
+			],
+			[
+				"n",
+				"numeroCompte"
+			],
+			[
+				"bin",
+				"bin_a"
+			],
+			[
+				"nb",
+				"nb_cartes"
+			],
+			[
+				"Joeur",
+				"Joueur"
+			],
+			[
+				"p",
+				"pointJoueur"
+			],
+			[
+				"point",
+				"pointJoueur"
+			],
+			[
+				"livre",
+				"livres_empruntes"
+			],
+			[
+				"li",
+				"livres_empruntes"
+			],
+			[
+				"min",
+				"min_dist"
+			],
+			[
+				"h",
+				"html\thtml"
+			],
+			[
+				"it",
+				"align-items"
+			],
+			[
+				"font-w",
+				"font-weight"
+			],
+			[
+				"font",
+				"font-weight"
+			],
+			[
+				"mini",
+				"mini_rognée"
+			],
+			[
+				"ima",
+				"image_rognee"
+			],
+			[
+				"lien",
+				"liens_miniature"
+			],
+			[
+				"high",
+				"height"
+			],
+			[
+				"dic",
+				"dico_gagnant"
+			],
+			[
+				"padding-b",
+				"padding-bottom"
+			],
+			[
+				"bl",
+				"black"
+			],
+			[
+				"bord",
+				"border-radius"
+			],
+			[
+				"b",
+				"background-color"
+			],
+			[
+				"padding-",
+				"padding-bottom"
+			],
+			[
+				"ba",
+				"background-color"
+			],
+			[
+				"bor",
+				"border-radius"
+			],
+			[
+				"an",
+				"animaux"
+			],
+			[
+				"C",
+				"CarteDeBob"
+			],
+			[
+				"Carte",
+				"CarteSurTable"
+			],
+			[
+				"choix",
+				"choix0"
+			],
+			[
+				"a",
+				"animal"
+			],
+			[
+				"v",
+				"vegetaux"
+			],
+			[
+				"Ba",
+				"Batiment"
+			],
+			[
+				"f",
+				"function"
+			],
+			[
+				"input",
+				"inputPrenom"
+			],
+			[
+				"i",
+				"inputPrenom"
+			],
+			[
+				"des",
+				"destination_path"
+			],
+			[
+				"d",
+				"download_path"
+			],
+			[
+				"date",
+				"date_pub"
+			],
+			[
+				"articl",
+				"articles_love"
+			],
+			[
+				"titre",
+				"titre_article"
+			],
+			[
+				"ht",
+				"fonction_rss_to_html_favorie"
+			],
+			[
+				"j",
+				"Jeu"
+			],
+			[
+				"no",
+				"nombre_de_tigre"
+			],
+			[
+				"nombre_de",
+				"nombre_de_felin"
+			],
+			[
+				"cl",
+				"class\tNew Class"
+			],
+			[
+				"T",
+				"tout_les_felins_cours"
+			],
+			[
+				"get",
+				"get_race"
+			],
+			[
+				"P",
+				"PlusPetitDiamettre"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"plante",
+				"plantes_csv"
+			],
+			[
+				"Ma",
+				"MaFrequence"
+			],
+			[
+				"M",
+				"MaFrequence"
+			],
+			[
+				"fr",
+				"fréquence"
+			],
+			[
+				"Lis",
+				"ListeModifier"
+			],
+			[
+				"Liste",
+				"ListeModifier"
+			],
+			[
+				"L",
+				"ListeModifier"
+			],
+			[
+				"jou",
+				"jours_ecole"
+			],
+			[
+				"pomodo",
+				"pomoddori"
+			],
+			[
+				"u",
+				"nb_user"
+			],
+			[
+				"home",
+				"home-logo"
+			],
+			[
+				"liste_",
+				"liste_inspi"
+			],
+			[
+				"liste",
+				"liste_inspi"
+			],
+			[
+				"lis",
+				"liste_mots"
+			],
+			[
+				"citation",
+				"dico_citation"
+			],
+			[
+				"articles_",
+				"articles_mastodon"
+			],
+			[
+				"url",
+				"urls_rss"
+			],
+			[
+				"ur",
+				"urls"
+			],
+			[
+				"urls",
+				"urls_rss_mastodon"
+			],
+			[
+				"articles_mas",
+				"articles_mastodon"
+			],
+			[
+				"analyser_rss_liste_",
+				"analyser_rss_liste_mastodon"
+			],
+			[
+				"art",
+				"articles_tries"
+			],
+			[
+				"article",
+				"articles_tries"
+			],
+			[
+				"Nb",
+				"NbVidéo"
+			],
+			[
+				"N",
+				"NbArticles"
+			],
+			[
+				"re",
+				"resultat"
+			],
+			[
+				"r",
+				"resultat"
+			],
+			[
+				"Data",
+				"DataListe"
+			],
+			[
+				"pa",
+				"padding"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"python",
+				"Set Syntax: Python"
+			],
+			[
+				"html",
+				"HTML: Encode Special Characters"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"js",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"JS",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"JSON",
+				"Set Syntax: JSON"
+			],
+			[
+				"javasc",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"B",
+				"python-black: Create Black Configuration File"
+			],
+			[
+				"Black ",
+				"python-black: Create Black Configuration File"
+			],
+			[
+				"Package Control: Install Package",
+				"Package Control: Install Package"
+			],
+			[
+				"Black",
+				"Build With: Python - Syntax Check"
+			],
+			[
+				"Package Control",
+				"Install Package Control"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 202.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/Spike/Documents/Projet Github/Germain"
+	],
+	"file_history":
+	[
+		"/run/media/Spike/B840-727C/backup/Data/20130101010808/Contact/contact.vcf",
+		"/run/media/Spike/KINGSTON/class Noeud:.py",
+		"/home/Spike/Documents/Book/v2.0/Porjet python/server.js",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/Linux.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/algoT.md",
+		"/home/Spike/Documents/Book/v2.0/Porjet python/index.html",
+		"/home/Spike/Documents/Book/v2.0/Porjet python/BookOfEd.py",
+		"/home/Spike/Documents/Projet Github/NuitBadminton/index.html",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/about/projets.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/documents/LeMondeNumerique.md",
+		"/home/Spike/Documents/Book/v2.0/Projet python/Book2.0 (Copie)/readme.md",
+		"/home/Spike/Téléchargements/home/Spike/Documents/Book/v2.0/Projet python/Book2.0/server.js",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/jazz/nomenclature des œuvres classiques.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/sublime_text.md",
+		"/home/Spike/Documents/raccour terminal",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/outils.md",
+		"/home/Spike/Documents/MOI/Pourquoi avoir le permis ?",
+		"/home/Spike/Documents/installation_musicbee.sh",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/pdftk.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/agirpourlaplanete.md",
+		"/home/Spike/Documents/Projet Github/Germain/src/pages/ApprendreLesMaths.astro",
+		"/home/Spike/Documents/Projet Web/Explorateur de fichier/fichiers/texte/artiste.txt",
+		"/run/media/Spike/KINGSTON/Grand Oral/Grand oral_Emploie du temps.txt",
+		"/home/Spike/Documents/Projet Github/Germain/src/styles/css/bulma.min.css",
+		"/home/Spike/Documents/Projet Github/Germain/astro.config.mjs",
+		"/home/Spike/Documents/Projet Github/LinuxGame/script.js",
+		"/home/Spike/Documents/Projet Github/LinuxGame/style.css",
+		"/home/Spike/Documents/Projet Github/LinuxGame/levels.html",
+		"/home/Spike/Documents/Projet Github/LinuxGame/index.html",
+		"/home/Spike/Documents/Projet Github/LinuxGame/game.html",
+		"/run/media/Spike/KINGSTON/NSI_SUJET/Fiche de bords",
+		"/home/Spike/Documents/Projet ecodelegue",
+		"/home/Spike/Documents/Projet Github/Identique/text1.txt",
+		"/home/Spike/Documents/Projet Github/Identique/text.txt",
+		"/home/Spike/.config/joplin-desktop/edit-4db90041a4d4483a858fc70165add467.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/jazz/notes (Copie).md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/jazz/musique (Copie).md",
+		"/run/media/Spike/KINGSTON/idee_grand_oral.txt",
+		"/home/Spike/Téléchargements/godot-3-getting-started-2021-0.3.0/2d-dodge-the-creeps/Player.gd",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/documents/reflection.md",
+		"/home/Spike/Documents/explication.txt",
+		"/home/Spike/Documents/test.sh",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/reflection.md",
+		"/home/Spike/Documents/Book/v2.0/Projet python/Book2.0 (Copie)/server.js",
+		"/home/Spike/Documents/Book/v2.0/Projet python/Book2.0 (Copie)/public/insertData.js",
+		"/home/Spike/install_musicbee.sh",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Kwibuka",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Zanzibar",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/JITL",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/NYC",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Histoire d'amour",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Lueurs",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Seuls et vaincus",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/C’est cool.txt",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/C’est cool",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Lundi méchant",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Only way is up",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Boomer",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Chalouper",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Respire",
+		"/home/Spike/Documents/Projet IA/Autopsie lexicale de Gaël Faye/Lundi Mechant/Kerozen",
+		"/home/Spike/Documents/Book/v2.0/Projet python/Book2.0 (Copie)/db/schema.sql",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/maths_nsi/theme2.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/projet.md",
+		"/run/media/Spike/KINGSTON/0 - Grand Oral/Grand oral_Emploie du temps.txt",
+		"/home/Spike/Documents/Projet Github/Germain (Copie)/src/pages/blog/index.astro",
+		"/home/Spike/Documents/Projet Github/Germain (Copie)/src/layouts/BlogPost.astro",
+		"/home/Spike/Documents/Projet Github/Germain (Copie)/src/layouts/Leçon.astro",
+		"/run/media/Spike/KINGSTON/0 - Grand Oral/Grand oral _ Mot de passe.txt",
+		"/home/Spike/Documents/EasyGraph/node_modules/hookable/README.md",
+		"/run/media/Spike/LE BG/.Trash-1000/info/bail à signer Louis Joubert.pdf.trashinfo",
+		"/run/media/Spike/LE BG/.Trash-1000/info/Accusé de réception ENS Louis chartes et règlement intérieur.pdf.trashinfo",
+		"/home/Spike/Téléchargements/Asie_spe_J1_11_06_2025_DV.tex",
+		"/home/Spike/Documents/Projet Github/Germain (Copie)/astro.config.mjs",
+		"/home/Spike/Documents/Projet Github/Germain (Copie)/src/pages/aide.astro",
+		"/home/Spike/Documents/Projet Github/Germain/src/content.config.ts",
+		"/home/Spike/Documents/Projet Github/NuitBadminton/script.js",
+		"/home/Spike/Documents/Projet Github/NuitBadminton/about.html",
+		"/home/Spike/fish-shell/fish.spec.in",
+		"/home/Spike/fish-shell/fish.pc.in",
+		"/home/Spike/Documents/Projet Github/Matrix-Enigme/readme.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/applie.md",
+		"/home/Spike/deeply-doppler/src/styles/global.css",
+		"/home/Spike/Documents/Projet Github/Germain/README.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/rasbery_pi.md",
+		"/home/Spike/Documents/le artiste.txt",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/agir.md",
+		"/home/Spike/Documents/Projet Github/Identique/README.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/react.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/documents/raccour terminal",
+		"/home/Spike/Documents/Projet Github/README.md",
+		"/home/Spike/Documents/Projet Github/Germain/.git/workflows/deploy.yml",
+		"/home/Spike/Documents/Projet Github/Germain/deploy.yml",
+		"/home/Spike/Documents/Projet Github/Germain/.git/HEAD",
+		"/home/Spike/Documents/Projet Github/Germain/.git/description",
+		"/home/Spike/Documents/Projet Github/Germain/.git/config",
+		"/run/media/Spike/KINGSTON/Grand Oral/Grand oral _ Mot de passe.txt",
+		"/run/media/Spike/KINGSTON/Flask projet/templates/index.html",
+		"/home/Spike/Téléchargements/unsupported(7).eml",
+		"/run/media/Spike/KINGSTON/Flask projet/templates/classement.html",
+		"/home/Spike/Téléchargements/unsupported(6).eml",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /index.html",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /bulma-1.0.4/bulma/css/bulma.css",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /bulma-1.0.4/bulma/bulma.scss",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /bulma-1.0.4/bulma/sass/themes/_index.scss",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /bulma-1.0.4/bulma/css/versions/bulma-no-helpers-prefixed.css.map",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /bulma-1.0.4/bulma/css/bulma.min.css",
+		"/home/Spike/Téléchargements/bulma-1.0.2/bulma/css/bulma.min.css",
+		"/home/Spike/Documents/Projet Web/Projet NSI pour mon prof de NSI /bulma-1.0.4/bulma/css/bulma.css.map",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/nas.md",
+		"/home/Spike/deeply-doppler/src/layouts/BlogPost.astro",
+		"/home/Spike/deeply-doppler/src/components/FormattedDate.astro",
+		"/home/Spike/deeply-doppler/src/components/HeaderLink.astro",
+		"/home/Spike/deeply-doppler/src/pages/blog/index.astro",
+		"/home/Spike/deeply-doppler/src/pages/about.astro",
+		"/home/Spike/deeply-doppler/src/content.config.ts",
+		"/home/Spike/deeply-doppler/src/components/BaseHead.astro",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/about/moi.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/Neo-Chakobsa.md",
+		"/home/Spike/Documents/Projet Python/SeaSaltPaper/game.py",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/ep6.md",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/posts/ep1.md",
+		"/home/Spike/Documents/Voici comment utiliser Git LFS (Large File Storage",
+		"/home/Spike/Documents/Pour évaluer la sécurité d'un site web, il existe.md",
+		"/home/Spike/Documents/Projet Web/radius.html",
+		"/home/Spike/Documents/Projet Github/MonBlog/content/tutoriels/signal.md",
+		"/home/Spike/Documents/Projet Github/Matrix-Enigme/index.html",
+		"/home/Spike/Documents/Projet Python/NSI_SUJET/24-NSI-23/24-NSI-23.py"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 143.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 41.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 130.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "germain.sublime-project",
+	"replace":
+	{
+		"height": 78.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 335.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 243.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
