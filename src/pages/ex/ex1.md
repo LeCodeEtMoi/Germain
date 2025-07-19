@@ -538,6 +538,58 @@ heroImage: '/blog-placeholder-3.jpg'
           </div>
         </div>  
       </article> 
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_42_T/" class="has-text-link is-size-5">
+                <strong>Sommer des variable aléatoire independantes suivant la loi de B(P)</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_43_T/" class="has-text-link is-size-5">
+                <strong>Inégalité de Bienaymé-Tchebychev</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article>
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_44_T/" class="has-text-link is-size-5">
+                <strong>Loi des grands nombres</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
+      <article class="media mt-4">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_45_T/" class="has-text-link is-size-5">
+                <strong>Sommer des variables aléatoires independantes suivant une même loi</strong>
+              </a>
+              <br>
+              ay′=by+c
+            </p>  
+          </div>
+        </div>  
+      </article> 
     </div>
 
     
@@ -566,6 +618,45 @@ heroImage: '/blog-placeholder-3.jpg'
               </a>
               <br>
               Calcul de limites de suites  - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_46_T/" class="has-text-link is-size-5">
+                <strong>Théoreme de comparaison</strong>
+              </a>
+              <br>
+              Calcul de limites de suites
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_47_T/" class="has-text-link is-size-5">
+                <strong>Théoreme des gendarmes</strong>
+              </a>
+              <br>
+              Calcul de limites de suites
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_48_T/" class="has-text-link is-size-5">
+                <strong>Étude de convergence de deux suites monotones opposées</strong>
+              </a>
+              <br>
+              Calcul de limites de suites
             </p>
           </div>
         </div>
