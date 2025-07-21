@@ -174,32 +174,7 @@ heroImage: '/blog-placeholder-3.jpg'
   <div class="block">
     <h3 class="title is-5  mb-4">Étude de fonction</h3>
     <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_5_T/" class="has-text-link is-size-5">
-                <strong>Exercice de dérivation </strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_21_T/" class="has-text-link is-size-5">
-                <strong>Étudier la continuite et la dérivabilité en un point </strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
+      
     </div>
 
                   
@@ -312,12 +287,144 @@ heroImage: '/blog-placeholder-3.jpg'
 
 <h3 class="title is-5  mb-4">Continuité</h3>
     <div class="box">
-     <p>En cours de réalisation</p>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_21_T/" class="has-text-link is-size-5">
+                <strong>Étudier la continuite et la dérivabilité en un point </strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_49_T/" class="has-text-link is-size-5">
+                <strong>Trouver le nombre de solution d'un équation</strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples (A refaire)
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_50_T/" class="has-text-link is-size-5">
+                <strong>Trouver le nombre de solution d'un équation tableau de signe</strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples (A refaire)
+            </p>
+          </div>
+        </div>
+      </article>
+       <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_51_T/" class="has-text-link is-size-5">
+                <strong>Trouver le nombre de solution d'un équation tableau de signe autre</strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples (A refaire)
+            </p>
+          </div>
+        </div>
+      </article>
+         </article>
+       <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_52_T/" class="has-text-link is-size-5">
+                <strong>Trouver le nombre de solution d'un équation tableau de signe autre Fête</strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples (A refaire)
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
+
 <h3 class="title is-5  mb-4">Derivation et convexité</h3>
     <div class="box">
-     <p>En cours de réalisation</p>
+     <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_5_T/" class="has-text-link is-size-5">
+                <strong>Exercice de dérivation </strong>
+              </a>
+              <br>
+              Dérivation de fonctions simples - Niveau terminale
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_53_T/" class="has-text-link is-size-5">
+                <strong>Exercice de dérivation </strong>
+              </a>
+              <br>
+              Dérivation de fonctions composée
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_54_T/" class="has-text-link is-size-5">
+                <strong>Exercice de concave convexe graphique</strong>
+              </a>
+              <br>
+              Dérivation de fonctions composée
+            </p>
+          </div>
+        </div>
+      </article>
+       <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_55_T/" class="has-text-link is-size-5">
+                <strong>Exercice de dérivation f'' </strong>
+              </a>
+              <br>
+              Dérivation de fonctions composée
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a href="/Germain/ex/ex_56_T/" class="has-text-link is-size-5">
+                <strong>Étudier le a convexitie de f en fonction du signe de f'' </strong>
+              </a>
+              <br>
+              Exo que l'on veux teste
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
+   
+
 <h3 class="title is-5  mb-4">Fonction logarithme népérien</h3>
     <div class="box">
       <article class="media mt-4">
