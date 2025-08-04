@@ -9,6 +9,11 @@ heroImage: '/blog-placeholder-3.jpg'
 <div class="card">
 <div class="card-content">
 <p> ⚠️ Attention s'il n'y as pas <span class="tag"> Validé </span> cela veux dire que l'exercie peut comporter des erreurs ou n'est pas encore finit ⚠️ </p>
+<ul>
+  <li><span class="tag">Validé</span> : Plusieur personnes on tester l'exercice et non pas trouvé d'erreur</li>
+  <li><span class="tag">Erreur</span> : l'exercice comporte des erreurs</li>
+  Si il n'y a pas de tag l'xercice est en cours de création
+</ul>
 </div>
 </div>
 
@@ -174,7 +179,6 @@ heroImage: '/blog-placeholder-3.jpg'
   <div class="block">
     <h3 class="title is-5  mb-4">Étude de fonction</h3>
     <div class="box">
-      
     </div>
 
                   
@@ -492,7 +496,6 @@ heroImage: '/blog-placeholder-3.jpg'
           </div>
         </div>  
       </article>
-       
     </div>
 <h3 class="title is-5  mb-4">Primitive et équation differentielle</h3>
     <div class="box">

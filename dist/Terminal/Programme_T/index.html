@@ -1,145 +1,185 @@
-<!DOCTYPE html><!-- --- Template (partie HTML) --- --><html lang="fr" data-astro-cid-luocy72r> <head><!-- Le composant BaseHead gère les balises <head> communes (meta, title, etc.) --><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Germain" href="https://lecodeetmoi.github.io/Germain/rss.xml"><meta name="generator" content="Astro v5.7.10"><!-- Font preloads --><link rel="preload" href="/Germain/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin><link rel="preload" href="/Germain/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://lecodeetmoi.github.io/Germain/Terminal/Programme_T/"><!-- Primary Meta Tags --><title></title><meta name="title"><meta name="description" content="Les mathématiques sont à la physique ce que la musique est à la poésie, dans un cas comme dans l'autre nous pouvons nous passer de mots. Notre manière de comprendre ce qui nous entoure c'est le théorème."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://lecodeetmoi.github.io/Germain/Terminal/Programme_T/"><meta property="og:title"><meta property="og:description" content="Les mathématiques sont à la physique ce que la musique est à la poésie, dans un cas comme dans l'autre nous pouvons nous passer de mots. Notre manière de comprendre ce qui nous entoure c'est le théorème."><meta property="og:image" content="https://lecodeetmoi.github.io/blog-placeholder-1.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://lecodeetmoi.github.io/Germain/Terminal/Programme_T/"><meta property="twitter:title"><meta property="twitter:description" content="Les mathématiques sont à la physique ce que la musique est à la poésie, dans un cas comme dans l'autre nous pouvons nous passer de mots. Notre manière de comprendre ce qui nous entoure c'est le théorème."><meta property="twitter:image" content="https://lecodeetmoi.github.io/blog-placeholder-1.jpg"><!-- Styles CSS spécifiques à ce layout. Ils ne s'appliqueront qu'aux pages utilisant Leçon.astro --><link rel="stylesheet" href="/Germain/_astro/about.k_TUdfjI.css">
+<!DOCTYPE html><!-- --- Template (partie HTML) --- --><html lang="fr" data-astro-cid-luocy72r> <head><!-- Le composant BaseHead gère les balises <head> communes (meta, title, etc.) --><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Germain" href="https://lecodeetmoi.github.io/Germain/rss.xml"><meta name="generator" content="Astro v5.7.10"><!-- Font preloads --><link rel="preload" href="/Germain/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin><link rel="preload" href="/Germain/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://lecodeetmoi.github.io/Germain/Terminal/Programme_T/"><!-- Primary Meta Tags --><title></title><meta name="title"><meta name="description" content="Les mathématiques sont à la physique ce que la musique est à la poésie, dans un cas comme dans l'autre nous pouvons nous passer de mots. Notre manière de comprendre ce qui nous entoure c'est le théorème."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://lecodeetmoi.github.io/Germain/Terminal/Programme_T/"><meta property="og:title"><meta property="og:description" content="Les mathématiques sont à la physique ce que la musique est à la poésie, dans un cas comme dans l'autre nous pouvons nous passer de mots. Notre manière de comprendre ce qui nous entoure c'est le théorème."><meta property="og:image" content="https://lecodeetmoi.github.io/blog-placeholder-1.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://lecodeetmoi.github.io/Germain/Terminal/Programme_T/"><meta property="twitter:title"><meta property="twitter:description" content="Les mathématiques sont à la physique ce que la musique est à la poésie, dans un cas comme dans l'autre nous pouvons nous passer de mots. Notre manière de comprendre ce qui nous entoure c'est le théorème."><meta property="twitter:image" content="https://lecodeetmoi.github.io/blog-placeholder-1.jpg"><!-- Styles CSS spécifiques à ce layout. Ils ne s'appliqueront qu'aux pages utilisant Leçon.astro --><link rel="stylesheet" href="/Germain/_astro/_slug_.fXj--MtE.css">
 <style>:root{--box-shadow: 0 2px 10px rgba(0, 0, 0, .1);--color-text: #363636;--color-muted: #7a7a7a;--max-width: 720px}main[data-astro-cid-luocy72r]{width:100%;padding:2em 1em;display:flex;flex-direction:column;align-items:center}.hero-image[data-astro-cid-luocy72r]{width:100%;max-width:var(--max-width);margin-bottom:2em}.hero-image[data-astro-cid-luocy72r] img[data-astro-cid-luocy72r]{width:100%;height:auto;display:block;border-radius:12px;box-shadow:var(--box-shadow)}.prose[data-astro-cid-luocy72r]{max-width:var(--max-width);width:100%;padding:1em;color:var(--color-text)}.title[data-astro-cid-luocy72r]{text-align:center;margin-bottom:1.5em}.title[data-astro-cid-luocy72r] h1[data-astro-cid-luocy72r]{margin-bottom:.5em;font-size:2rem;line-height:1.2}.date[data-astro-cid-luocy72r]{color:var(--color-muted);font-size:.9em;text-align:center;margin-bottom:1em}.last-updated-on[data-astro-cid-luocy72r]{font-style:italic}hr[data-astro-cid-luocy72r]{margin-top:1em;margin-bottom:1em}
-</style></head> <body data-astro-cid-luocy72r> <!-- Inclusion des composants Header et Footer --> <nav class="navbar germain-navbar is-fixed-top" role="navigation" aria-label="main navigation" data-astro-cid-3ef6ksr2> <div class="container" data-astro-cid-3ef6ksr2> <div class="navbar-brand" data-astro-cid-3ef6ksr2> <a class="navbar-item" href="/Germain/" data-astro-cid-3ef6ksr2> <figure class="image  mr-2" data-astro-cid-3ef6ksr2> <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg/1024px-Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg" alt="Logo Germain" loading="lazy" data-astro-cid-3ef6ksr2> </figure> <h1 class="title is-3 mb-0" data-astro-cid-3ef6ksr2>Germain </h1> </a> <!-- Burger menu pour mobile --> <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" data-astro-cid-3ef6ksr2> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> </a> </div> <div id="navbarBasicExample" class="navbar-menu" data-astro-cid-3ef6ksr2> <div class="navbar-end" data-astro-cid-3ef6ksr2> <a href="/Germain/blog" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Leçons </a>  <a href="/Germain/exercices" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Exercices </a>  <a href="/Germain/mathsmetier" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Maths et métier </a>  <a href="/Germain/about" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> À propos </a>  </div> </div> </div> </nav> <!-- Script pour le menu burger --> <script type="module">document.addEventListener("DOMContentLoaded",()=>{const e=Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"),0);e.length>0&&e.forEach(t=>{t.addEventListener("click",()=>{const r=t.dataset.target,a=document.getElementById(r);t.classList.toggle("is-active"),a&&a.classList.toggle("is-active")})})});</script> <!-- Styles personnalisés pour le header -->  <main data-astro-cid-luocy72r> <article data-astro-cid-luocy72r> <!-- Affiche l'image principale ('heroImage') si elle est définie dans le frontmatter -->  <div class="prose" data-astro-cid-luocy72r> <div class="title" data-astro-cid-luocy72r> <!-- Affiche le titre de la leçon --> <h1 data-astro-cid-luocy72r></h1> <!-- Affiche la date de mise à jour si elle est définie -->  <hr data-astro-cid-luocy72r> </div> <!-- La balise <slot /> est un emplacement réservé. --> <!-- C'est ici que tout le contenu du fichier Markdown (le corps de la leçon) sera inséré. --> <h3 id="1-limites-de-fonctions-et-de-suites">1. Limites de fonctions et de suites</h3>
-<h4 id="contenus">Contenus :</h4>
-<p>Limite d’une fonction ou d’une suite en un point, en +∞+∞, en −∞−∞.</p>
-<p>Limites usuelles.
-Opérations sur les limites.
-Croissances comparées : xnxn, exex, ln⁡xlnx (en +∞+∞ et 0+0+).
-Majoration / minoration / encadrement.
-Terme prépondérant.</p>
-<h4 id="capacités-attendues">Capacités attendues :</h4>
-<p>Calcul de limites dans des cas simples.</p>
-<p>Interprétation des asymptotes (horizontales, verticales).</p>
-<h4 id="démonstration-exigée">Démonstration exigée :</h4>
-<p>Croissance comparée : xn≪exxn≪ex en +∞+∞.</p>
-<h4 id="approfondissements">Approfondissements :</h4>
-<p>Asymptotes obliques.</p>
-<p>Branches infinies.</p>
-<h3 id="2-dérivation-approfondie">2. Dérivation approfondie</h3>
-<h4 id="contenus--1">Contenus :</h4>
-<p>Fonction composée : (v∘u)′=(v′∘u)⋅u′(v∘u)′=(v′∘u)⋅u′.</p>
-<p>Dérivée seconde.</p>
-<p>Convexité :</p>
-<p>Par position relative aux sécantes.</p>
-<p>Par croissance de f′f′, ou f′′>0f′′>0.</p>
-<p>Point d’inflexion.</p>
-<h4 id="capacités-attendues--1">Capacités attendues :</h4>
-<p>Calcul de dérivées (y compris composées).</p>
-<p>Étude des variations.</p>
-<p>Démonstration d’inégalités via la convexité.</p>
-<p>Lecture graphique des propriétés de ff, f′f′, f′′f′′.</p>
-<h4 id="démonstration-exigée--1">Démonstration exigée :</h4>
-<p>f′′>0⇒f′′>0⇒ courbe au-dessus des tangentes.</p>
-<h4 id="approfondissements--1">Approfondissements :</h4>
-<p>Courbe de Lorenz.</p>
-<p>Dérivée n-ième.</p>
-<p>Inégalité arithmético-géométrique.</p>
-<h3 id="3-continuité">3. Continuité</h3>
-<h4 id="contenus--2">Contenus :</h4>
-<p>Continuité en un point (définie par la limite).</p>
-<p>Fonction dérivable ⇒ continue.</p>
-<p>Image d’une suite convergente.</p>
-<p>Théorème des valeurs intermédiaires.</p>
-<h4 id="capacités-attendues--2">Capacités attendues :</h4>
-<p>Résolution d’équation f(x)=kf(x)=k par encadrement, unicité.
-Étude d’une suite définie par récurrence un+1=f(un)un+1​=f(un​).</p>
-<h4 id="algorithmes">Algorithmes :</h4>
-<p>Dichotomie.</p>
-<p>Méthode de Newton, de la sécante.</p>
-<h4 id="approfondissements--2">Approfondissements :</h4>
-<p>Démo du TVI par dichotomie.</p>
-<p>Fonctions additives : f(x+y)=f(x)+f(y)f(x+y)=f(x)+f(y).</p>
-<p>Prolongement par continuité.</p>
-<h3 id="4-fonction-logarithme-népérien">4. Fonction logarithme népérien</h3>
-<h3 id="contenus--3">Contenus :</h3>
-<p>Fonction ln⁡ln comme réciproque de exex.</p>
-<p>Propriétés algébriques : ln⁡(ab),ln⁡(an)ln(ab),ln(an), etc.</p>
-<p>Dérivée, variations, limites, courbe représentative.</p>
-<p>Croissance comparée avec xnxn.</p>
-<h4 id="capacités-attendues--3">Capacités attendues :</h4>
-<p>Utiliser équations fonctionnelles : transformer, résoudre.</p>
-<p>Résolution de problèmes utilisant e^x, ln⁡(x).</p>
-<h4 id="démonstration-exigée--2">Démonstration exigée :</h4>
-<p>(ln⁡x)′=1x(lnx)′=x1​ (admis).</p>
-<p>lim⁡x→0+xln⁡x=0limx→0+​xlnx=0.</p>
-<h4 id="algorithme">Algorithme :</h4>
-<p>Algorithme de Briggs.</p>
-<h4 id="approfondissements--3">Approfondissements :</h4>
-<p>Fonction xαxα.</p>
-<p>Limite de (1+xn)n(1+nx​)n.</p>
-<h3 id="5-fonctions-trigonométriques">5. Fonctions trigonométriques</h3>
-<h3 id="contenus--4">Contenus :</h3>
-<p>Dérivées de sin⁡xsinx et cos⁡xcosx.</p>
-<p>Variations, courbes représentatives.</p>
-<h4 id="capacités-attendues--4">Capacités attendues :</h4>
-<p>Résolution d’équations/ inéquations trigonométriques.</p>
-<p>Études de fonctions avec sinus et cosinus.</p>
-<h4 id="approfondissement">Approfondissement :</h4>
-<p>Fonction tangente.</p>
-<h3 id="6-primitives-et-équations-différentielles">6. Primitives et équations différentielles</h3>
-<h3 id="contenus--5">Contenus :</h3>
-<p>Primitive : opération inverse de la dérivation.</p>
-<p>Primitives de référence : xnxn, exex, ln⁡xlnx, sin⁡xsinx, cos⁡xcosx.</p>
-<p>Équation différentielle :</p>
-<p>y′=fy′=f</p>
-<p>y′=ayy′=ay</p>
-<p>y′=ay+by′=ay+b</p>
-<h4 id="capacités-attendues--5">Capacités attendues :</h4>
-<p>Calcul de primitives (cas simples, formule (v’∘u)⋅u’(v’∘u)⋅u’).</p>
-<p>Résolution des équations différentielles du type :</p>
-<p>y′=ay+by′=ay+b</p>
-<p>y′=ay+fy′=ay+f, via une solution particulière.</p>
-<h4 id="démonstrations-exigées">Démonstrations exigées :</h4>
-<p>Deux primitives diffèrent d’une constante.</p>
-<p>Résolution de y′=ayy′=ay.</p>
-<h4 id="approfondissements--4">Approfondissements :</h4>
-<p>Équation logistique, y′=y2y′=y2, y′′+ω2y=0y′′+ω2y=0.</p>
-<h4 id="algorithme--1">Algorithme :</h4>
-<p>Méthode d’Euler pour la résolution approchée.</p>
-<h3 id="7-calcul-intégral">.7 Calcul intégral</h3>
-<p>Objectifs
-L’objectif est d’introduire la notion d’intégrale comme outil de calcul d’aire et d’étendre les capacités de calcul des élèves au travers d’exemples concrets et d’interprétations graphiques. On souhaite également qu’ils comprennent le lien entre l’intégrale définie et la notion de primitive.</p>
-<p>Contenus</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Aire sous la courbe d’une fonction positive, continue sur un intervalle [a ; b] :</span></span>
-<span class="line"><span>∫abf(x) dx</span></span>
-<span class="line"><span>∫ab​f(x)dx</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Notion d’intégrale définie : définition comme aire algébrique.</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Linéarité de l’intégrale, relation de Chasles :</span></span>
-<span class="line"><span>∫abf(x) dx+∫bcf(x) dx=∫acf(x) dx</span></span>
-<span class="line"><span>∫ab​f(x)dx+∫bc​f(x)dx=∫ac​f(x)dx</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Relation entre intégrale et primitives :</span></span>
-<span class="line"><span>Si FF est une primitive de ff sur [a;b][a;b], alors :</span></span>
-<span class="line"><span>∫abf(x) dx=F(b)−F(a)</span></span>
-<span class="line"><span>∫ab​f(x)dx=F(b)−F(a)</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Calcul d’aires de domaines délimités par des courbes dans le plan (le cas simple : entre une courbe et l’axe des abscisses, ou entre deux courbes).</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Utilisation de l’intégrale pour déterminer une valeur moyenne d’une fonction continue positive sur un intervalle.</span></span></code></pre>
-<p>Capacités attendues</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Déterminer une aire sous une courbe représentative d’une fonction continue positive.</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Calculer une intégrale définie à l’aide d’une primitive.</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Utiliser les propriétés de linéarité et de relation de Chasles pour simplifier un calcul.</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Calculer une aire entre deux courbes.</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Déterminer la valeur moyenne d’une fonction sur un intervalle.</span></span></code></pre>
-<p>Approfondissements possibles</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Introduction de la valeur absolue dans les calculs d’aire.</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Interprétation physique (travail, déplacement, etc.).</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Calculs approchés d'intégrales (méthode des rectangles ou des trapèzes).</span></span></code></pre>
-<p>Algorithmique et programmation associée</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Écriture d’un algorithme pour estimer une intégrale par une méthode numérique simple (trapèzes ou rectangles).</span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>Calcul de la valeur moyenne d’une fonction par approximation.</span></span></code></pre> </div> </article> </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="container" data-astro-cid-sz7xmlte> <div class="columns is-multiline" data-astro-cid-sz7xmlte> <div class="column is-full is-two-fifths-desktop" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Germain</p> <p class="is-size-7" data-astro-cid-sz7xmlte>
+</style></head> <body data-astro-cid-luocy72r> <!-- Inclusion des composants Header et Footer --> <nav class="navbar germain-navbar is-fixed-top" role="navigation" aria-label="main navigation" data-astro-cid-3ef6ksr2> <div class="container" data-astro-cid-3ef6ksr2> <div class="navbar-brand" data-astro-cid-3ef6ksr2> <a class="navbar-item" href="/Germain/" data-astro-cid-3ef6ksr2> <figure class="image  mr-2" data-astro-cid-3ef6ksr2> <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg/1024px-Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg" alt="Logo Germain" loading="lazy" data-astro-cid-3ef6ksr2> </figure> <h1 class="title is-3 mb-0" data-astro-cid-3ef6ksr2>Germain </h1> </a> <!-- Burger menu pour mobile --> <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" data-astro-cid-3ef6ksr2> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> </a> </div> <div id="navbarBasicExample" class="navbar-menu" data-astro-cid-3ef6ksr2> <div class="navbar-end" data-astro-cid-3ef6ksr2> <a href="/Germain/blog" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Leçons </a>  <a href="/Germain/exercices" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Exercices </a>  <a href="/Germain/mathsmetier" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Maths et métier </a>  <a href="/Germain/application" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Application </a>  <a href="/Germain/about" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> À propos </a>  </div> </div> </div> </nav> <!-- Script pour le menu burger --> <script type="module">document.addEventListener("DOMContentLoaded",()=>{const e=Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"),0);e.length>0&&e.forEach(t=>{t.addEventListener("click",()=>{const r=t.dataset.target,a=document.getElementById(r);t.classList.toggle("is-active"),a&&a.classList.toggle("is-active")})})});</script> <!-- Styles personnalisés pour le header -->  <main data-astro-cid-luocy72r> <article data-astro-cid-luocy72r> <!-- Affiche l'image principale ('heroImage') si elle est définie dans le frontmatter -->  <div class="prose" data-astro-cid-luocy72r> <div class="title" data-astro-cid-luocy72r> <!-- Affiche le titre de la leçon --> <h1 data-astro-cid-luocy72r></h1> <!-- Affiche la date de mise à jour si elle est définie -->  <hr data-astro-cid-luocy72r> </div> <!-- La balise <slot /> est un emplacement réservé. --> <!-- C'est ici que tout le contenu du fichier Markdown (le corps de la leçon) sera inséré. --> <h2 class="title is-4 mt-6">1. Limites de fonctions et de suites</h2>
+<div>
+    <h3 class="title is-5 mt-6">Contenus :</h3>
+    <ul>
+        <li>Limite d'une fonction ou d'une suite en un point, en +∞, en -∞.</li>
+        <li>Limites usuelles.</li>
+        <li>Opérations sur les limites.</li>
+        <li>Croissances comparées : xn, e^x, ln⁡(x) (en +∞ et 0+).</li>
+        <li>Majoration / minoration / encadrement.</li>
+        <li>Terme prépondérant.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Capacités attendues :</h3>
+    <ul>
+        <li>Calcul de limites dans des cas simples.</li>
+        <li>Interprétation des asymptotes (horizontales, verticales).</li>
+    </ul>   
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Démonstration exigée :</h3>
+    <ul>
+        <li>Croissance comparée : xn<exxn<ex en="" +∞.&#x3C;="" li="">
+    </exxn<ex></li></ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Approfondissements :</h3>
+    <ul>
+        <li>Asymptotes obliques.</li>
+        <li>Branches infinies.</li>
+    </ul>
+</div>
+<h2 class="title is-4 mt-6">2. Dérivation approfondie</h2>
+<div>
+    <h3 class="title is-5 mt-6">Contenus :</h3>
+    <ul>
+        <li>Fonction composée : (v∘u)′=(v′∘u)⋅u′.</li>
+        <li>Dérivée seconde.</li>
+        <li>Convexité :</li>
+        <ul>
+            <li>Par position relative aux sécantes.</li>
+            <li>Par croissance de f', ou f''>0.</li>
+        </ul>
+        <li>Point d'inflexion.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Capacités attendues :</h3>
+    <ul>
+        <li>Calcul de dérivées (y compris composées).</li>
+        <li>Étude des variations.</li>
+        <li>Démonstration d'inégalités via la convexité.</li>
+        <li>Lecture graphique des propriétés de f, f', f'' .</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Démonstration exigée :</h3>
+    <ul>
+        <li>f''>0⇒ courbe au-dessus des tangentes.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Approfondissements :</h3>
+    <ul>
+        <li>Courbe de Lorenz.</li>
+        <li>Dérivée n-ième.</li>
+        <li>Inégalité arithmético-géométrique.</li>
+    </ul>
+</div>  
+<h2 class="title is-4 mt-6">3. Continuité</h2>
+<div>
+    <h3 class="title is-5 mt-6">Contenus :</h3>
+    <ul>
+        <li>Continuité en un point (définie par la limite).</li>
+        <li>Fonction dérivable ⇒ continue.</li>
+        <li>Image d'une suite convergente.</li>
+        <li>Théorème des valeurs intermédiaires.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Capacités attendues :</h3>
+    <ul>
+        <li>Résolution d'équation f(x)=kf(x)=k par encadrement, unicité.</li>
+        <li>Étude d'une suite définie par récurrence un+1=f(un).</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title i s-5 mt-6">Algorithmes :</h3>
+    <ul>
+        <li>Dichotomie.</li>
+        <li>Méthode de Newton, de la sécante.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is -5 mt-6">Approfondissements :</h3>
+    <ul>
+        <li>Démo du TVI par dichotomie.</li>
+        <li>Fonctions additives : f(x+y)=f(x)+f(y)</li>
+        <li>Prolongement par continuité.</li>
+    </ul>
+</div>
+<h2 class="title i s-4 mt-6">4. Fonction logarithme népérien</h2>
+<div>
+    <h3 class="title is-5 mt-6">Contenus :</h3>
+    <ul>
+        <li>Fonction ln⁡ln comme réciproque de exex.</li>
+        <li>Propriétés algébriques : ln⁡(ab),ln⁡(an)ln(ab),ln(an), etc.</li>
+        <li>Dérivée, variations, limites, courbe représentative.</li>
+        <li>Croissance comparée avec xn.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Capacités attendues :</h3>
+    <ul>
+        <li>Utiliser équations fonctionnelles : transformer, résoudre.</li>
+        <li>Résolution de problèmes utilisant e^x, ln⁡(x).</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Démonstration exigée :</h3>
+    <ul>
+        <li>(ln⁡x)′=1x(lnx)′=x1​ (admis).</li>
+        <li>limx→0+xlnx=0.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Algorithme :</h3>
+    <ul>
+        <li>Algorithme de Briggs.</li>
+    </ul>
+</div>
+<h2 class="title is-4 mt-6">5. Fonctions trigonométriques</h2>
+<div>
+    <h3 class="title is-5">Contenus :</h3>
+    <ul>
+        <li>Dérivées de sin(x) et cos(x).</li>
+        <li>Variations, courbes représentatives.</li>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Capacités attendues :</h3>
+    <ul>
+        <li>Résolution d'équations/ inéquations trigonométriques.</li>
+        <li>Études de fonctions avec sinus et cosinus.</li>
+    </ul>
+</div>
+<h2 class="title is-4 mt-6">6. Primitives et équations différentielles</h2>
+<div>
+    <h3 class="title is-5 mt-6">Contenus :</h3>
+    <ul>
+        <li>Primitive : opération inverse de la dérivation.</li>
+        <li>Primitives de référence : xn, ex, ln⁡x, sinx, cosx.</li>
+        <li>Équation différentielle :</li>
+        <ul>
+            <li>y′=fy′=f</li>
+            <li>y′=ayy′=ay</li>
+            <li>y′=ay+fy′=ay+f</li>
+        </ul>
+    </ul>
+</div>
+<div>
+    <h3 class="title is-5 mt-6">Capacités attendues :</h3>
+    <ul>
+        <li>Calcul de primitives (cas simples, formule (v’∘u)⋅u’).</li>
+        <li>Résolution des équations différentielles du type :</li>
+        <ul>
+            <li>y′=ay</li>
+            <li>y′=ay+f, via une solution particulière.</li>
+        </ul>
+    </ul>
+</div>
+<h2 class="title is-4 mt-6">7. Calcul intégral</h2>
+<div>
+    <h3 class="title is-5 mt-6">Objectifs :</h3>
+    <ul>
+        <li>L'objectif est d'introduire la notion d'intégrale comme outil de calcul d'aire et d'étendre les capacités de calcul des élèves au travers d'exemples concrets et d'interprétations graphiques.</li>
+    </ul>
+</div>
+<p><a href="https://eduscol.education.fr/document/24568/download">Le programme complet</a></p>  </div> </article> </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="container" data-astro-cid-sz7xmlte> <div class="columns is-multiline" data-astro-cid-sz7xmlte> <div class="column is-full is-two-fifths-desktop" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Germain</p> <p class="is-size-7" data-astro-cid-sz7xmlte>
 Germain - Un projet éducatif pour explorer les mathématiques
 </p> <p class="is-size-7 mt-2" data-astro-cid-sz7xmlte>
 Construit avec <a href="https://astro.build/" target="_blank" data-astro-cid-sz7xmlte>Astro</a> et <a href="https://bulma.io/" target="_blank" data-astro-cid-sz7xmlte>Bulma</a>.
-</p> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Navigation</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/blog" data-astro-cid-sz7xmlte>Leçons</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/exercices" data-astro-cid-sz7xmlte>Exercices</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/about" data-astro-cid-sz7xmlte>À propos</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Projet</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/aide" data-astro-cid-sz7xmlte>Participer</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/CodeDéontologie" data-astro-cid-sz7xmlte>Code de Déontologie</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/ui" data-astro-cid-sz7xmlte>Charte Graphique</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Réseaux</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="https://github.com/LeCodeEtMoi/Germain" target="_blank" data-astro-cid-sz7xmlte>GitHub</a></li> <li data-astro-cid-sz7xmlte><a href="https://m.webtoo.ls/@astro" target="_blank" data-astro-cid-sz7xmlte>Mastodon</a></li> </ul> </div> </div> </div> </footer>  </body></html>
+</p> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Navigation</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/blog" data-astro-cid-sz7xmlte>Leçons</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/exercices" data-astro-cid-sz7xmlte>Exercices</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/about" data-astro-cid-sz7xmlte>À propos</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Projet</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/aide" data-astro-cid-sz7xmlte>Participer</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/CodeDéontologie" data-astro-cid-sz7xmlte>Code de Déontologie</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/ui" data-astro-cid-sz7xmlte>Charte Graphique</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Réseaux</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="https://github.com/LeCodeEtMoi/Germain" target="_blank" data-astro-cid-sz7xmlte>GitHub</a></li> <li data-astro-cid-sz7xmlte><a href="" target="_blank" data-astro-cid-sz7xmlte>BlueSky</a></li> </ul> </div> </div> </div> </footer>  </body></html>

@@ -1,0 +1,26 @@
+import { a as createComponent, r as renderComponent, b as renderHead, e as renderTemplate } from '../chunks/astro/server_os80pIPP.mjs';
+import 'kleur/colors';
+import { $ as $$BaseHead, a as $$Header, b as $$Footer } from '../chunks/Footer_DY7a91H-.mjs';
+/* empty css                                       */
+export { renderers } from '../renderers.mjs';
+
+const $$Mathsmetier = createComponent(($$result, $$props, $$slots) => {
+  const pageTitle = "Maths et m\xE9tier";
+  return renderTemplate`<!-- --- Template (partie HTML) --- --><html lang="fr" data-astro-cid-ua7kpg3a> <head><!-- Utilisation du composant BaseHead pour générer les balises <head> communes (meta, title, etc.) -->${renderComponent($$result, "BaseHead", $$BaseHead, { "title": pageTitle, "data-astro-cid-ua7kpg3a": true })}<!-- Liens vers les feuilles de style externes (CDN) pour Bulma et Font-Awesome --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">${renderHead()}</head> <body data-astro-cid-ua7kpg3a> <!-- Inclusion du composant Header (barre de navigation) --> ${renderComponent($$result, "Header", $$Header, { "data-astro-cid-ua7kpg3a": true })} <!-- Section "hero" pour afficher le titre de la page de manière proéminente --> <section class="hero bg-black" data-astro-cid-ua7kpg3a> <div class="hero-body" data-astro-cid-ua7kpg3a> <div class="container font-Righteous " data-astro-cid-ua7kpg3a> <h1 data-astro-cid-ua7kpg3a><strong class="righteous-regular lesson-title-xl bg-purple" data-astro-cid-ua7kpg3a>${pageTitle}</strong></h1> <p class="subtitle has-text-left has-text-white" data-astro-cid-ua7kpg3a>Découvrez comment les mathématiques s'appliquent dans différents domaines .</p> </div> </div> <!-- Contenu principal de la page --> <main class="section bg-black" data-astro-cid-ua7kpg3a> <div class="container" data-astro-cid-ua7kpg3a> <!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive --> <div class="columns is-multiline has-text-white" data-astro-cid-ua7kpg3a> <div class="metier-title" data-astro-cid-ua7kpg3a> <a href="/Germain/MathsEtMetier/MédiateurScientifique" data-astro-cid-ua7kpg3a> <h1 data-astro-cid-ua7kpg3a><strong class="righteous-regular lesson-title bg-green font-Righteous" data-astro-cid-ua7kpg3a>Médiateur scientifique à Planete Sciences Occitanie</strong></h1> <p class="subtitle has-text-left has-text-white" data-astro-cid-ua7kpg3a>Mon métier se rapproche d'intervenant technique / animateur scientifique et technique. La péda à planete science est de passez par des projets techniques que les enfants réalisent, et que c'est en réalisant ce projet que les enfants acquieront des connaissances scientifiques.
+                Cette démarche me pose parfois probleme, notamment car c'est une vision tres utilitaire des sciences, un point de vue d'ingénieur∙e, car cela ne me permet pas de parler de trucs "inutiles" comme les mathématiques des rubik's cubes ou d'écologie. Et puis je trouve cela problématique de toujours s'attacher à l'utilitité, car ça se trouve, un truc que l'on trouve inutile maintenant sera peut-etre utile dans 100 ans. et puis c'est cool aussi des fois de faire des trucs qui ne servent à rien, pourvu que l'on trouve cela drole</p> </a></div><a href="/Germain/MathsEtMetier/MédiateurScientifique" data-astro-cid-ua7kpg3a></a> <div class="metier-title" data-astro-cid-ua7kpg3a> <h1 data-astro-cid-ua7kpg3a><strong class="righteous-regular lesson-title bg-green font-Righteous" data-astro-cid-ua7kpg3a>Médiateur scientifique à Planete Sciences Occitanie</strong></h1> <p class="subtitle has-text-left has-text-white" data-astro-cid-ua7kpg3a>Mon métier se rapproche d'intervenant technique / animateur scientifique et technique. La péda à planete science est de passez par des projets techniques que les enfants réalisent, et que c'est en réalisant ce projet que les enfants acquieront des connaissances scientifiques.
+                  Cette démarche me pose parfois probleme, notamment car c'est une vision tres utilitaire des sciences, un point de vue d'ingénieur∙e, car cela ne me permet pas de parler de trucs "inutiles" comme les mathématiques des rubik's cubes ou d'écologie. Et puis je trouve cela problématique de toujours s'attacher à l'utilitité, car ça se trouve, un truc que l'on trouve inutile maintenant sera peut-etre utile dans 100 ans. et puis c'est cool aussi des fois de faire des trucs qui ne servent à rien, pourvu que l'on trouve cela drole</p> </div> </div> </div> </main> </section> <!-- Inclusion du composant Footer (pied de page) --> ${renderComponent($$result, "Footer", $$Footer, { "data-astro-cid-ua7kpg3a": true })} </body></html>`;
+}, "/home/Spike/Documents/Projet Github/Germain/src/pages/mathsmetier.astro", void 0);
+
+const $$file = "/home/Spike/Documents/Projet Github/Germain/src/pages/mathsmetier.astro";
+const $$url = "/Germain/mathsmetier";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+	__proto__: null,
+	default: $$Mathsmetier,
+	file: $$file,
+	url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

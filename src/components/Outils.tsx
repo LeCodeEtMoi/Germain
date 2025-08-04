@@ -28,8 +28,7 @@ const Section = () => {
   setCurrentIndex((prevIndex) => (prevIndex + direction + contents.length) % contents.length);
 };
   return (
-    
-  );
-};
+  )
+}
 
 export default Section;
