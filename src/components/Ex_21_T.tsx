@@ -69,9 +69,9 @@ export default function ContinuityExercise() {
           <h2 className="title is-4">Continuité en un point</h2>
           <p>Soit la fonction définie par morceaux :</p>
           <pre>
-            f(x) = {"{"} {`  
-              ${problem.f1} si x ≤ 1  
-              ${problem.f2} si x > 1  
+            f(x) = {"{"} {`
+              ${problem.f1} si x ≤ 1
+              ${problem.f2} si x > 1
             `}{"}"}
           </pre>
 

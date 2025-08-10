@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { MathfieldElement } from 'mathlive';
 import MathToolbar from './MathToolbar';
 
 const MathEditor: React.FC = () => {

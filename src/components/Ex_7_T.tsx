@@ -27,14 +27,12 @@ function generateExerciseData() {
 
   // Ensure direction vectors are not zero
   do { u1 = generateRandomPoint(-3, 3); } while (isZeroVector(u1));
-  
   A1 = generateRandomPoint(-5, 5);
 
   switch (scenario) {
     case 1: // Sécantes (Intersecting)
       relation = "sécantes";
       do { u2 = generateRandomPoint(-3, 3); } while (isZeroVector(u2) || areCollinear(u1, u2));
-      
       // Define an intersection point and construct lines passing through it
       intersectionPoint = generateRandomPoint(-5, 5);
       A1 = subtract(intersectionPoint, scale(u1, randomInt(-2, 2)));
@@ -78,7 +76,6 @@ export default function LineRelationshipCheck() {
     const [userAnswer, setUserAnswer] = useState<LineRelation | null>(null);
     const [feedback, setFeedback] = useState<string | null>(null);
     const [intersectionInput, setIntersectionInput] = useState({ x: '', y: '', z: '' });
-    
     const handleNewExercise = () => {
         setData(generateExerciseData());
         setUserAnswer(null);
@@ -122,11 +119,9 @@ export default function LineRelationshipCheck() {
             const A1A2 = subtract(A2, A1);
             const u1_x_u2 = crossProduct(u1, u2);
             const collinear = areCollinear(u1, u2);
-            
             let explanation = `❌ Oups, une erreur s'est glissée. La bonne réponse était : **${relation}**.`;
             explanation += "\n\n**Explication :**\n";
             explanation += `1. On compare les vecteurs directeurs u1(${u1.x}; ${u1.y}; ${u1.z}) et u2(${u2.x}; ${u2.y}; ${u2.z}).\n`;
-            
             if (collinear) {
                 explanation += "Le produit vectoriel u1 x u2 est le vecteur nul, donc les vecteurs sont colinéaires. Les droites sont parallèles ou confondues.\n";
                 explanation += `2. On vérifie si le point A1(${A1.x}; ${A1.y}; ${A1.z}) de (d1) appartient à (d2).\n`;

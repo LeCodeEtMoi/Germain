@@ -6,7 +6,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 const cards = [
   {
-    title: 'La naissance de Germain',
+    title: '',
     content: `
       <p>
         <a href="https://www.education.gouv.fr/pisa-programme-international-pour-le-suivi-des-acquis-des-eleves-41558" target="_blank">
@@ -17,7 +17,7 @@ const cards = [
     `
   },
   {
-    title: 'Pourquoi ce nom ?',
+    title: '',
     content: `
       <p>
         Les femmes sont encore sous-représentées dans le domaine des mathématiques, et cela doit changer. Rien ne justifie qu'elles soient moins capables que les hommes dans ce domaine.
@@ -30,7 +30,7 @@ const cards = [
     `
   },
   {
-    title: '"Les mathématiques ne servent à rien..." Vraiment ?',
+    title: '"',
     content: `
       <figure class="image is-3by2" style="margin: 2em auto; max-width: 600px;">
         <img
@@ -72,7 +72,6 @@ const cards = [
       .card-footer-item {
         justify-content: center;
       }
-      
 		section{
 			height: 100vh;
 			width:100%;
@@ -90,7 +89,7 @@ const cards = [
           <div class="columns is-centered">
             <div class="column is-10">
               {cards.map((card, index) => (
-                <div 
+                <div
                   id={`card-${index}`}
                   class="card"
                   data-index={index}
@@ -103,7 +102,7 @@ const cards = [
                   </div>
                   <footer class="card-footer">
                     <div class="card-footer-item">
-                      <button class="button is-link prev-card">
+                      <button class="button prev-card">
                         <span class="icon">
                           <i class="fas fa-chevron-left"></i>
                         </span>
@@ -111,12 +110,12 @@ const cards = [
                       </button>
                     </div>
                     <div class="card-footer-item">
-                      <span class="tag is-info card-counter">
+                      <span class="tag card-counter">
                         {index + 1}/{cards.length}
                       </span>
                     </div>
                     <div class="card-footer-item">
-                      <button class="button is-link next-card">
+                      <button class="button next-card">
                         <span>Suivant</span>
                         <span class="icon">
                           <i class="fas fa-chevron-right"></i>

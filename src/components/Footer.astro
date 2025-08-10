@@ -3,6 +3,40 @@ import { SITE_TITLE } from '@/consts';
 
 ---
 
+<style>
+  .footer {
+    padding: 3rem 1.5rem;
+    background-color: #fafafa; /* Fond gris très clair */
+    border-top: 1px solid #dbdbdb;
+
+  }
+
+  .footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+
+  .footer li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer a {
+    color: #4a4a4a;
+  }
+
+  .footer a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+
+  .footer .has-text-weight-bold {
+    margin-bottom: 1rem;
+  }
+</style>
+
+
 <footer class="footer">
   <div class="container">
     <div class="columns is-multiline">
@@ -47,34 +81,3 @@ import { SITE_TITLE } from '@/consts';
   </div>
 </footer>
 
-<style>
-  .footer {
-    padding: 3rem 1.5rem;
-    background-color: #fafafa; /* Fond gris très clair */
-    border-top: 1px solid #dbdbdb;
-  }
-
-  .footer ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    font-size: 0.9rem;
-  }
-
-  .footer li {
-    margin-bottom: 0.5rem;
-  }
-
-  .footer a {
-    color: #4a4a4a;
-  }
-
-  .footer a:hover {
-    color: var(--primary-color);
-    text-decoration: underline;
-  }
-
-  .footer .has-text-weight-bold {
-    margin-bottom: 1rem;
-  }
-</style>

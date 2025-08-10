@@ -1,42 +1,13 @@
 ---
-import Ex_1_T from '../../components/Ex_1_T.tsx';
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
-
-
-
-const { title, description, updatedDate, heroImage } = Astro.props;
+import LeconLayout from '../../layouts/Exercice.astro';
+import PythonThresholdAnalysis from '../../components/Ex_1_T.tsx';
 ---
 
-
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-	</head>
-
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<h1>{title}</h1>
-					</div>
-					<Ex_1_T client:load/>
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
-
-
-
+<LeconLayout title="Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗">
+  <main>
+    <PythonThresholdAnalysis client:load />
+  </main>
+</LeconLayout>
 
 
 

@@ -1,35 +1,45 @@
 import React, { useEffect, useRef } from 'react';
-import { MathfieldElement } from 'mathlive';
 
 interface EditableMathInputProps {
   onInput?: (value: string) => void;
 }
 
 const EditableMathInput: React.FC<EditableMathInputProps> = ({ onInput }) => {
-  const mathfieldRef = useRef<MathfieldElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const mf = new MathfieldElement({
-      virtualKeyboardMode: 'manual', // or 'onfocus'
-      smartFence: true,
-      smartMode: true,
-    });
+    let mathfield: any;
 
-    mf.className = 'math-input';
-    mf.value = ''; // Initial expression
+    // Importer uniquement côté client
+    (async () => {
+      const { MathfieldElement } = await import('mathlive/dist/mathfield-element.mjs');
 
-    mf.addEventListener('input', () => {
-      onInput?.(mf.value);
-    });
+      mathfield = new MathfieldElement({
+        virtualKeyboardMode: 'manual',
+        smartFence: true,
+        smartMode: true,
+      });
 
-    if (mathfieldRef.current) {
-      mathfieldRef.current.replaceWith(mf);
-    }
+      mathfield.className = 'math-input';
+      mathfield.value = '';
 
-    mathfieldRef.current = mf;
+      mathfield.addEventListener('input', () => {
+        onInput?.(mathfield.value);
+      });
+
+      if (containerRef.current) {
+        containerRef.current.replaceWith(mathfield);
+      }
+    })();
+
+    return () => {
+      if (mathfield) {
+        mathfield.remove();
+      }
+    };
   }, [onInput]);
 
-  return <div ref={mathfieldRef} />;
+  return <div ref={containerRef} />;
 };
 
 export default EditableMathInput;

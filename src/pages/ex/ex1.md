@@ -12,7 +12,8 @@ heroImage: '/blog-placeholder-3.jpg'
 <ul>
   <li><span class="tag">Validé</span> : Plusieur personnes on tester l'exercice et non pas trouvé d'erreur</li>
   <li><span class="tag">Erreur</span> : l'exercice comporte des erreurs</li>
-  Si il n'y a pas de tag l'xercice est en cours de création
+  <li><span class="tag is-link is-light">Fini</span> : l'exercice comporte des erreurs</li>
+  Si il n'y a pas de tag l'exrcice est en cours de création
 </ul>
 </div>
 </div>

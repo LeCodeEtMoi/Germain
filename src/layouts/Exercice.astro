@@ -1,0 +1,121 @@
+---
+// --- Frontmatter (partie script) ---
+// Ce layout sert de modèle pour chaque page de leçon individuelle.
+
+// Importation des types et composants nécessaires.
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_DESCRIPTION } from '../consts';
+
+// Définition de l'interface 'Props'.
+// Elle spécifie les données (propriétés) que ce layout s'attend à recevoir
+// depuis le frontmatter des fichiers Markdown (.md) qui l'utilisent.
+interface Props {
+  title: string; // Le titre de la leçon (obligatoire)
+  description?: string; // Une courte description (optionnelle)
+  pubDate?: Date; // La date de publication (optionnelle)
+  updatedDate?: Date; // La date de mise à jour (optionnelle)
+  heroImage?: string; // Le chemin vers l'image principale (optionnelle)
+}
+
+// Récupération des props passées par le fichier Markdown.
+// 'Astro.props' contient toutes les données du frontmatter.
+// Une valeur par défaut est assignée à 'description' si elle n'est pas fournie.
+const { title, description = SITE_DESCRIPTION, updatedDate, heroImage } = Astro.props;
+---
+
+<!-- --- Template (partie HTML) --- -->
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <!-- Le composant BaseHead gère les balises <head> communes (meta, title, etc.) -->
+    <BaseHead title={title} description={description} />
+    <!-- Styles CSS spécifiques à ce layout. Ils ne s'appliqueront qu'aux pages utilisant Leçon.astro -->
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      main {
+        width: 100%;
+        padding: 2em 1em;
+        flex-direction: column;
+      }
+
+      /* La classe 'prose' est un conteneur pour le contenu textuel de la leçon */
+      .prose {
+        max-width: var(--max-width);
+        width: 100%;
+        padding: 1em;
+        color: var(--color-text);
+      }
+
+      .title {
+        text-align: center;
+        margin-bottom: 1.5em;
+      }
+
+      .title h1 {
+        margin-bottom: 0.5em;
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      .date {
+        color: var(--color-muted);
+        font-size: 0.9em;
+        text-align: center;
+        margin-bottom: 1em;
+      }
+
+      .last-updated-on {
+        font-style: italic;
+      }
+
+      hr {
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+
+      section {
+  width: 100%;
+}
+
+
+      .section {
+        padding: 8.3%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Inclusion des composants Header et Footer -->
+    <Header />
+    <section class="section">
+      <div class="title">X {title}</div>
+      <main>
+        <!-- Affiche l'image principale ('heroImage') si elle est définie dans le frontmatter -->
+        <div class="prose">
+          <!-- Affiche le titre de l'exercice -->
+          <!-- Affiche la date de mise à jour si elle est définie -->
+          {updatedDate && (
+            <div class="date">
+              <span class="last-updated-on">Mis à jour le : {updatedDate.toLocaleDateString()}</span>
+            </div>
+          )}
+          <hr />
+        </div>
+
+        <!-- La balise <slot /> est un emplacement réservé. -->
+        <!-- C'est ici que tout le contenu du fichier Markdown (le corps de l'exercice) sera inséré. -->
+        <slot />
+      </main>
+    </section>
+    <Footer />
+  </body>
+</html>

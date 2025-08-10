@@ -73,11 +73,9 @@ export default function EquationCartesienne() {
   }
 
   return (
-    <div className="columns is-centered mt-6">
+    <div className="columns is-centered">
       <div className="column is-two-thirds">
         <div className="box content">
-          <h2 className="title is-4">Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗</h2>
-
           <div className="mb-4">
             <p>
               <strong>Point A :</strong> ({A.join(", ")})

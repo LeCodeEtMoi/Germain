@@ -9,18 +9,17 @@ const ExerciceFonctionPrix = () => {
   const seuil2 = 200;
   const max = 500;
 
-const f = (x: number): number => {
-  if (x <= 100) {
-    return 0.5 * x;
-  } else if (x <= 200) {
-    // Pour assurer la continuité : f(100) = 50, donc f(x) = 50 + a(x - 100)
-    return 50 + 0.3 * (x - 100); // pente 0.3
-  } else {
-    // Pour assurer la continuité : f(200) = 80, donc f(x) = 80 + b(x - 200)
-    return 80 + 0.25 * (x - 200); // pente 0.25
-  }
-};
-
+  const f = (x: number): number => {
+    if (x <= 100) {
+      return 0.5 * x;
+    } else if (x <= 200) {
+      // Pour assurer la continuité : f(100) = 50, donc f(x) = 50 + a(x - 100)
+      return 50 + 0.3 * (x - 100); // pente 0.3
+    } else {
+      // Pour assurer la continuité : f(200) = 80, donc f(x) = 80 + b(x - 200)
+      return 80 + 0.25 * (x - 200); // pente 0.25
+    }
+  };
 
   return (
     <div className="box my-5">
@@ -52,7 +51,7 @@ const f = (x: number): number => {
       </button>
 
       {showCorrection && (
-        <div className="content mt-5">
+      <div className="content mt-5" style={{ marginBottom: '8rem' }}>
           <h3 className="title is-5">Correction</h3>
 
           <p><strong>1. Détermination de f(x)</strong></p>
