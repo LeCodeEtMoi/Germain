@@ -3,6 +3,12 @@
 </style></head> <body data-astro-cid-luocy72r> <!-- Inclusion des composants Header et Footer --> <nav class="navbar germain-navbar is-fixed-top" role="navigation" aria-label="main navigation" data-astro-cid-3ef6ksr2> <div class="container" data-astro-cid-3ef6ksr2> <div class="navbar-brand" data-astro-cid-3ef6ksr2> <a class="navbar-item" href="/Germain/" data-astro-cid-3ef6ksr2> <figure class="image  mr-2" data-astro-cid-3ef6ksr2> <img class="is-rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg/1024px-Germain_-_%C5%92uvres_philosophiques%2C_1896_%28Illustration_page_4%29.jpg" alt="Logo Germain" loading="lazy" data-astro-cid-3ef6ksr2> </figure> <h1 class="title is-3 mb-0" data-astro-cid-3ef6ksr2>Germain </h1> </a> <!-- Burger menu pour mobile --> <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" data-astro-cid-3ef6ksr2> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> <span aria-hidden="true" data-astro-cid-3ef6ksr2></span> </a> </div> <div id="navbarBasicExample" class="navbar-menu" data-astro-cid-3ef6ksr2> <div class="navbar-end" data-astro-cid-3ef6ksr2> <a href="/Germain/blog" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Leçons </a>  <a href="/Germain/exercices" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Exercices </a>  <a href="/Germain/mathsmetier" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Maths et métier </a>  <a href="/Germain/application" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> Application </a>  <a href="/Germain/about" class="navbar-item" data-astro-cid-3ef6ksr2="true" data-astro-cid-eimmu3lg> À propos </a>  </div> </div> </div> </nav> <!-- Script pour le menu burger --> <script type="module">document.addEventListener("DOMContentLoaded",()=>{const e=Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"),0);e.length>0&&e.forEach(t=>{t.addEventListener("click",()=>{const r=t.dataset.target,a=document.getElementById(r);t.classList.toggle("is-active"),a&&a.classList.toggle("is-active")})})});</script> <!-- Styles personnalisés pour le header -->  <main data-astro-cid-luocy72r> <article data-astro-cid-luocy72r> <!-- Affiche l'image principale ('heroImage') si elle est définie dans le frontmatter -->  <div class="prose" data-astro-cid-luocy72r> <div class="title" data-astro-cid-luocy72r> <!-- Affiche le titre de la leçon --> <h1 data-astro-cid-luocy72r></h1> <!-- Affiche la date de mise à jour si elle est définie -->  <hr data-astro-cid-luocy72r> </div> <!-- La balise <slot /> est un emplacement réservé. --> <!-- C'est ici que tout le contenu du fichier Markdown (le corps de la leçon) sera inséré. --> <div class="card">
 <div class="card-content">
 <p> ⚠️ Attention s'il n'y as pas <span class="tag"> Validé </span> cela veux dire que l'exercie peut comporter des erreurs ou n'est pas encore finit ⚠️ </p>
+<ul>
+  <li><span class="tag">Validé</span> : Plusieur personnes on tester l'exercice et non pas trouvé d'erreur</li>
+  <li><span class="tag">Erreur</span> : l'exercice comporte des erreurs</li>
+  <li><span class="tag is-link is-light">Fini</span> : l'exercice comporte des erreurs</li>
+  Si il n'y a pas de tag l'exrcice est en cours de création
+</ul>
 </div>
 </div>
 <div class="content">
@@ -162,9 +168,7 @@
   <div class="block">
     <h3 class="title is-5 mb-4">Étude de fonction</h3>
     <div class="box">
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>&#x3C;/div></span></span>
-<span class="line"><span></span></span>
-<span class="line"><span>              </span></span></code></pre>
+    </div>
   <div class="block">
     <h3 class="title is-5 mb-4">Dénombrement</h3>
     <div class="box">
@@ -471,7 +475,7 @@
           </div>
         </div>  
       </article>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>&#x3C;/div></span></span></code></pre>
+    </div>
 <h3 class="title is-5 mb-4">Primitive et équation differentielle</h3>
     <div class="box">
       <article class="media">
@@ -745,8 +749,8 @@
       </article>
     </div>
   </div>
-</div></div></div></div></div> </div> </article> </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="container" data-astro-cid-sz7xmlte> <div class="columns is-multiline" data-astro-cid-sz7xmlte> <div class="column is-full is-two-fifths-desktop" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Germain</p> <p class="is-size-7" data-astro-cid-sz7xmlte>
+</div></div></div> </div> </article> </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="container" data-astro-cid-sz7xmlte> <div class="columns is-multiline" data-astro-cid-sz7xmlte> <div class="column is-full is-two-fifths-desktop" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Germain</p> <p class="is-size-7" data-astro-cid-sz7xmlte>
 Germain - Un projet éducatif pour explorer les mathématiques
 </p> <p class="is-size-7 mt-2" data-astro-cid-sz7xmlte>
 Construit avec <a href="https://astro.build/" target="_blank" data-astro-cid-sz7xmlte>Astro</a> et <a href="https://bulma.io/" target="_blank" data-astro-cid-sz7xmlte>Bulma</a>.
-</p> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Navigation</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/blog" data-astro-cid-sz7xmlte>Leçons</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/exercices" data-astro-cid-sz7xmlte>Exercices</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/about" data-astro-cid-sz7xmlte>À propos</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Projet</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/aide" data-astro-cid-sz7xmlte>Participer</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/CodeDéontologie" data-astro-cid-sz7xmlte>Code de Déontologie</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/ui" data-astro-cid-sz7xmlte>Charte Graphique</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Réseaux</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="https://github.com/LeCodeEtMoi/Germain" target="_blank" data-astro-cid-sz7xmlte>GitHub</a></li> <li data-astro-cid-sz7xmlte><a href="" target="_blank" data-astro-cid-sz7xmlte>BlueSky</a></li> </ul> </div> </div> </div> </footer>  </body></html>
+</p> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Navigation</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/blog" data-astro-cid-sz7xmlte>Leçons</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/exercices" data-astro-cid-sz7xmlte>Exercices</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/about" data-astro-cid-sz7xmlte>À propos</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Projet</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/Germain/aide" data-astro-cid-sz7xmlte>Participer</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/CodeDéontologie" data-astro-cid-sz7xmlte>Code de Déontologie</a></li> <li data-astro-cid-sz7xmlte><a href="/Germain/ui" data-astro-cid-sz7xmlte>Charte Graphique</a></li> </ul> </div> <div class="column is-one-fifth-desktop is-half-tablet" data-astro-cid-sz7xmlte> <p class="has-text-weight-bold" data-astro-cid-sz7xmlte>Réseaux</p> <ul data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="https://github.com/LeCodeEtMoi/Germain" target="_blank" data-astro-cid-sz7xmlte>GitHub</a></li> <li data-astro-cid-sz7xmlte><a href="" target="_blank" data-astro-cid-sz7xmlte>BlueSky</a></li> </ul> </div> </div> </div> </footer> </body></html>
