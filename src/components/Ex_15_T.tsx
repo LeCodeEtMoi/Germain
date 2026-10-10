@@ -1,104 +1,147 @@
-import React, { useState } from 'react';
-import 'katex/dist/katex.min.css';
-import MathTex from './MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import {
+  Astuce, Boutons, BlocCode, Cadre, ChampLigne, Chargement, Correction, Enonce, Formulaire, MessageIncompris, MessageSucces,
+  Retour, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import {
+  type Comparateur, type Pas, codePas, comparer, contraire, lireCondition, memeCondition, texComparateur, texPas,
+} from '../lib/algo.ts';
+import { choisir } from '../lib/maths.ts';
 
-const correctAnswer = "u <= A";
+/**
+ * Exercice : compléter la condition d'une boucle while (seuil d'une suite géométrique).
+ *
+ * Une suite croissante (u × k, k > 1) ou décroissante (u × k, k < 1) est tirée au hasard, ainsi que la cible :
+ *   croissante  →  « u_n > A » ou « u_n ≥ A »        décroissante  →  « u_n < A » ou « u_n ≤ A ».
+ * La boucle doit continuer tant que la cible n'est PAS atteinte : c'est le contraire de la cible.
+ *
+ * Correction : la condition de l'élève est lue (u <= A, A >= u, not u > A, …) puis comparée à la bonne condition sur
+ * de nombreux couples (u, A) autour du seuil, égalité comprise. Toute écriture équivalente est acceptée.
+ */
 
-const codeBlockStyle: React.CSSProperties = {
-    backgroundColor: '#282c34',
-    color: '#abb2bf',
-    padding: '1rem',
-    borderRadius: '5px',
-    fontFamily: 'monospace',
-    whiteSpace: 'pre-wrap'
-};
+/* ===== Logique ===== */
 
-const inputStyle: React.CSSProperties = {
-    background: 'transparent',
-    border: 'none',
-    borderBottom: '1px solid #61afef',
-    color: '#98c379',
-    width: '100px',
-    margin: '0 5px',
-    fontFamily: 'monospace'
-};
+export type Exercice = { u0: number; pas: Pas; cible: Comparateur };
 
-const keywordStyle = { color: '#c678dd' };
-const functionStyle = { color: '#61afef' };
-const numberStyle = { color: '#d19a66' };
+export function genererExercice(): Exercice {
+  const croissante = Math.random() < 0.5;
+  return croissante
+    ? { u0: choisir([100, 500, 1000, 2000]), pas: { op: '*', k: choisir([1.02, 1.05, 1.1, 1.5, 2]) }, cible: choisir<Comparateur>(['>', '>=']) }
+    : { u0: choisir([50, 200, 1000, 4000]), pas: { op: '*', k: choisir([0.95, 0.9, 0.8, 0.5]) }, cible: choisir<Comparateur>(['<', '<=']) };
+}
 
-export default function PythonScriptCompletion() {
-    const [userAnswer, setUserAnswer] = useState('');
-    const [feedback, setFeedback] = useState<string | null>(null);
+const SEUILS = [3, 50.5, 2000];
+const CAS = SEUILS.flatMap((A) => Array.from({ length: 81 }, (_, i) => ({ u: A + (i - 40) * 0.25, a: A })));
+const CAS_SANS_EGALITE = CAS.filter((c) => c.u !== c.a);
 
-    const handleValidate = () => {
-        const normalizedAnswer = userAnswer.replace(/\s+/g, ' ').trim();
-        const normalizedCorrectAnswer = correctAnswer.replace(/\s+/g, ' ').trim();
+export type Verdict =
+  | { type: 'incompris'; raison: string }
+  | { type: 'correct' }
+  | { type: 'faux'; indice: string };
 
-        if (!normalizedAnswer) {
-            setFeedback("Veuillez entrer une réponse.");
-            return;
-        }
+export function verifier(exo: Exercice, saisie: string): Verdict {
+  const lue = lireCondition(saisie, ['u', 'a']);
+  if (!lue.ok) return { type: 'incompris', raison: lue.message };
+  const bonne = (env: Record<string, number>) => comparer(contraire(exo.cible), env.u, env.a);
+  const arret = (env: Record<string, number>) => comparer(exo.cible, env.u, env.a);
+  if (memeCondition(lue.condition, bonne, CAS)) return { type: 'correct' };
+  if (memeCondition(lue.condition, arret, CAS)) {
+    return { type: 'faux', indice: "Tu as écrit la condition d'arrêt. Or while répète la boucle tant que la condition est vraie : il faut écrire le contraire." };
+  }
+  if (memeCondition(lue.condition, bonne, CAS_SANS_EGALITE)) {
+    return { type: 'faux', indice: "Presque : la condition est bonne sauf quand u est égal à A. Regarde si l'inégalité doit être stricte (<, >) ou large (<=, >=)." };
+  }
+  return { type: 'faux', indice: "Cette condition ne donne pas le bon résultat : elle ne s'arrête pas au bon moment." };
+}
 
-        if (normalizedAnswer === normalizedCorrectAnswer) {
-            setFeedback("🎉 Bravo Maître, c'est la bonne condition ! Le script est maintenant correct.");
-        } else {
-            let explanation = "❌ Oups, ce n'est pas tout à fait ça.";
-            explanation += "\n\n**La bonne réponse était :** `u <= A`";
-            explanation += "\n\n**Explication :**\n";
-            explanation += "L'objectif est de trouver le premier rang 'n' pour lequel u_n dépasse A.";
-            explanation += "La boucle `while` doit donc continuer **tant que** la condition n'est pas remplie, c'est-à-dire tant que `u` est inférieur ou égal à `A`.";
-            explanation += "Dès que `u` devient strictement supérieur à `A`, la boucle s'arrête et la fonction retourne la bonne valeur de 'n'.";
-            setFeedback(explanation);
-        }
-    };
+const texteCible = (c: Comparateur) => `u_n ${texComparateur(c)} A`;
+const motCible = (c: Comparateur) => ({ '>': 'strictement supérieur à', '>=': 'supérieur ou égal à', '<': 'strictement inférieur à', '<=': 'inférieur ou égal à' })[c];
 
-    return (
-        <div className="columns is-centered">
-            <div className="column is-two-thirds">
-                <div className="box content">
-                    <h2 className="title is-4">Algorithmique - Calcul de seuil</h2>
-                    <p>
-                        On s'intéresse à la suite <MathTex tex="(u_n)" /> définie par <MathTex tex="u_0 = 2000" /> et pour tout entier naturel <MathTex tex="n" />, <MathTex tex="u_{n+1} = 1.02 * u_n" />.
-                    </p>
-                    <p>
-                        On souhaite déterminer le plus petit entier naturel <MathTex tex="n" /> tel que <MathTex tex="u_n > 4000" />.
-                        Complétez la condition de la boucle <code>while</code> dans la fonction Python ci-dessous pour qu'elle retourne la valeur de <MathTex tex="n" /> recherchée.
-                    </p>
-                    
-                    <div style={codeBlockStyle}>
-                        <div><span style={keywordStyle}>def</span> <span style={functionStyle}>seuil</span>(A):</div>
-                        <div>{'  '}n = <span style={numberStyle}>0</span></div>
-                        <div>{'  '}u = <span style={numberStyle}>2000</span></div>
-                        <div>
-                            {'  '}<span style={keywordStyle}>while</span>
-                            <input
-                                type="text"
-                                value={userAnswer}
-                                onChange={(e) => setUserAnswer(e.target.value)}
-                                placeholder="u &lt;= A"
-                                style={inputStyle}
-                            />:
-                        </div>
-                        <div>{'    '}u = u * <span style={numberStyle}>1.02</span></div>
-                        <div>{'    '}n = n + <span style={numberStyle}>1</span></div>
-                        <div>{'  '}<span style={keywordStyle}>return</span> n</div>
-                    </div>
+/* ===== Affichage ===== */
 
-                    <div className="field is-grouped is-grouped-centered mt-4">
-                        <div className="control">
-                            <button className="button is-primary" onClick={handleValidate}>Valider</button>
-                        </div>
-                    </div>
+export default function SeuilWhile() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [saisie, setSaisie] = useState('');
+  const [verdict, setVerdict] = useState<Verdict | null>(null);
 
-                    {feedback && (
-                        <div className={`notification ${feedback.startsWith('🎉') ? 'is-success' : 'is-warning'} is-light mt-4`}>
-                            <button className="delete" onClick={() => setFeedback(null)}></button>
-                            <div style={{ whiteSpace: 'pre-wrap' }}>{feedback}</div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+  if (!exo) return <Chargement />;
+
+  const { u0, pas, cible } = exo;
+  const attendue = `u ${contraire(cible)} A`;
+
+  function valider() {
+    setVerdict(verifier(exo as Exercice, saisie));
+  }
+
+  function nouvelExercice() {
+    regenerer();
+    setSaisie('');
+    setVerdict(null);
+  }
+
+  return (
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          On considère la suite <MathTex tex="(u_n)" /> définie par <MathTex tex={`u_0 = ${u0}`} /> et, pour tout entier naturel n,{' '}
+          <MathTex tex={texPas(pas)} />.
+        </p>
+        <p>
+          Pour un réel A donné, on cherche le plus petit entier n tel que <MathTex tex={texteCible(cible)} />. Complète la
+          condition de la boucle <code>while</code> pour que <code>seuil(A)</code> renvoie ce nombre n.
+        </p>
+      </Enonce>
+
+      <Formulaire onValider={valider}>
+        <BlocCode legende="Script Python">
+          {`def seuil(A):\n    n = 0\n    u = ${u0}\n    while `}
+          <ChampLigne etiquette="Condition du while" valeur={saisie} onChange={setSaisie} placeholder="u … A" maxLength={30} />
+          {` :\n        ${codePas(pas)}\n        n = n + 1\n    return n`}
+        </BlocCode>
+        <p className="exercice-aide">Écris la condition comme en Python, avec u et A (opérateurs &lt;, &lt;=, &gt;, &gt;=).</p>
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {verdict?.type === 'incompris' && <MessageIncompris raison={verdict.raison} />}
+        {verdict?.type === 'correct' && (
+          <MessageSucces>
+            <p>
+              La boucle continue tant que la cible n'est pas atteinte : <code>while {attendue}</code>.
+            </p>
+          </MessageSucces>
+        )}
+        {verdict?.type === 'faux' && (
+          <Retour type="faux">
+            <p>Oups, une erreur s'est glissée. {verdict.indice}</p>
+            <Correction>
+              <li>
+                On cherche le premier rang n pour lequel u est {motCible(cible)} A, c'est-à-dire <MathTex tex={texteCible(cible)} />.
+              </li>
+              <li>
+                Tant que ce n'est pas le cas, il faut continuer : la boucle <code>while</code> s'exécute tant que sa condition est
+                vraie. La condition à écrire est donc le <strong>contraire</strong> de la cible.
+              </li>
+              <li>
+                Le contraire de « u {cible} A » est « u {contraire(cible)} A ». Ici, on écrit <code>while {attendue}</code>.
+              </li>
+              <li>
+                À chaque tour, <code>{codePas(pas)}</code> calcule le terme suivant et <code>n = n + 1</code> compte le nombre de
+                tours. Quand la boucle s'arrête, u est le premier terme à atteindre la cible, et n son rang.
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>while = « tant que » : la condition décrit ce qui se passe AVANT d'arriver au seuil, pas le moment où on l'atteint.</li>
+                <li>Le contraire de &gt; est &lt;= (et non &lt;) ; le contraire de &gt;= est &lt;.</li>
+                <li>Pour vérifier, teste le script à la main avec une petite valeur de A.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
+  );
 }

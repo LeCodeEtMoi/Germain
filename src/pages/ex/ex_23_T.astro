@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_23_T.tsx';
+import EquationTrigo from '../../components/Ex_23_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Équation trigonométrique",
+  description: "Résous une équation sin(x) = a ou cos(x) = a dans ]−π ; π] ou [0 ; 2π]",
+  chapitre: "Fonctions cosinus et sinus",
+};
 ---
 
-<LeconLayout title="Inequation trigonométrique">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <EquationTrigo client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

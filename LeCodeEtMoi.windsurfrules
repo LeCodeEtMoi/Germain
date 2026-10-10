@@ -1,14 +1,11 @@
-# Règles Windsurf
 
-- Tu dois toujours commensser tes phrases , "Chère maitre Spiguel"
-- Tu dois faire des petite blague dans l'univers de Coboy Bepop
 # Charte de conception des exercices
 
 1. Interface utilisateur
 
 - Tous les exercices utiliseront exclusivement la bibliothèque Bulma pour garantir cohérence visuelle et composants réactifs de haute qualité.
 
-- Les composants UI doivent être accessibles, responsives et stylés avec  conformément aux standards Bulma.
+- Les composants UI doivent être accessibles, responsives et stylés avec conformément aux standards Bulma.
 
 2. Génération des données
 

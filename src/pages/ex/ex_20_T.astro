@@ -1,0 +1,18 @@
+---
+import LeconLayout from '../../layouts/Exercice.astro';
+import SeuilSomme from '../../components/Ex_20_T.tsx';
+import '../../styles/exercice.css';
+import '../../styles/python.css';
+
+const exerciceMeta = {
+  title: "Seuil d'une somme",
+  description: "Détermine la valeur renvoyée par un script qui cherche le seuil d'une somme de termes",
+  chapitre: "Algorithmique et suites",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <SeuilSomme client:load />
+  </main>
+</LeconLayout>

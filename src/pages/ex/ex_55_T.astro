@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_55_T.tsx';
+import ConvexiteTableau from '../../components/Ex_55_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Convexité et tableau de variations de f'",
+  description: "Déduis la convexité de f du tableau de variations de sa dérivée",
+  chapitre: "Convexité",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <ConvexiteTableau client:load />
   </main>
 </LeconLayout>

@@ -1,133 +1,155 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Donnees, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { apercuExpression, type Question, type ResultatExpression } from './Questions.tsx';
+import { analyser, choisir, deriver, equivalents, nombre } from '../lib/maths.ts';
 
-const functions = [
-  {
-    id: 'ln',
-    tex: 'f(x) = \\ln(x)',
-    deriv: 'f\'(x) = \\frac{1}{x}',
-    value: 'f(1) = 0',
-    growth: 'f est strictement croissante sur ]0 ; +\\infty[',
-    answer: 'ln(x)'
-  },
-  {
-    id: 'exp',
-    tex: 'f(x) = e^x',
-    deriv: "f'(x) = e^x",
-    value: 'f(0) = 1',
-    growth: 'f est strictement croissante sur R',
-    answer: 'e^x'
-  },
-  {
-    id: 'inv',
-    tex: 'f(x) = 1/x',
-    deriv: "f'(x) = -1/x^2",
-    value: 'f(1) = 1',
-    growth: 'f est strictement décroissante sur ]0 ; +\\infty[',
-    answer: '1/x'
-  },
-  {
-    id: 'sqrt',
-    tex: 'f(x) = \\sqrt{x}',
-    deriv: "f'(x) = 1/(2\\sqrt{x})",
-    value: 'f(4) = 2',
-    growth: 'f est strictement croissante sur [0 ; +\\infty[',
-    answer: 'sqrt(x)'
-  },
-  {
-    id: 'cos',
-    tex: 'f(x) = \\cos(x)',
-    deriv: "f'(x) = -\\sin(x)",
-    value: 'f(0) = 1',
-    growth: 'f est périodique de période 2\\pi',
-    answer: 'cos(x)'
-  },
-  {
-    id: 'sin',
-    tex: 'f(x) = \\sin(x)',
-    deriv: "f'(x) = \\cos(x)",
-    value: 'f(0) = 0',
-    growth: 'f est périodique de période 2\\pi',
-    answer: 'sin(x)'
-  }
+/**
+ * Exercice : reconnaître une fonction usuelle multipliée par une constante k.
+ *
+ * f = k·g avec g parmi ln, exp, 1/x, √x, cos, sin. On donne f′, une valeur f(x₀) et une propriété (variation ou période).
+ * Ces trois informations déterminent f de façon unique (f′ donne f à une constante près, f(x₀) fixe la constante).
+ *
+ * Correction : la saisie est lue par l'analyseur et comparée à k·g en plusieurs points de ]0 ; +∞[.
+ * Si sa dérivée est la bonne mais que la valeur imposée n'est pas respectée, on le dit.
+ */
+
+/* ===== Logique ===== */
+
+export type Base = {
+  id: string;
+  g: string; // saisie ASCII de g
+  fTex: (c: number) => string; // c·g en TeX
+  dTex: (c: number) => string; // dérivée de c·g en TeX
+  x0: number;
+  g0: number; // g(x0)
+  propriete: (k: number) => string; // propriété de variation / période
+};
+
+const coefTex = (c: number, corps: string) => (c === 1 ? corps : c === -1 ? `-${corps}` : `${c}${corps}`);
+const variation = (sens: 'croissante' | 'decroissante', k: number, domaine: string) => {
+  const croissante = (sens === 'croissante') === (k > 0);
+  return `f est strictement ${croissante ? 'croissante' : 'décroissante'} sur ${domaine}`;
+};
+
+export const BASES: Base[] = [
+  { id: 'ln', g: 'ln(x)', fTex: (c) => coefTex(c, '\\ln(x)'), dTex: (c) => `${c < 0 ? '-' : ''}\\frac{${Math.abs(c)}}{x}`, x0: 1, g0: 0, propriete: (k) => `${variation('croissante', k, ']0 ; +∞[')}` },
+  { id: 'exp', g: 'e^x', fTex: (c) => coefTex(c, 'e^{x}'), dTex: (c) => coefTex(c, 'e^{x}'), x0: 0, g0: 1, propriete: (k) => `${variation('croissante', k, 'ℝ')}` },
+  { id: 'inv', g: '1/x', fTex: (c) => `${c < 0 ? '-' : ''}\\frac{${Math.abs(c)}}{x}`, dTex: (c) => `${-c < 0 ? '-' : ''}\\frac{${Math.abs(c)}}{x^{2}}`, x0: 1, g0: 1, propriete: (k) => `${variation('decroissante', k, ']0 ; +∞[')}` },
+  { id: 'sqrt', g: 'sqrt(x)', fTex: (c) => coefTex(c, '\\sqrt{x}'), dTex: (c) => `${c < 0 ? '-' : ''}\\frac{${Math.abs(c)}}{2\\sqrt{x}}`, x0: 4, g0: 2, propriete: (k) => `${variation('croissante', k, ']0 ; +∞[')}` },
+  { id: 'cos', g: 'cos(x)', fTex: (c) => coefTex(c, '\\cos(x)'), dTex: (c) => coefTex(-c, '\\sin(x)'), x0: 0, g0: 1, propriete: () => 'f est périodique de période 2π' },
+  { id: 'sin', g: 'sin(x)', fTex: (c) => coefTex(c, '\\sin(x)'), dTex: (c) => coefTex(c, '\\cos(x)'), x0: 0, g0: 0, propriete: () => 'f est périodique de période 2π' },
 ];
 
-function pickRandom<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+export type Exercice = { base: string; k: number };
+
+export function genererExercice(): Exercice {
+  const base = BASES[Math.floor(Math.random() * BASES.length)];
+  const k = choisir([1, 1, 2, 3, -1, -2, 4]);
+  return { base: base.id, k };
 }
 
-export default function IdentifyFunction() {
-  const [problem, setProblem] = useState(pickRandom(functions));
-  const [userAnswer, setUserAnswer] = useState('');
-  const [showCorrection, setShowCorrection] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+export const baseDe = (id: string) => BASES.find((b) => b.id === id) as Base;
+const POINTS = [0.7, 1.3, 1.9, 2.6, 3.4];
 
-  const checkAnswer = () => {
-    const cleaned = userAnswer.replace(/\s+/g, '').toLowerCase();
-    if (cleaned === problem.answer.replace(/\s+/g, '').toLowerCase()) {
-      setFeedback('✅ Bonne réponse, Maître.');
-    } else {
-      setFeedback(`❌ Non Maître. Il fallait \(${problem.tex}\)`);
-    }
-    setShowCorrection(true);
-  };
+/** Solution attendue, en saisie ASCII. */
+export const solution = ({ base, k }: Exercice) => `${k}*(${baseDe(base).g})`;
 
-  const newExercise = () => {
-    setProblem(pickRandom(functions));
-    setUserAnswer('');
-    setFeedback(null);
-    setShowCorrection(false);
-  };
+export function verifier(exo: Exercice, saisie: string): ResultatExpression {
+  const lu = analyser(saisie.replace(/^\s*f\s*(\(x\))?\s*=/i, ''), { variables: ['x'] });
+  if (!lu.ok) return { ok: false, incompris: lu.message };
+  const ref = analyser(solution(exo), { variables: ['x'] });
+  if (!ref.ok) throw new Error('Solution illisible');
+  if (equivalents(lu.noeud, ref.noeud, 'x', POINTS)) return { ok: true };
+  const dRef = deriver(ref.noeud, 'x');
+  if (equivalents(deriver(lu.noeud, 'x'), dRef, 'x', POINTS)) {
+    const b = baseDe(exo.base);
+    return { ok: false, indice: `Ta fonction a bien la dérivée donnée, mais elle ne vérifie pas f(${b.x0}) = ${exo.k * b.g0} : il manque ou il y a une constante en trop.` };
+  }
+  return { ok: false, indice: 'La dérivée de ta fonction n’est pas celle de l’énoncé.' };
+}
+
+export function questions(exo: Exercice): Question[] {
+  return [
+    {
+      type: 'expression',
+      id: 'f',
+      libelle: 'Donne l’expression de f(x) :',
+      placeholder: 'Ex : 2ln(x), -e^x, 3/x…',
+      aide: 'Écris au clavier : ln(x), e^x, 1/x, sqrt(x), cos(x), sin(x), avec un coefficient si besoin (3*ln(x)).',
+      verifier: (s) => verifier(exo, s),
+      apercu: (s) => apercuExpression(s, 'f(x)', { retirer: /^\s*f\s*(\(x\))?\s*=/i }),
+    },
+  ];
+}
+
+/* ===== Affichage ===== */
+
+export default function FonctionUsuelle() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
+
+  const b = baseDe(exo.base);
+  const { k } = exo;
+  const fTex = b.fTex(k);
+  const valeur = k * b.g0;
 
   return (
-    <div className="columns is-centered mt-6">
-      <div className="column is-10">
-        <div className="box content">
-          <h2 className="title is-4">Reconnaissance d'une fonction usuelle</h2>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Une fonction <MathTex tex="f" /> est de la forme <MathTex tex="f = k \times g" />, où k est un réel non nul et g une fonction usuelle (logarithme,
+          exponentielle, inverse, racine carrée, cosinus ou sinus). On sait que :
+        </p>
+      </Enonce>
+      <Donnees
+        elements={[
+          ['Dérivée', <MathTex key="d" tex={`f'(x) = ${b.dTex(k)}`} />],
+          ['Une valeur', <MathTex key="v" tex={`f(${b.x0}) = ${valeur}`} />],
+        ]}
+      />
+      <Enonce>
+        <p>De plus, {b.propriete(k).replace(/^f/, 'f')}.</p>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
           <p>
-            On considère une fonction <strong>f</strong> telle que :
+            Oui : <MathTex tex={`f(x) = ${fTex}`} />.
           </p>
-          <ul>
-            <li><MathTex tex={problem.deriv} /></li>
-            <li><MathTex tex={problem.value} /></li>
-            <li>{problem.growth}</li>
-          </ul>
-          <p>Déterminez l'expression de la fonction <strong>f</strong>(x).</p>
-
-          <div className="field mt-4">
-            <input
-              type="text"
-              className="input"
-              placeholder="Ex: ln(x), e^x, 1/x..."
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-            />
-          </div>
-
-          <div className="buttons mt-3">
-            <button className="button is-primary" onClick={checkAnswer}>Valider</button>
-            <button className="button is-light" onClick={newExercise}>Nouvel exercice</button>
-          </div>
-
-          {feedback && (
-            <div className="notification is-info mt-4">
-              {feedback.includes('\\') ? <MathTex tex={feedback} /> : <p>{feedback}</p>}
-            </div>
-          )}
-
-          {showCorrection && (
-            <div className="mt-4">
-              <h3 className="title is-5">Correction</h3>
-              <p>La fonction était <MathTex tex={problem.tex} /></p>
-              <ul>
-                <li><strong>Dérivée :</strong> <MathTex tex={problem.deriv} /></li>
-                <li><strong>Valeur :</strong> <MathTex tex={problem.value} /></li>
-                <li><strong>Variation :</strong> {problem.growth}</li>
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+        }
+        correction={
+          <>
+            <li>
+              On cherche d’abord quelle fonction usuelle a, au coefficient près, la dérivée donnée : <MathTex tex={`f'(x) = ${b.dTex(k)}`} /> est la dérivée de{' '}
+              <MathTex tex={fTex} /> (à une constante près).
+            </li>
+            <li>
+              Les primitives de f′ sont donc de la forme <MathTex tex={`${fTex} + C`} />.
+            </li>
+            <li>
+              On utilise <MathTex tex={`f(${b.x0}) = ${valeur}`} /> : comme <MathTex tex={`${fTex}`} /> vaut déjà {nombre(valeur)} en {b.x0}, on obtient <MathTex tex="C = 0" />.
+            </li>
+            <li>
+              Conclusion : <MathTex tex={`f(x) = ${fTex}`} />. Cela est cohérent avec la propriété donnée : {b.propriete(k)}.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>Connais par cœur les dérivées usuelles : ln → 1/x ; eˣ → eˣ ; 1/x → −1/x² ; √x → 1/(2√x) ; cos → −sin ; sin → cos.</li>
+            <li>Une dérivée ne détermine f qu’à une constante près : la valeur donnée sert à fixer cette constante.</li>
+            <li>Fais attention au signe de k : il change le sens de variation et le signe de la dérivée.</li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_50_T.tsx';
+import TableauVariations from '../../components/Ex_50_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Nombre de solutions et tableau de variations",
+  description: "Détermine le nombre de solutions d'une équation à partir d'un tableau de variations",
+  chapitre: "Continuité",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <TableauVariations client:load />
   </main>
 </LeconLayout>

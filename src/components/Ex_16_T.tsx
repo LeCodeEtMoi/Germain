@@ -1,107 +1,176 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import {
+  Astuce, Boutons, BlocCode, Cadre, Calcul, Chargement, Choix, Correction, Enonce, Formulaire, MessageIncompris, MessageSucces,
+  Retour, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import { choisir, entier, melanger } from '../lib/maths.ts';
 
-const correctAnswer = "[5, 7, 11, 19]";
+/**
+ * Exercice : que renvoie une fonction Python qui construit la liste des premiers termes d'une suite ?
+ *
+ *   def liste_termes(n):
+ *       L = []
+ *       u = u0
+ *       for i in range(n + 1):
+ *           L.append(u)
+ *           u = a * u + b
+ *       return L
+ *
+ * La bonne réponse est calculée en SIMULANT la boucle. Les trois mauvaises propositions sont les erreurs classiques :
+ * oublier le dernier terme (range(n)), en ajouter un (range(n + 2)), ou décaler la liste (partir de u₁).
+ */
 
-const codeBlockStyle: React.CSSProperties = {
-    backgroundColor: '#282c34',
-    color: '#abb2bf',
-    padding: '1rem',
-    borderRadius: '5px',
-    fontFamily: 'monospace',
-    whiteSpace: 'pre-wrap'
-};
+/* ===== Logique ===== */
 
-const keywordStyle = { color: '#c678dd' };
-const functionStyle = { color: '#61afef' };
-const numberStyle = { color: '#d19a66' };
+export type Donnees = { u0: number; a: number; b: number; n: number };
+export type Exercice = Donnees & { options: Proposition[] };
 
-export default function PythonAlgorithmAnalysis() {
-    const [userAnswer, setUserAnswer] = useState<string | null>(null);
-    const [feedback, setFeedback] = useState<string | null>(null);
-
-    const options = [
-        "[5, 7, 11, 19]",
-        "[5, 7, 11]",
-        "[7, 11, 19]",
-        "19"
-    ];
-
-    const handleValidate = () => {
-        if (!userAnswer) {
-            setFeedback("Veuillez sélectionner une réponse.");
-            return;
-        }
-
-        if (userAnswer === correctAnswer) {
-            setFeedback("🎉 Bravo Maître, c'est la bonne réponse ! Vous avez bien analysé l'algorithme.");
-        } else {
-            let explanation = `❌ Oups, ce n'est pas tout à fait ça.`;
-            explanation += `\n\n**La bonne réponse était :** ${correctAnswer}`;
-            explanation += `\n\n**Explication du déroulement de l'algorithme pour \`liste_termes(3)\` :**\n`;
-            explanation += `1. **Initialisation :** \`L = []\`, \`u = 5\`.\n`;
-            explanation += `2. **Boucle \`for i in range(4)\` (car n+1 = 4) :**\n`;
-            explanation += `   - **i = 0 :** \`L.append(5)\` -> \`L\` devient \`[5]\`. \`u\` devient \`2*5 - 3 = 7\`.\n`;
-            explanation += `   - **i = 1 :** \`L.append(7)\` -> \`L\` devient \`[5, 7]\`. \`u\` devient \`2*7 - 3 = 11\`.\n`;
-            explanation += `   - **i = 2 :** \`L.append(11)\` -> \`L\` devient \`[5, 7, 11]\`. \`u\` devient \`2*11 - 3 = 19\`.\n`;
-            explanation += `   - **i = 3 :** \`L.append(19)\` -> \`L\` devient \`[5, 7, 11, 19]\`. \`u\` devient \`2*19 - 3 = 35\`.\n`;
-            explanation += `3. **Fin de la boucle.**\n`;
-            explanation += `4. **Retour :** La fonction retourne la liste \`L\`, qui est \`[5, 7, 11, 19]\`.`;
-            setFeedback(explanation);
-        }
-    };
-
-    return (
-        <div className="columns is-centered">
-            <div className="column is-two-thirds">
-                <div className="box content">
-                    <h2 className="title is-4">Algorithmique - Analyse de fonction</h2>
-                    <p>
-                        On considère la fonction Python suivante, qui prend un entier <code>n</code> en paramètre.
-                    </p>
-                    
-                    <div style={codeBlockStyle}>
-                        <div><span style={keywordStyle}>def</span> <span style={functionStyle}>liste_termes</span>(n):</div>
-                        <div>{'  '}L = []</div>
-                        <div>{'  '}u = <span style={numberStyle}>5</span></div>
-                        <div>{'  '}<span style={keywordStyle}>for</span> i <span style={keywordStyle}>in</span> <span style={functionStyle}>range</span>(n + <span style={numberStyle}>1</span>):</div>
-                        <div>{'    '}L.append(u)</div>
-                        <div>{'    '}u = <span style={numberStyle}>2</span> * u - <span style={numberStyle}>3</span></div>
-                        <div>{'  '}<span style={keywordStyle}>return</span> L</div>
-                    </div>
-
-                    <p className="mt-4">
-                        Que retourne l'appel <code>liste_termes(3)</code> ?
-                    </p>
-
-                    <div className="control">
-                        {options.map(option => (
-                            <label className="radio" key={option}>
-                                <input
-                                    type="radio"
-                                    name="analysis"
-                                    value={option}
-                                    checked={userAnswer === option}
-                                    onChange={() => setUserAnswer(option)}
-                                />
-                                {` ${option}`}
-                            </label>
-                        ))}
-                    </div>
-
-                    <div className="field is-grouped is-grouped-centered mt-4">
-                        <div className="control">
-                            <button className="button is-primary" onClick={handleValidate}>Valider</button>
-                        </div>
-                    </div>
-
-                    {feedback && (
-                        <div className={`notification ${feedback.startsWith('🎉') ? 'is-success' : 'is-warning'} is-light mt-4`}>
-                            <button className="delete" onClick={() => setFeedback(null)}></button>
-                            <div style={{ whiteSpace: 'pre-wrap' }}>{feedback}</div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+/** Exécute le script : les termes u_0 … u_(tours-1). */
+export function executer({ u0, a, b }: Donnees, tours: number, depart = 0): number[] {
+  const L: number[] = [];
+  let u = u0;
+  for (let i = 0; i < depart; i++) u = a * u + b;
+  for (let i = 0; i < tours; i++) {
+    L.push(u);
+    u = a * u + b;
+  }
+  return L;
 }
+
+export const texteListe = (L: number[]) => `[${L.join(', ')}]`;
+
+export type Proposition = { valeur: string; juste: boolean; erreur?: string };
+
+export function genererExercice(): Exercice {
+  for (;;) {
+    const donnees: Donnees = { u0: entier(1, 9), a: choisir([2, 3]), b: choisir([-1, 1]) * entier(1, 6), n: entier(2, 4) };
+    // on évite la suite constante, qui rendrait les propositions confondues
+    if (new Set(executer(donnees, donnees.n + 2)).size === donnees.n + 2) return { ...donnees, options: propositions(donnees) };
+  }
+}
+
+/** Les quatre propositions (la bonne et trois erreurs), dans un ordre aléatoire. */
+export function propositions(exo: Donnees): Proposition[] {
+  const { n } = exo;
+  return melanger<Proposition>([
+    { valeur: texteListe(executer(exo, n + 1)), juste: true },
+    { valeur: texteListe(executer(exo, n)), juste: false, erreur: `Il manque le dernier terme : range(n + 1) fait n + 1 = ${n + 1} tours, pas ${n}.` },
+    { valeur: texteListe(executer(exo, n + 2)), juste: false, erreur: `Il y a un terme de trop : la boucle fait n + 1 = ${n + 1} tours, pas ${n + 2}.` },
+    { valeur: texteListe(executer(exo, n + 1, 1)), juste: false, erreur: "La liste doit commencer par la valeur initiale de u, avant le premier calcul." },
+  ]);
+}
+
+/** Le script Python affiché. */
+export const script = ({ u0, a, b }: Donnees) =>
+  `def liste_termes(n):\n    L = []\n    u = ${u0}\n    for i in range(n + 1):\n        L.append(u)\n        u = ${a} * u ${b < 0 ? '-' : '+'} ${Math.abs(b)}\n    return L`;
+
+/* ===== Affichage ===== */
+
+export default function ListeTermes() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [reponse, setReponse] = useState<string | null>(null);
+  const [retour, setRetour] = useState<null | 'vide' | 'correct' | 'faux'>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { u0, a, b, n, options: liste } = exo;
+  const juste = liste.find((p) => p.juste) as Proposition;
+  const choisie = liste.find((p) => p.valeur === reponse);
+
+  function valider() {
+    if (reponse === null) return setRetour('vide');
+    setRetour(choisie?.juste ? 'correct' : 'faux');
+  }
+
+  function nouvelExercice() {
+    regenerer();
+    setReponse(null);
+    setRetour(null);
+  }
+
+  // Déroulement pas à pas, pour la correction
+  const tours: { i: number; ajout: number; apres: number[]; suivant: number }[] = [];
+  let u = u0;
+  const L: number[] = [];
+  for (let i = 0; i <= n; i++) {
+    L.push(u);
+    const suivant = a * u + b;
+    tours.push({ i, ajout: u, apres: [...L], suivant });
+    u = suivant;
+  }
+
+  return (
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          On considère la fonction Python suivante, qui prend en paramètre un entier <code>n</code>.
+        </p>
+      </Enonce>
+      <BlocCode legende="Script Python">{script(exo)}</BlocCode>
+
+      <Formulaire onValider={valider}>
+        <Choix
+          legende={
+            <>
+              Que renvoie l'appel <code>liste_termes({n})</code> ?
+            </>
+          }
+          valeur={reponse}
+          onChange={setReponse}
+          options={liste.map((p) => ({ valeur: p.valeur, contenu: <code>{p.valeur}</code> }))}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {retour === 'vide' && <MessageIncompris raison="Choisis une réponse avant de valider." />}
+        {retour === 'correct' && (
+          <MessageSucces>
+            <p>
+              <code>liste_termes({n})</code> renvoie bien <code>{juste.valeur}</code> : la liste des termes u₀ à u{subscript(n)}.
+            </p>
+          </MessageSucces>
+        )}
+        {retour === 'faux' && (
+          <Retour type="faux">
+            <p>
+              Oups, une erreur s'est glissée. La bonne réponse est <code>{juste.valeur}</code>.
+              {choisie?.erreur ? ` ${choisie.erreur}` : ''}
+            </p>
+            <Correction>
+              <li>
+                Initialisation : <code>L = []</code> et <code>u = {u0}</code>.
+              </li>
+              <li>
+                <code>range({n} + 1)</code> = <code>range({n + 1})</code> : la boucle fait {n + 1} tours (i = 0, 1, …, {n}).
+              </li>
+              {tours.map((t) => (
+                <li key={t.i}>
+                  i = {t.i} : <code>L.append({t.ajout})</code>, donc <code>L = {texteListe(t.apres)}</code> ; puis{' '}
+                  <Calcul>
+                    u = {a} × {t.ajout < 0 ? `(${t.ajout})` : t.ajout} {b < 0 ? '−' : '+'} {Math.abs(b)} = {t.suivant}
+                  </Calcul>
+                  .
+                </li>
+              ))}
+              <li>
+                La fonction renvoie <code>L</code> : <code>{juste.valeur}</code>.
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>range(n + 1) donne n + 1 tours : les valeurs de i vont de 0 à n.</li>
+                <li>L.append(u) est exécuté AVANT le calcul du terme suivant : le premier élément de la liste est la valeur initiale.</li>
+                <li>Écris un tableau avec i, u et L à chaque tour : c'est la méthode la plus sûre.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
+  );
+}
+
+const CHIFFRES = '₀₁₂₃₄₅₆₇₈₉';
+const subscript = (k: number) => String(k).split('').map((c) => CHIFFRES[Number(c)]).join('');

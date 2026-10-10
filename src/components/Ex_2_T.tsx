@@ -1,174 +1,169 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import {
+  Astuce, Boutons, Cadre, Calcul, Choix, Chargement, Correction, Donnees, Enonce, Formulaire,
+  MessageIncompris, MessageSucces, Retour, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import {
+  colineaires, entier, entreParentheses, nombre, produitMixte, triplet, vecAleatoire, vecAdd, vecCross, vecDot,
+  vecScale, vecSub, type Vec3,
+} from '../lib/maths.ts';
 
-type Coord = [number, number, number];
+/**
+ * Exercice : quatre points sont-ils coplanaires ?
+ *
+ * Maths : A, B, C ne sont pas alignés (on le garantit au tirage). Alors
+ *   A, B, C, D coplanaires  ⇔  AD ∈ Vect(AB, AC)  ⇔  AD · (AB ∧ AC) = 0.
+ * Le produit mixte est calculé en entiers : aucun arrondi, la réponse attendue
+ * est toujours exacte. On tire un cas coplanaire une fois sur deux (D = A + s·AB + t·AC).
+ */
 
-const getRandomCoord = (): Coord => [
-  Math.floor(Math.random() * 11) - 5,
-  Math.floor(Math.random() * 11) - 5,
-  Math.floor(Math.random() * 11) - 5,
-];
+/* ===== Logique ===== */
 
-const vector = (from: Coord, to: Coord): Coord => [
-  to[0] - from[0],
-  to[1] - from[1],
-  to[2] - from[2],
-];
+export type Exercice = { A: Vec3; B: Vec3; C: Vec3; D: Vec3 };
 
-const solveAlphaBetaSystem = (AB: Coord, AC: Coord, AD: Coord) => {
-  const [u1, u2, u3] = AB;
-  const [v1, v2, v3] = AC;
-  const [w1, w2, w3] = AD;
+const horsLimites = (p: Vec3, max: number) => p.some((c) => Math.abs(c) > max);
+const egaux = (p: Vec3, q: Vec3) => p[0] === q[0] && p[1] === q[1] && p[2] === q[2];
 
-  const det = v1 * w2 - v2 * w1;
+export function genererExercice(coplanaire = Math.random() < 0.5): Exercice {
+  for (;;) {
+    const A = vecAleatoire(-4, 4);
+    const u = vecAleatoire(-2, 2);
+    const v = vecAleatoire(-2, 2);
+    if (colineaires(u, v)) continue; // u ou v nul, ou alignés : A, B, C seraient alignés
+    const B = vecAdd(A, u);
+    const C = vecAdd(A, v);
+    const D = coplanaire
+      ? vecAdd(A, vecAdd(vecScale(u, entier(-2, 2)), vecScale(v, entier(-2, 2))))
+      : vecAleatoire(-6, 6);
+    if (horsLimites(D, 9) || [A, B, C].some((p) => egaux(p, D))) continue;
+    // Le cas tiré doit être celui qu'on voulait
+    if ((produitMixte(u, v, vecSub(D, A)) === 0) !== coplanaire) continue;
+    return { A, B, C, D };
+  }
+}
 
-  if (Math.abs(det) < 1e-6) {
-    return null;
+/** Vrai si les quatre points sont dans un même plan (A, B, C non alignés). */
+export const sontCoplanaires = ({ A, B, C, D }: Exercice) =>
+  produitMixte(vecSub(B, A), vecSub(C, A), vecSub(D, A)) === 0;
+
+/* ===== Affichage ===== */
+
+type Reponse = 'oui' | 'non';
+
+export default function Coplanarite() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [reponse, setReponse] = useState<string | null>(null);
+  const [retour, setRetour] = useState<null | 'vide' | 'correct' | 'faux'>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { A, B, C, D } = exo;
+  const AB = vecSub(B, A);
+  const AC = vecSub(C, A);
+  const AD = vecSub(D, A);
+  const produit = vecCross(AB, AC);
+  const mixte = vecDot(AD, produit);
+  const coplanaire = mixte === 0;
+
+  function valider() {
+    if (reponse === null) return setRetour('vide');
+    setRetour((reponse as Reponse) === (coplanaire ? 'oui' : 'non') ? 'correct' : 'faux');
   }
 
-  const alpha = (u1 * w2 - u2 * w1) / det;
-  const beta = (v1 * u2 - v2 * u1) / det;
-
-  const left = u3;
-  const right = alpha * v3 + beta * w3;
-
-  if (Math.abs(left - right) > 1e-6) {
-    return null;
+  function nouvelExercice() {
+    regenerer();
+    setReponse(null);
+    setRetour(null);
   }
-
-  return { alpha, beta };
-};
-
-const RandomPoints: React.FC = () => {
-  const [pointA, setPointA] = useState<Coord>(getRandomCoord());
-  const [pointB, setPointB] = useState<Coord>(getRandomCoord());
-  const [pointC, setPointC] = useState<Coord>(getRandomCoord());
-  const [pointD, setPointD] = useState<Coord>(getRandomCoord());
-
-  const [userAnswer, setUserAnswer] = useState<string>('');
-  const [showResult, setShowResult] = useState<boolean>(false);
-
-  const AB = vector(pointA, pointB);
-  const AC = vector(pointA, pointC);
-  const AD = vector(pointA, pointD);
-
-  const solution = solveAlphaBetaSystem(AB, AC, AD);
-  const coplanar = !!solution;
-
-  const handleValidate = () => {
-    setShowResult(true);
-  };
-
-  const generateNewPoints = () => {
-    setPointA(getRandomCoord());
-    setPointB(getRandomCoord());
-    setPointC(getRandomCoord());
-    setPointD(getRandomCoord());
-    setUserAnswer('');
-    setShowResult(false);
-  };
 
   return (
-    <div className="box content">
-      <h3 className="title is-4">Déterminer si les points A, B, C et D sont coplanaires</h3>
-      <div className="mb-4">
-        <p>A = ({pointA.join(', ')})</p>
-        <p>B = ({pointB.join(', ')})</p>
-        <p>C = ({pointC.join(', ')})</p>
-        <p>D = ({pointD.join(', ')})</p>
-      </div>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Dans un repère de l'espace, on considère les points suivants. Les points A, B, C, D sont-ils coplanaires ?</p>
+      </Enonce>
+      <Donnees
+        elements={[
+          ['Point A', triplet(A)],
+          ['Point B', triplet(B)],
+          ['Point C', triplet(C)],
+          ['Point D', triplet(D)],
+        ]}
+      />
 
-      <div className="field">
-        <div className="control">
-          <label className="radio">
-            <input
-              type="radio"
-              name="coplanarAnswer"
-              value="coplanar"
-              checked={userAnswer === 'coplanar'}
-              onChange={(e) => setUserAnswer(e.target.value)}
-            />
-            Coplanaires
-          </label>
-          <label className="radio">
-            <input
-              type="radio"
-              name="coplanarAnswer"
-              value="nonCoplanar"
-              checked={userAnswer === 'nonCoplanar'}
-              onChange={(e) => setUserAnswer(e.target.value)}
-            />
-            Non coplanaires
-          </label>
-        </div>
-      </div>
+      <Formulaire onValider={valider}>
+        <Choix
+          legende="Ta réponse"
+          enLigne
+          valeur={reponse}
+          onChange={(v) => setReponse(v)}
+          options={[
+            { valeur: 'oui', contenu: 'Oui, ils sont coplanaires' },
+            { valeur: 'non', contenu: 'Non, ils ne sont pas coplanaires' },
+          ]}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button className="button is-primary" onClick={handleValidate}>Valider</button>
-        </div>
-        <div className="control">
-          <button className="button is-light" onClick={generateNewPoints}>Nouveaux points</button>
-        </div>
-      </div>
-
-      {showResult && (
-        <div className="notification is-info is-light mt-4">
-          <button className="delete" onClick={() => setShowResult(false)}></button>
-          <p>
-            <strong>Réponse correcte :</strong> {coplanar ? 'Les points sont coplanaires' : 'Les points ne sont pas coplanaires'}
-          </p>
-          <p>
-            <strong>Votre réponse :</strong>
-            {' '}
-            {userAnswer === 'coplanar' ? 'Coplanaires' : 'Non coplanaires'}
-            {' '}
-            {userAnswer === (coplanar ? 'coplanar' : 'nonCoplanar') ? '✅' : '❌'}
-          </p>
-
-          {userAnswer !== (coplanar ? 'coplanar' : 'nonCoplanar') && (
-            <div className="content mt-4">
-              <h4 className="title is-5">Correction détaillée :</h4>
-              <p><strong>Étape 1 — Calcul des vecteurs :</strong></p>
-              <p>AB = B - A = ({AB.join(', ')})</p>
-              <p>AC = C - A = ({AC.join(', ')})</p>
-              <p>AD = D - A = ({AD.join(', ')})</p>
-
-              <p><strong>Étape 2 — Mise en équation :</strong></p>
-              <p>
-                On cherche α et β tels que : AB = α·AC + β·AD
-              </p>
-
-              <p><strong>Étape 3 — Résolution du système :</strong></p>
-              <p>
-                u1 = α·{AC[0]} + β·{AD[0]} ⇒ {AB[0]} = α·{AC[0]} + β·{AD[0]}
-              </p>
-              <p>
-                u2 = α·{AC[1]} + β·{AD[1]} ⇒ {AB[1]} = α·{AC[1]} + β·{AD[1]}
-              </p>
-              <p>
-                u3 = α·{AC[2]} + β·{AD[2]} ⇒ {AB[2]} = α·{AC[2]} + β·{AD[2]}
-              </p>
-
-              {solution ? (
-                <>
-                  <p><strong>→ Solution trouvée :</strong></p>
-                  <p>
-                    α = {solution.alpha.toFixed(2)}, β = {solution.beta.toFixed(2)}
-                  </p>
-                  <p>Donc AB = α·AC + β·AD, les vecteurs sont coplanaires.</p>
-                </>
-              ) : (
-                <>
-                  <p><strong>→ Ce système n’admet pas de solution compatible.</strong></p>
-                  <p>Les vecteurs ne sont donc pas coplanaires.</p>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+      <ZoneRetour>
+        {retour === 'vide' && <MessageIncompris raison="Choisis une réponse avant de valider." />}
+        {retour === 'correct' && (
+          <MessageSucces>
+            <p>
+              En effet, AD · (AB ∧ AC) = {nombre(mixte)}
+              {coplanaire ? " : le produit mixte est nul, D est dans le plan (ABC)." : " ≠ 0 : D n'est pas dans le plan (ABC)."}
+            </p>
+          </MessageSucces>
+        )}
+        {retour === 'faux' && (
+          <Retour type="faux">
+            <p>
+              Oups, une erreur s'est glissée. Les points {coplanaire ? 'sont' : 'ne sont pas'} coplanaires.
+            </p>
+            <Correction>
+              <li>
+                On calcule deux vecteurs et un troisième :{' '}
+                <Calcul>AB = {triplet(AB)}</Calcul>, <Calcul>AC = {triplet(AC)}</Calcul>, <Calcul>AD = {triplet(AD)}</Calcul>.
+              </li>
+              <li>
+                A, B, C ne sont pas alignés (AB et AC ne sont pas colinéaires). Les quatre points sont donc coplanaires
+                exactement quand AD est dans le plan (ABC), c'est-à-dire quand le produit mixte{' '}
+                <Calcul>AD · (AB ∧ AC)</Calcul> est nul.
+              </li>
+              <li>
+                Produit vectoriel AB ∧ AC :{' '}
+                <Calcul>
+                  ({entreParentheses(AB[1])}×{entreParentheses(AC[2])} − {entreParentheses(AB[2])}×{entreParentheses(AC[1])} ;{' '}
+                  {entreParentheses(AB[2])}×{entreParentheses(AC[0])} − {entreParentheses(AB[0])}×{entreParentheses(AC[2])} ;{' '}
+                  {entreParentheses(AB[0])}×{entreParentheses(AC[1])} − {entreParentheses(AB[1])}×{entreParentheses(AC[0])}) ={' '}
+                  {triplet(produit)}
+                </Calcul>
+                .
+              </li>
+              <li>
+                Produit scalaire avec AD :{' '}
+                <Calcul>
+                  {entreParentheses(AD[0])}×{entreParentheses(produit[0])} + {entreParentheses(AD[1])}×{entreParentheses(produit[1])} +{' '}
+                  {entreParentheses(AD[2])}×{entreParentheses(produit[2])} = {nombre(mixte)}
+                </Calcul>
+                .
+              </li>
+              <li>
+                {coplanaire
+                  ? 'Le produit mixte est nul : les points A, B, C, D sont coplanaires.'
+                  : `Le produit mixte vaut ${nombre(mixte)}, il est différent de 0 : les points ne sont pas coplanaires.`}
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Pars toujours du même point (ici A) pour écrire les trois vecteurs : B − A, C − A, D − A.</li>
+                <li>Attention aux signes dans le produit vectoriel : chaque coordonnée est une différence de deux produits.</li>
+                <li>Un produit mixte nul ne dépend pas de l'ordre des points : si tu trouves 0, vérifie en changeant de point de départ.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
   );
-};
-
-export default RandomPoints;
+}

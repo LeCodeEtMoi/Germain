@@ -1,123 +1,180 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MathTex from './MathTex.tsx';
+import {
+  Astuce, Boutons, Cadre, Calcul, Choix, Chargement, Correction, Enonce, Formulaire, MessageIncompris, MessageSucces,
+  Retour, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import { binomial, entier, grandNombre, melanger } from '../lib/maths.ts';
 
-// Génère un nombre aléatoire entre un intervalle
-const random = (type: number) => {
-  if (type === 1) {
-    return Math.floor(Math.random() * (40 - 27 + 1)) + 27; // entre 27 et 40
-  } else {
-    return Math.floor(Math.random() * (10 - 3 + 1)) + 3;   // entre 3 et 10
-  }
+/**
+ * Exercice : dénombrer des groupes avec une contrainte (« exactement e élèves de SES »).
+ *
+ * Maths : sur n élèves, s ont choisi SES (les n − s autres ont choisi autre chose).
+ * Un groupe de g élèves contenant exactement e élèves de SES se forme en deux étapes :
+ *   1) choisir les e élèves de SES parmi s : C(s, e) ;
+ *   2) choisir les g − e autres élèves parmi les n − s non-SES : C(n − s, g − e).
+ * Principe multiplicatif : C(s, e) × C(n − s, g − e).
+ * (L'ancienne version utilisait C(n − g, e), qui n'a aucun sens ici.)
+ * Les quatre propositions ont des valeurs toutes différentes (vérifié en BigInt).
+ */
+
+/* ===== Logique ===== */
+
+export type TypeProposition = 'bonne' | 'somme' | 'reste' | 'puissances';
+export type Proposition = { type: TypeProposition; tex: string; valeur: bigint };
+export type Exercice = {
+  n: number; // élèves du groupe de la professeure
+  g: number; // taille du groupe à former
+  e: number; // nombre d'élèves de SES voulus
+  physique: number;
+  ses: number;
+  llce: number;
+  propositions: Proposition[];
 };
 
-// Génère trois nombres qui, une fois additionnés, donnent k
-const genererTroisNombres = (k: number) => {
-    const a = Math.floor(Math.random() * (k / 2)); // Premier nombre (aléatoire entre 0 et k/2)
-    const b = Math.floor(Math.random() * (k - a)); // Deuxième nombre (aléatoire entre 0 et k-a)
-    const c = k - (a + b); // Troisième nombre (le reste de k après a et b)
-  
-    return [a, b, c];
-  };
-// Génere un nombre aléatoire possible d'eleves de ses
-const eleves_ses = (k:nombre)=> {
-    return Math.floor(Math.random() * (k - 2 + 1)) + 2;
+const C = (n: number, k: number) => `\\binom{${n}}{${k}}`;
+
+export function genererExercice(): Exercice {
+  for (;;) {
+    const n = entier(27, 40);
+    const physique = entier(5, 12);
+    const ses = entier(5, 12);
+    const llce = n - physique - ses; // reste de la classe : toujours ≥ 3
+    const g = entier(4, 10);
+    const e = entier(2, Math.min(ses, g - 1)); // au moins un élève hors SES dans le groupe
+    const autres = n - ses; // élèves non-SES (physique-chimie + LLCE)
+    if (llce < 3 || g - e > autres) continue;
+
+    const propositions: Proposition[] = [
+      { type: 'bonne', tex: `${C(ses, e)} \\times ${C(autres, g - e)}`, valeur: binomial(ses, e) * binomial(autres, g - e) },
+      { type: 'somme', tex: `${C(ses, e)} + ${C(autres, g - e)}`, valeur: binomial(ses, e) + binomial(autres, g - e) },
+      { type: 'reste', tex: `${C(ses, e)} \\times ${C(n, g - e)}`, valeur: binomial(ses, e) * binomial(n, g - e) },
+      {
+        type: 'puissances',
+        tex: `${ses}^{${e}} \\times ${autres}^{${g - e}}`,
+        valeur: BigInt(ses) ** BigInt(e) * BigInt(autres) ** BigInt(g - e),
+      },
+    ];
+    if (new Set(propositions.map((p) => p.valeur)).size !== propositions.length) continue; // valeurs toutes différentes
+    return { n, g, e, physique, ses, llce, propositions: melanger(propositions) };
+  }
 }
 
-// Génère une expression descendante (ex: 27 × 26 × 25...)
-const expressionDescendante = (n: number, k: number): string => {
-  const termes = [];
-  for (let i = 0; i < k; i++) {
-    termes.push(n - i);
+/* ===== Affichage ===== */
+
+export default function CombinaisonsContrainte() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [choisi, setChoisi] = useState<string | null>(null);
+  const [retour, setRetour] = useState<null | 'vide' | 'correct' | 'faux'>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { n, g, e, physique, ses, llce, propositions } = exo;
+  const autres = n - ses;
+  const bonne = propositions.find((p) => p.type === 'bonne')!;
+
+  function valider() {
+    if (choisi === null) return setRetour('vide');
+    setRetour(propositions[Number(choisi)].type === 'bonne' ? 'correct' : 'faux');
   }
-  return termes.join(" × ");
-};
 
-// Génère une expression descendante (ex: 27 + 26 + 25...)
-const expressionDescendante1 = (n: number, k: number): string => {
-    const termes = [];
-    for (let i = 0; i < k; i++) {
-      termes.push(n - i);
-    }
-    return termes.join(" + ");
-  };
+  function nouvelExercice() {
+    regenerer();
+    setChoisi(null);
+    setRetour(null);
+  }
 
-// Fonction pour créer un nouvel exercice
-const genererExercice = () => {
-  const nb_eleves = random(1);
-  const groupe = random(0);
-  const a = genererTroisNombres(nb_eleves);
-  const ph = a[0]; // Premier nombre pour la spécialité physique-chimie
-  const ses = a[1]; // Deuxième nombre pour la spécialité SES
-  const llce = a[2]; // Troisième nombre pour la spécialité LLCE
-  const eleve_ses = eleves_ses(ses);
-  
-
-  const propositions = [
-    { tex: `\\binom{${ses}}{${eleve_ses}}+\\binom{${nb_eleves-groupe}}{${eleve_ses}}`, correct: false },
-    { tex: `\\binom{${ses}}{${eleve_ses}}*\\binom{${nb_eleves-groupe}}{${eleve_ses}}`, correct: true },
-    { tex: `${ses}^{${eleve_ses}}*${nb_eleves-groupe}^{${eleve_ses}}`, correct: false },
-    { tex: `\\binom{${ses}}{${eleve_ses}}`, correct: false },
-  ];
-  const melange = propositions.sort(() => Math.random() - 0.5);
-  return { nb_eleves, groupe, ph, ses, llce, eleve_ses,propositions: melange };
-};
-
-const Denombremement: React.FC = () => {
-  const [exercice, setExercice] = useState(genererExercice());
-  const [checked, setChecked] = useState<number | null>(null);
-  const [validated, setValidated] = useState<boolean>(false);
-
-  const handleChange = (index: number) => () => {
-    setChecked(index);
-  };
-
-  const handleValidate = () => {
-    setValidated(true);
-  };
-
-  const handleNewExercise = () => {
-    setExercice(genererExercice());
-    setChecked(null);
-    setValidated(false);
+  const pourquoi: Record<Exclude<TypeProposition, 'bonne'>, string> = {
+    somme: "Les deux choix se font l'un après l'autre : chaque façon de choisir les élèves de SES peut être combinée avec chaque façon de choisir les autres. On multiplie, on n'additionne pas.",
+    reste: `Les ${g - e} autres élèves ne doivent pas être pris parmi les ${n} élèves : ce choix pourrait contenir des élèves de SES, et le groupe n'aurait alors plus exactement ${e} élèves de SES. Il faut les prendre parmi les ${autres} élèves qui n'ont pas choisi SES.`,
+    puissances: "Cette expression compte des choix avec répétition et dans l'ordre. Dans un groupe, les élèves sont tous différents et leur ordre n'a pas d'importance : il faut des combinaisons.",
   };
 
   return (
-    <div>
-      <h4>
-        Une professeure de terminale Spé Maths s'intéresse à l'autre spécialité des {exercice.nb_eleves} élèves de son groupe :
-      </h4>
-      <ul>
-        <li><p>{exercice.ph} élèves ont choisi la spécialité physique-chimie</p></li>
-        <li><p>{exercice.ses} élèves ont choisi la spécialité SES</p></li>
-        <li><p>{exercice.llce} élèves ont choisi la spécialité LLCE espagnol.</p></li>
-      </ul>
-      <p>Elle veut former un groupe de {exercice.groupe} élèves comportant exactement {exercice.eleve_ses} élèves ayant choisi la spécialité SES.
-      De combien de façons différentes peut-elle former un tel groupe ?</p>
-
-      {exercice.propositions.map((item, index) => (
-        <label key={index} style={{ display: 'block', marginBottom: '10px' }}>
-          <input
-            type="radio"
-            name="proposition"
-            checked={checked === index}
-            onChange={handleChange(index)}
-          />{" "}
-          <MathTex tex={item.tex} />
-        </label>
-      ))}
-
-      <button onClick={handleValidate} style={{ marginRight: '10px' }}>
-        Valider
-      </button>
-      <button onClick={handleNewExercise}>Nouvel exercice</button>
-
-      {validated && checked !== null && (
-        <p style={{ color: exercice.propositions[checked].correct ? 'green' : 'red' }}>
-          {exercice.propositions[checked].correct ? 'Bonne réponse !' : 'Mauvaise réponse.'}
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Une professeure de terminale Spé Maths s'intéresse à l'autre spécialité des {n} élèves de son groupe :</p>
+        <ul>
+          <li>{physique} élèves ont choisi la spécialité physique-chimie ;</li>
+          <li>{ses} élèves ont choisi la spécialité SES ;</li>
+          <li>{llce} élèves ont choisi la spécialité LLCE espagnol.</li>
+        </ul>
+        <p>
+          Elle veut former un groupe de {g} élèves comportant exactement {e} élèves ayant choisi la spécialité SES. De combien
+          de façons différentes peut-elle former un tel groupe ?
         </p>
-      )}
-    </div>
-  );
-};
+      </Enonce>
 
-export default Denombremement;
+      <Formulaire onValider={valider}>
+        <Choix
+          legende="Choisis la bonne expression"
+          valeur={choisi}
+          onChange={setChoisi}
+          options={propositions.map((p, i) => ({ valeur: String(i), contenu: <MathTex tex={p.tex} /> }))}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {retour === 'vide' && <MessageIncompris raison="Choisis une proposition avant de valider." />}
+        {retour === 'correct' && (
+          <MessageSucces>
+            <p>
+              Il y a <MathTex tex={bonne.tex} /> = {grandNombre(bonne.valeur)} groupes possibles.
+            </p>
+          </MessageSucces>
+        )}
+        {retour === 'faux' && (
+          <Retour type="faux">
+            <p>Oups, une erreur s'est glissée. La bonne réponse est :</p>
+            <div className="exercice-formule">
+              <MathTex tex={bonne.tex} />
+            </div>
+            <Correction>
+              <li>
+                Le groupe contient exactement {e} élève{e > 1 ? 's' : ''} de SES, donc {g - e} élève{g - e > 1 ? 's' : ''} qui n'ont pas
+                choisi SES.
+              </li>
+              <li>
+                On choisit les {e} élèves de SES parmi les {ses} : <Calcul>C({ses}, {e}) = {grandNombre(binomial(ses, e))}</Calcul>{' '}
+                possibilités.
+              </li>
+              <li>
+                On choisit les {g - e} autres élèves parmi ceux qui n'ont pas choisi SES, soit {physique} + {llce} = {autres} élèves :{' '}
+                <Calcul>C({autres}, {g - e}) = {grandNombre(binomial(autres, g - e))}</Calcul> possibilités.
+              </li>
+              <li>
+                Les deux choix sont indépendants : on multiplie (principe multiplicatif).{' '}
+                <Calcul>
+                  {grandNombre(binomial(ses, e))} × {grandNombre(binomial(autres, g - e))} = {grandNombre(bonne.valeur)}
+                </Calcul>{' '}
+                groupes.
+              </li>
+              <li>
+                Pourquoi les autres propositions sont fausses :
+                <ul>
+                  {propositions
+                    .filter((p) => p.type !== 'bonne')
+                    .map((p) => (
+                      <li key={p.type}>
+                        <MathTex tex={p.tex} /> {propositions[Number(choisi)].type === p.type && <strong>(ta réponse) </strong>}
+                        {pourquoi[p.type as Exclude<TypeProposition, 'bonne'>]}
+                      </li>
+                    ))}
+                </ul>
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Découpe le groupe en catégories : ici, les élèves de SES et les autres.</li>
+                <li>Pour chaque catégorie, choisis le bon nombre d'élèves parmi ceux de cette catégorie seulement.</li>
+                <li>Quand les choix sont successifs et indépendants, on multiplie les nombres de possibilités.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
+  );
+}

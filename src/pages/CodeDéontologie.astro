@@ -1,73 +1,259 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import '../styles/global.css';
+import '../styles/bulma.min.css';
+import '../styles/theme.css';
 
-type Props = CollectionEntry<'blog'>['data'];
+const base = '/Germain/';
 
-const { title, description, updatedDate, heroImage } = Astro.props;
+const titre = 'Code de déontologie';
+const description =
+  'Les principes que respectent les contributeurs de Germain : rigueur, ouverture, attribution et modération.';
+
+const regles = [
+  {
+    titre: 'Respect de la rigueur scientifique',
+    points: [
+      'Les contenus publiés doivent s\'appuyer sur des connaissances mathématiques avérées, sourcées si nécessaire.',
+      'Toute démonstration, définition ou théorie doit être présentée de manière claire, rigoureuse et sans approximation abusive.',
+      'Les contributeurs doivent reconnaître les limites de leurs compétences et éviter de publier du contenu sur un sujet qu\'ils ne maîtrisent pas suffisamment.',
+    ],
+  },
+  {
+    titre: 'Ouverture et partage des savoirs',
+    points: [
+      'Le site repose sur une philosophie open source : les contributions doivent être partagées librement, dans le respect des licences en vigueur (ex. : licence Creative Commons).',
+      'Toute contribution est soumise à relecture et peut être modifiée ou améliorée par la communauté.',
+      'Les idées originales, si elles sont publiées, doivent être accompagnées de l\'indication claire de leur caractère spéculatif ou expérimental.',
+      'Les propositions de cours doivent respecter l\'identité graphique de Germain.',
+    ],
+  },
+  {
+    titre: 'Crédit et attribution',
+    points: [
+      'Les contributeurs doivent citer leurs sources et rendre hommage au travail d\'autrui (ouvrages, articles, auteurs, etc.).',
+      'Le plagiat est strictement interdit. Tout contenu copié sans autorisation ni mention explicite de la source sera supprimé.',
+    ],
+  },
+  {
+    titre: 'Modération et responsabilité',
+    points: [
+      'L\'équipe de modération se réserve le droit de refuser, modifier ou supprimer tout contenu qui ne respecte pas ces règles.',
+      'Les contributeurs sont responsables de leurs écrits et s\'engagent à collaborer avec la communauté pour corriger toute erreur signalée.',
+    ],
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
-	</head>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${titre} – Germain`} description={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-	<body>
-		<Header />
-		<main class="container">
-			<article class="box">
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="content">
-					<h1 class="title">{title}</h1>
-					
-					<hr />
-					Germain a pour mission de rendre les mathématiques accessibles, stimulantes et valorisées auprès du plus grand nombre. En tant que plateforme collaborative ouverte à la participation de passionnés, nous nous engageons à respecter les principes suivants. Toute personne contribuant au site s’engage également à respecter ce code de déontologie.<br>
+  <body>
+    <Header />
 
-                    
-                    <span class="tag is-success">Regle 1 : Respect de la rigueur scientifique</span>
+    <main>
+      <section class="deonto-intro">
+        <div class="container">
+          <h1 class="deonto-titre righteous"><span aria-hidden="true">//</span> {titre}</h1>
+          <p class="deonto-chapeau">
+            Germain a pour mission de rendre les mathématiques accessibles, stimulantes et valorisées
+            auprès du plus grand nombre. En tant que plateforme collaborative ouverte à la participation
+            de passionnés, nous nous engageons à respecter les principes suivants. Toute personne
+            contribuant au site s'engage également à respecter ce code de déontologie.
+          </p>
+        </div>
+      </section>
 
-                    <ul>
-                        <li>Les contenus publiés doivent s'appuyer sur des connaissances mathématiques avérées, sourcées si nécessaire.</li>
-                        <li>Toute démonstration, définition ou théorie doit être présentée de manière claire, rigoureuse et sans approximation abusive.</li>
-                        <li>Les contributeurs doivent reconnaître les limites de leurs compétences et éviter de publier du contenu sur un sujet qu’ils ne maîtrisent pas suffisamment.</li>
+      <section class="deonto-regles">
+        <div class="container">
+          <ol class="regles" role="list">
+            {
+              regles.map((regle, i) => (
+                <li class="regle">
+                  <span class="regle-num righteous" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <div class="regle-corps">
+                    <h2 class="regle-titre righteous">{regle.titre}</h2>
+                    <ul class="regle-points">
+                      {regle.points.map((point) => (
+                        <li>{point}</li>
+                      ))}
                     </ul>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
 
-                    <span class="tag is-success">Regle 2 : Ouverture et partage des savoirs</span>
+      <section class="deonto-appel">
+        <div class="container">
+          <p>
+            En participant à Germain, vous contribuez à une communauté mathématique dynamique,
+            accessible et rigoureuse. Merci pour votre engagement !
+          </p>
+          <a class="button bouton-principal" href={`${base}aide`}>Participer au projet</a>
+        </div>
+      </section>
+    </main>
 
-                    <ul>
-                        <li>Le site repose sur une philosophie open source : les contributions doivent être partagées librement, dans le respect des licences en vigueur (ex. : licence Creative Commons).</li>
-
-                        <li>Toute contribution est soumise à relecture et peut être modifiée ou améliorée par la communauté.</li>
-                            
-                        <li>Les idées originales, si elles sont publiées, doivent être accompagnées de l'indication claire de leur caractère spéculatif ou expérimental.</li>
-
-                        <li> Les propositions de cours doivent respecter l'identiter graphique de Germain</li>
-                    </ul>
-
-                    <span class="tag is-success">Regle 3 : Crédit et attribution</span>
-
-                    <ul>
-                        <li>Les contributeurs doivent citer leurs sources et rendre hommage au travail d’autrui (ouvrages, articles, auteurs, etc.)</li>
-                        <li>Le plagiat est strictement interdit. Tout contenu copié sans autorisation ni mention explicite de la source sera supprimé.</li>
-        
-                    </ul>
-                        <span class="tag is-success">Regle 4 : Modération et responsabilité</span>
-
-                    
-                    <ul>
-                        <li>L’équipe de modération se réserve le droit de refuser, modifier ou supprimer tout contenu qui ne respecte pas ces règles.</li>
-                        <li>Les contributeurs sont responsables de leurs écrits et s'engagent à collaborer avec la communauté pour corriger toute erreur signalée.</li>
-                    </ul>
-                    En participant à Germain, vous contribuez à une communauté mathématique dynamique, accessible et rigoureuse. Merci pour votre engagement !
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+    <Footer />
+  </body>
 </html>
+
+<style>
+  /* Même rythme vertical que la page À propos */
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .deonto-intro {
+    /* le header est fixe : on laisse la place en haut */
+    padding: 7rem 0 0;
+  }
+
+  .deonto-titre {
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--encre);
+    margin: 0 0 1.25rem;
+  }
+
+  .deonto-titre span {
+    color: var(--violet);
+  }
+
+  .deonto-chapeau {
+    font-size: 1.2rem;
+    line-height: 1.65;
+    max-width: 62ch;
+    color: #3b3555;
+  }
+
+  .deonto-regles {
+    padding: var(--espace) 0;
+  }
+
+  /* ---------- Les quatre règles ---------- */
+  .regles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 52rem;
+  }
+
+  .regle {
+    display: flex;
+    gap: clamp(1rem, 3vw, 1.75rem);
+    padding: 2rem 0;
+    border-top: 2px solid var(--lavande-pale);
+  }
+
+  .regle:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .regle:last-child {
+    padding-bottom: 0;
+  }
+
+  .regle-num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--craie);
+    color: var(--violet-profond);
+    font-size: 1.5rem;
+  }
+
+  .regle-titre {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    line-height: 1.25;
+    color: var(--encre);
+    margin: 0.3rem 0 1rem;
+  }
+
+  .regle-points {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.25rem;
+    border-left: 4px solid var(--lavande);
+  }
+
+  .regle-points li {
+    font-size: 1.1rem;
+    line-height: 1.65;
+    max-width: 62ch;
+    color: #3b3555;
+  }
+
+  .regle-points li + li {
+    margin-top: 0.75rem;
+  }
+
+  /* ---------- Bande finale ---------- */
+  .deonto-appel {
+    background: var(--papier);
+    padding: var(--espace) 0;
+  }
+
+  .deonto-appel .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .deonto-appel p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.5;
+    max-width: 48ch;
+    margin: 0;
+  }
+
+  .button.bouton-principal {
+    background: var(--violet);
+    border-color: var(--violet);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .button.bouton-principal:hover {
+    background: var(--violet-profond);
+    border-color: var(--violet-profond);
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .deonto-intro {
+      padding-top: 6rem;
+    }
+
+    .regle-num {
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: 1.2rem;
+    }
+  }
+</style>

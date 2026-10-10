@@ -1,182 +1,178 @@
-import React, { useState, useEffect } from "react";
-import { generateRandomPoint, type Point3D } from "./RandomPoint3D";
+import { useState } from 'react';
+import {
+  Astuce, Boutons, Cadre, Calcul, Choix, Chargement, Correction, Donnees, Enonce, Formulaire, MessageIncompris,
+  MessageSucces, Retour, Systeme, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import {
+  affine, colineaires, entier, fraction, lignesParametriques, memeFraction, nombre, signeAleatoire, texteFraction, triplet,
+  vecAdd, vecAleatoire, vecNul, vecScale, vecSub, type Fraction, type Vec3,
+} from '../lib/maths.ts';
 
-const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : un point M appartient-il à la droite (Δ) donnée par une représentation paramétrique ?
+ *
+ * Maths : M ∈ (Δ) ⇔ il existe un réel t tel que M = A + t·u
+ *   ⇔ pour chaque coordonnée : (M − A)ᵢ = t·uᵢ, avec le MÊME t.
+ *   Coordonnée où uᵢ = 0 : il faut Mᵢ = Aᵢ ; sinon t = (Mᵢ − Aᵢ)/uᵢ (fraction exacte).
+ * Comme u ≠ 0, c'est équivalent à : AM et u colinéaires (produit vectoriel nul).
+ * La réponse attendue est calculée avec la méthode des fractions exactes ; le test
+ * automatique vérifie qu'elle coïncide avec le produit vectoriel sur des milliers de tirages.
+ */
 
-// Fonction pour générer les données d'un nouvel exercice
-function generateExerciseData() {
-  const linePointA = generateRandomPoint(-10, 10);
-  
-  let lineVectorU: Point3D;
-  do {
-    lineVectorU = generateRandomPoint(-5, 5);
-  } while (lineVectorU.x === 0 && lineVectorU.y === 0 && lineVectorU.z === 0);
+/* ===== Logique ===== */
 
-  const shouldBeOnLine = Math.random() > 0.5;
-  let pointM: Point3D;
-  let isPointOnLine: boolean;
+export type Exercice = { A: Vec3; u: Vec3; M: Vec3 };
 
-  if (shouldBeOnLine) {
-    const t = randomInt(-5, 5);
-    pointM = {
-      x: linePointA.x + lineVectorU.x * t,
-      y: linePointA.y + lineVectorU.y * t,
-      z: linePointA.z + lineVectorU.z * t,
-    };
-    isPointOnLine = true;
-  } else {
-    const t = randomInt(-5, 5);
-    pointM = {
-      x: linePointA.x + lineVectorU.x * t,
-      y: linePointA.y + lineVectorU.y * t,
-      z: linePointA.z + lineVectorU.z * t,
-    };
-    const coordToChange = ['x', 'y', 'z'][randomInt(0, 2)] as keyof Point3D;
-    pointM[coordToChange] += randomInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
-    isPointOnLine = false;
-  }
+export type EtudeCoordonnee =
+  | { type: 'fixe'; axe: number; egal: boolean } // uᵢ = 0 : Mᵢ doit valoir Aᵢ
+  | { type: 'parametre'; axe: number; t: Fraction }; // uᵢ ≠ 0 : valeur de t imposée par cette coordonnée
 
-  return { linePointA, lineVectorU, pointM, isPointOnLine };
+export function etudier({ A, u, M }: Exercice): { coordonnees: EtudeCoordonnee[]; surLaDroite: boolean } {
+  const coordonnees: EtudeCoordonnee[] = [0, 1, 2].map((axe) =>
+    u[axe] === 0
+      ? { type: 'fixe', axe, egal: M[axe] === A[axe] }
+      : { type: 'parametre', axe, t: fraction(M[axe] - A[axe], u[axe]) }
+  );
+  const valeursT = coordonnees.flatMap((c) => (c.type === 'parametre' ? [c.t] : []));
+  const fixesOk = coordonnees.every((c) => c.type !== 'fixe' || c.egal);
+  const memeT = valeursT.every((t) => memeFraction(t, valeursT[0]));
+  return { coordonnees, surLaDroite: fixesOk && memeT };
 }
 
-// Fonction pour formater la représentation paramétrique
-function formatParametric(A: Point3D, V: Point3D): React.ReactNode {
-    const formatVal = (val: number, sign: boolean = false) => {
-        if (val === 0) return "";
-        const signStr = val > 0 ? "+" : "-";
-        const absVal = Math.abs(val);
-        if (absVal === 1) return `${sign ? signStr : (val > 0 ? "" : "-")}t`;
-        return `${sign ? signStr : (val > 0 ? "" : "-")}${absVal}t`;
+export function genererExercice(surLaDroite = Math.random() < 0.5): Exercice {
+  for (;;) {
+    const A = vecAleatoire(-6, 6);
+    const u = vecAleatoire(-4, 4);
+    if (vecNul(u)) continue; // un vecteur directeur n'est jamais nul
+    const t = entier(-4, 4);
+    let M = vecAdd(A, vecScale(u, t));
+    if (!surLaDroite) {
+      // On écarte M d'un point de la droite, puis on vérifie qu'il n'y est vraiment plus :
+      // si u est parallèle à un axe, décaler dans cette direction laisserait M sur la droite.
+      M = [...M] as Vec3;
+      M[entier(0, 2)] += entier(1, 3) * signeAleatoire();
     }
-
-    return (
-        <pre className="is-family-monospace has-background-light p-3">
-            {`{\n  x = ${A.x} ${formatVal(V.x, true)}\n  y = ${A.y} ${formatVal(V.y, true)}\n  z = ${A.z} ${formatVal(V.z, true)}\n(t ∈ ℝ)`}
-        </pre>
-    );
+    if (colineaires(vecSub(M, A), u) !== surLaDroite) continue;
+    return { A, u, M };
+  }
 }
 
-export default function PointOnLineCheck() {
-  const [linePointA, setLinePointA] = useState<Point3D>({ x: 0, y: 0, z: 0 });
-  const [lineVectorU, setLineVectorU] = useState<Point3D>({ x: 1, y: 1, z: 1 });
-  const [pointM, setPointM] = useState<Point3D>({ x: 0, y: 0, z: 0 });
-  const [isPointOnLine, setIsPointOnLine] = useState(false);
-  const [feedback, setFeedback] = useState<null | { correct: boolean; message: React.ReactNode }>(null);
+/* ===== Affichage ===== */
 
-  function handleNewExercise() {
-    const { linePointA, lineVectorU, pointM, isPointOnLine } = generateExerciseData();
-    setLinePointA(linePointA);
-    setLineVectorU(lineVectorU);
-    setPointM(pointM);
-    setIsPointOnLine(isPointOnLine);
-    setFeedback(null);
+const termeT = (c: number) => (c === 1 ? 't' : c === -1 ? '−t' : `${nombre(c)}t`);
+const NOMS = ['x', 'y', 'z'];
+
+export default function PointSurDroite() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [reponse, setReponse] = useState<string | null>(null);
+  const [retour, setRetour] = useState<null | 'vide' | 'correct' | 'faux'>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { A, u, M } = exo;
+  const etude = etudier(exo);
+  const surLaDroite = etude.surLaDroite;
+
+  function valider() {
+    if (reponse === null) return setRetour('vide');
+    setRetour((reponse === 'oui') === surLaDroite ? 'correct' : 'faux');
   }
 
-  useEffect(() => {
-    handleNewExercise();
-  }, []);
-
-  function getFeedbackMessage(correct: boolean): React.ReactNode {
-    if (correct) {
-      return <p>🎉 Bravo Maître, la réponse est correcte !</p>;
-    }
-
-    const { x: xM, y: yM, z: zM } = pointM;
-    const { x: xA, y: yA, z: zA } = linePointA;
-    const { x: u, y: v, z: w } = lineVectorU;
-    
-    const steps = [];
-
-    if (u !== 0) {
-        const t = (xM - xA) / u;
-        steps.push(<p>{`${xM} = ${xA} + ${u}t → ${u}t = ${xM - xA} → t = ${t.toFixed(2)}`}</p>);
-    } else {
-        steps.push(<p>Pour x, on vérifie si {xM} = {xA}. C'est {xM === xA ? "vrai" : "faux"}.</p>);
-    }
-
-    if (v !== 0) {
-        const t = (yM - yA) / v;
-        steps.push(<p>{`${yM} = ${yA} + ${v}t → ${v}t = ${yM - yA} → t = ${t.toFixed(2)}`}</p>);
-    } else {
-        steps.push(<p>Pour y, on vérifie si {yM} = {yA}. C'est {yM === yA ? "vrai" : "faux"}.</p>);
-    }
-
-    if (w !== 0) {
-        const t = (zM - zA) / w;
-        steps.push(<p>{`${zM} = ${zA} + ${w}t → ${w}t = ${zM - zA} → t = ${t.toFixed(2)}`}</p>);
-    } else {
-        steps.push(<p>Pour z, on vérifie si {zM} = {zA}. C'est {zM === zA ? "vrai" : "faux"}.</p>);
-    }
-
-    const conclusion = isPointOnLine
-      ? "Le point est sur la droite mais vous avez répondu non."
-      : "Le point n'est pas sur la droite mais vous avez répondu oui.";
-
-    return (
-      <div className="content">
-        <p>❌ Oups, une erreur s'est glissée, Maître. {conclusion}</p>
-        <p><strong>Explication :</strong></p>
-        <p>On cherche s'il existe un réel 't' qui satisfait les trois équations simultanément :</p>
-        {steps}
-        <p>Pour que le point appartienne à la droite, il faut trouver la même valeur de 't' pour chaque équation (ou que les coordonnées fixes correspondent).</p>
-        <p>La bonne réponse était : <strong>{isPointOnLine ? "Oui" : "Non"}</strong>.</p>
-      </div>
-    );
+  function nouvelExercice() {
+    regenerer();
+    setReponse(null);
+    setRetour(null);
   }
 
-  function handleValidate(userAnswer: boolean) {
-    if (userAnswer === isPointOnLine) {
-      setFeedback({ correct: true, message: getFeedbackMessage(true) });
-    } else {
-      setFeedback({ correct: false, message: getFeedbackMessage(false) });
-    }
-  }
+  const premierT = etude.coordonnees.find((c): c is Extract<EtudeCoordonnee, { type: 'parametre' }> => c.type === 'parametre');
 
   return (
-    <div className="columns is-centered mt-6">
-      <div className="column is-two-thirds">
-        <div className="box content">
-          <h2 className="title is-4">Le point M appartient-il à la droite (Δ) ?</h2>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Dans l'espace, la droite (Δ) a pour représentation paramétrique le système ci-dessous, où t décrit ℝ. Le point M
+          appartient-il à la droite (Δ) ?
+        </p>
+      </Enonce>
+      <Donnees elements={[['Point M', triplet(M)]]} />
+      <Systeme legende="Représentation paramétrique de (Δ), avec t ∈ ℝ" lignes={lignesParametriques(A, u, 't')} />
 
-          <div className="mb-4">
+      <Formulaire onValider={valider}>
+        <Choix
+          legende="Ta réponse"
+          enLigne
+          valeur={reponse}
+          onChange={setReponse}
+          options={[
+            { valeur: 'oui', contenu: 'Oui, M appartient à (Δ)' },
+            { valeur: 'non', contenu: "Non, M n'appartient pas à (Δ)" },
+          ]}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {retour === 'vide' && <MessageIncompris raison="Choisis une réponse avant de valider." />}
+        {retour === 'correct' && (
+          <MessageSucces>
+            {surLaDroite && premierT && (
+              <p>
+                En effet, M est obtenu pour t = {texteFraction(premierT.t)}.
+              </p>
+            )}
+          </MessageSucces>
+        )}
+        {retour === 'faux' && (
+          <Retour type="faux">
             <p>
-              <strong>Point M :</strong> ({`${pointM.x}; ${pointM.y}; ${pointM.z}`})
+              Oups, une erreur s'est glissée. Le point M {surLaDroite ? 'appartient' : "n'appartient pas"} à la droite (Δ).
             </p>
-            <div>
-              <strong>Représentation paramétrique de (Δ) :</strong>
-              {formatParametric(linePointA, lineVectorU)}
-            </div>
-          </div>
-
-          <div className="field is-grouped is-grouped-centered">
-            <div className="control">
-              <button className="button is-success" onClick={() => handleValidate(true)}>
-                Oui
-              </button>
-            </div>
-            <div className="control">
-              <button className="button is-danger" onClick={() => handleValidate(false)}>
-                Non
-              </button>
-            </div>
-          </div>
-          
-          <div className="field is-grouped is-grouped-centered mt-4">
-             <div className="control">
-              <button className="button is-light" onClick={handleNewExercise}>
-                Nouvel exercice
-              </button>
-            </div>
-          </div>
-
-          {feedback && (
-            <div className={`notification ${feedback.correct ? "is-success" : "is-danger"} is-light mt-4`}>
-              <button className="delete" onClick={() => setFeedback(null)}></button>
-              {feedback.message}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+            <Correction>
+              <li>
+                M appartient à (Δ) s'il existe <strong>un même réel t</strong> qui donne les trois coordonnées de M{' '}
+                {triplet(M)}.
+              </li>
+              {etude.coordonnees.map((c) => {
+                const nom = NOMS[c.axe];
+                const diff = M[c.axe] - A[c.axe];
+                const equation = `${nombre(M[c.axe])} = ${affine(A[c.axe], u[c.axe], 't')}`;
+                return (
+                  <li key={nom}>
+                    Coordonnée {nom} : <Calcul>{equation}</Calcul>
+                    {c.type === 'parametre' ? (
+                      <>
+                        , donc <Calcul>{termeT(u[c.axe])} = {nombre(diff)}</Calcul>, soit{' '}
+                        <Calcul>t = {texteFraction(c.t)}</Calcul>.
+                      </>
+                    ) : (
+                      <>
+                        . Ici le coefficient de t est nul : {nom} vaut toujours {nombre(A[c.axe])} sur la droite. Or{' '}
+                        {nom}
+                        <sub>M</sub> = {nombre(M[c.axe])}, {c.egal ? 'c’est cohérent.' : 'ce qui est différent : M ne peut pas être sur la droite.'}
+                      </>
+                    )}
+                  </li>
+                );
+              })}
+              <li>
+                {surLaDroite
+                  ? `Les coordonnées conduisent à la même valeur t = ${premierT ? texteFraction(premierT.t) : ''} (et les coordonnées constantes concordent) : M appartient à (Δ).`
+                  : etude.coordonnees.some((c) => c.type === 'fixe' && !c.egal)
+                    ? 'Une coordonnée constante ne correspond pas : M n’appartient pas à (Δ).'
+                    : 'Les coordonnées ne donnent pas la même valeur de t : M n’appartient pas à (Δ).'}
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Il faut le même t pour les trois équations : trouver t avec x ne suffit pas.</li>
+                <li>Si le coefficient de t est nul, la coordonnée est constante : on compare simplement les deux valeurs.</li>
+                <li>Garde les fractions telles quelles (t = 1/3) plutôt que des valeurs arrondies.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
   );
 }

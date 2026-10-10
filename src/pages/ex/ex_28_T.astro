@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_27_T.tsx';
+import LnEgalite from '../../components/Ex_28_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Équations et inéquations ln(u) et ln(v)",
+  description: "Résous une équation ou une inéquation du type ln(u(x)) ⊳ ln(v(x)) en déterminant le domaine",
+  chapitre: "Fonction logarithme népérien",
+};
 ---
 
-<LeconLayout title="Résoudre une équation / inéquation avec ln ou exp on aura des exo plus dure  du type ln(u(x)) =ln(v(x)) ou  ln(u(x)) < ln(v(x)">
-  <main>   
-    <PythonThresholdAnalysis client:load />
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <LnEgalite client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

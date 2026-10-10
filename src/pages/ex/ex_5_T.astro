@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_5_T.tsx';
+import Derivation from '../../components/Ex_5_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Dérivée de a·xⁿ",
+  description: "Détermine la fonction dérivée d'une fonction puissance",
+  chapitre: "Dérivation et convexité",
+};
 ---
 
-<LeconLayout title="Appartenance à une droite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <Derivation client:load />
   </main>
 </LeconLayout>

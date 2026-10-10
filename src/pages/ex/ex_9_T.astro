@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_9_T.tsx';
+import CombinaisonsContrainte from '../../components/Ex_9_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Dénombrement avec contrainte",
+  description: "Dénombre des groupes contenant exactement un nombre donné d'élèves d'une spécialité",
+  chapitre: "Dénombrement",
+};
 ---
 
-<LeconLayout title="Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <CombinaisonsContrainte client:load />
   </main>
 </LeconLayout>

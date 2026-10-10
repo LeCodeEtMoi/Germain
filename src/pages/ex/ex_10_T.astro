@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_10_T.tsx';
+import Primitive from '../../components/Ex_10_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Déterminer une primitive",
+  description: "Détermine une primitive d'une fonction usuelle",
+  chapitre: "Primitives et équations différentielles",
+};
 ---
 
-<LeconLayout title="Appartenance à une droite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <Primitive client:load />
   </main>
 </LeconLayout>

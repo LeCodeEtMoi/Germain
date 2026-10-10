@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import SequenceLimitCheck from '../../components/Ex_14_T.tsx';
+import LimiteSuite from '../../components/Ex_14_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Limite d'une suite",
+  description: "Détermine la limite d'une suite définie par une formule explicite",
+  chapitre: "Limites de suites",
+};
 ---
 
-<LeconLayout title="Exercice 14T - Limite d'une suite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <SequenceLimitCheck client:load />
+    <LimiteSuite client:load />
   </main>
 </LeconLayout>

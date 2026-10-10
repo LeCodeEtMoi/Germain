@@ -1,93 +1,113 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { combinaison, entier } from '../lib/maths.ts';
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : intégration par parties, I = ∫ de a à b de x·e^(kx) dx.
+ *
+ *   u(x) = x, v′(x) = e^(kx)  →  I = [x·e^(kx)/k] − ∫ e^(kx)/k dx = [ (kx − 1)·e^(kx) / k² ]
+ *
+ * Paramètres choisis petits (k = 1 ou 2, bornes ≤ 3) pour garder des valeurs raisonnables.
+ * La réponse est comparée à la valeur exacte à 0,0051 près : on accepte une valeur arrondie au centième
+ * ou une écriture exacte avec e (comme (e^2+1)/4).
+ */
+
+/* ===== Logique ===== */
+
+export type Exercice = { k: number; a: number; b: number };
+
+export function genererExercice(): Exercice {
+  const a = entier(0, 1);
+  return { k: entier(1, 2), a, b: a + entier(1, 2) };
 }
 
-function generateProblem() {
-  const a = getRandomInt(0, 2);
-  const b = getRandomInt(3, 5);
-  const k = getRandomInt(1, 4);
-  return { a, b, k };
-}
+const primitive = (k: number, x: number) => ((k * x - 1) / (k * k)) * Math.exp(k * x);
+export const valeur = ({ k, a, b }: Exercice) => primitive(k, b) - primitive(k, a);
 
-function computeExact(a: number, b: number, k: number): string {
-  const F = (x: number) => (1 / k ** 2) * (k * x - 1) * Math.exp(k * x);
-  const val = F(b) - F(a);
-  return val.toFixed(3);
-}
+export const questions = (exo: Exercice): Question[] => [
+  {
+    type: 'nombre',
+    id: 'I',
+    libelle: <>Valeur de <MathTex tex="I" /> :</>,
+    attendu: valeur(exo),
+    tolerance: 0.0051,
+    placeholder: 'Ex : 12,35',
+    aide: 'Valeur arrondie au centième (virgule ou point), ou valeur exacte avec e (par exemple (3*e^2+1)/4).',
+  },
+];
 
-export default function IntegrationByPartsExercise() {
-  const [problem, setProblem] = useState(generateProblem());
-  const [userAnswer, setUserAnswer] = useState('');
-  const [showCorrection, setShowCorrection] = useState(false);
-  const [feedback, setFeedback] = useState('');
+/* ===== Affichage ===== */
 
-  const handleCheck = () => {
-    setShowCorrection(true);
-    const expected = computeExact(problem.a, problem.b, problem.k);
-    const given = parseFloat(userAnswer.replace(',', '.')).toFixed(3);
-    if (given === expected) {
-      setFeedback("✅ Exact, Maître. Vous dominez l'intégration par parties.");
-    } else {
-      setFeedback(`❌ Faux, Maître. Il fallait environ ${expected}`);
-    }
-  };
+export default function IntegrationParties() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
 
-  const handleNew = () => {
-    setProblem(generateProblem());
-    setUserAnswer('');
-    setShowCorrection(false);
-    setFeedback('');
-  };
-
-  const { a, b, k } = problem;
+  const { k, a, b } = exo;
+  const v = valeur(exo);
+  const vTex = v.toFixed(2).replace('.', '{,}');
+  const kx = k === 1 ? 'x' : `${k}x`;
+  const numerateur = combinaison([[k * b - 1, `e^{${k * b}}`], [-(k * a - 1), a === 0 ? '' : `e^{${k * a}}`]], true);
 
   return (
-    <div className="box content">
-      <h2 className="title is-4">Intégration par parties</h2>
-      <p>Soit l'intégrale suivante :</p>
-      <MathTex tex={`\\int_{${a}}^{${b}} x \\cdot e^{${k}x} \\, dx`} />
-
-      <div className="field mt-4">
-        <label className="label">Votre réponse (valeur approchée à 10⁻³ près)</label>
-        <input
-          type="text"
-          className="input"
-          placeholder="Ex: 12.345"
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-        />
-      </div>
-
-      <div className="buttons mt-3">
-        <button className="button is-primary" onClick={handleCheck}>
-          Valider
-        </button>
-        <button className="button is-light" onClick={handleNew}>
-          Nouvel exercice
-        </button>
-      </div>
-
-      {showCorrection && (
-        <>
-          <div className="notification is-info mt-4">
-            <p>{feedback}</p>
-          </div>
-          <h3 className="title is-5">Correction</h3>
-          <p>On pose :</p>
-          <ul>
-            <li><MathTex tex={`u(x) = x \\Rightarrow u'(x) = 1`} /></li>
-            <li><MathTex tex={`v'(x) = e^{${k}x} \\Rightarrow v(x) = \\frac{1}{${k}} e^{${k}x}`} /></li>
-          </ul>
-          <p>Alors :</p>
-          <MathTex tex={`\\int x \\cdot e^{${k}x} dx = \\frac{x}{${k}} e^{${k}x} - \\int \\frac{1}{${k}} e^{${k}x} dx = \\frac{x}{${k}} e^{${k}x} - \\frac{1}{${k}^2} e^{${k}x} + C`} />
-          <p>Donc :</p>
-          <MathTex tex={`\\int_{${a}}^{${b}} x e^{${k}x} dx = \\left[ \\frac{1}{${k}^2} ( ${k}x - 1 ) e^{${k}x} \\right]_{${a}}^{${b}}`} />
-          <p>Valeur approchée : <strong>{computeExact(a, b, k)}</strong></p>
-        </>
-      )}
-    </div>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>À l’aide d’une intégration par parties, calcule :</p>
+        <div className="exercice-formule">
+          <MathTex tex={`I = \\int_{${a}}^{${b}} x\\, e^{${kx}} \\, dx`} />
+        </div>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
+          <p>
+            <MathTex tex={`I = \\frac{${numerateur}}{${k * k}} \\approx ${vTex}`} />.
+          </p>
+        }
+        correction={
+          <>
+            <li>
+              On pose <MathTex tex="u(x) = x" /> et <MathTex tex={`v'(x) = e^{${kx}}`} />, donc <MathTex tex="u'(x) = 1" /> et <MathTex tex={`v(x) = ${k === 1 ? '' : `\\frac{1}{${k}}`}e^{${kx}}`} />.
+            </li>
+            <li>
+              Formule : <MathTex tex="\int_a^b u v' = \left[uv\right]_a^b - \int_a^b u' v" />. Ici :
+              <div className="exercice-formule">
+                <MathTex tex={`I = \\left[ ${k === 1 ? 'x' : `\\frac{x}{${k}}`} e^{${kx}} \\right]_{${a}}^{${b}} - \\int_{${a}}^{${b}} ${k === 1 ? '' : `\\frac{1}{${k}}`} e^{${kx}} \\, dx`} />
+              </div>
+            </li>
+            <li>
+              Une primitive de <MathTex tex={`${k === 1 ? '' : `\\frac{1}{${k}}`}e^{${kx}}`} /> est <MathTex tex={`\\frac{1}{${k * k}} e^{${kx}}`} />, donc
+              <div className="exercice-formule">
+                <MathTex tex={`I = \\left[ \\frac{${kx} - 1}{${k * k}} e^{${kx}} \\right]_{${a}}^{${b}}`} />
+              </div>
+            </li>
+            <li>
+              <MathTex tex={`I = \\frac{${numerateur}}{${k * k}} \\approx ${vTex}`} />.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Choisis u = x (qui se simplifie en le dérivant) et v′ = e^(kx) : le calcul de l’intégrale restante est immédiat.
+            </li>
+            <li>
+              Une primitive de <MathTex tex="e^{kx}" /> est <MathTex tex="\frac{1}{k}e^{kx}" /> : n’oublie pas le facteur <MathTex tex="\frac1k" />, il apparaît deux fois (donc <MathTex tex="\frac{1}{k^{2}}" />).
+            </li>
+            <li>
+              Pense que <MathTex tex="e^{0} = 1" /> quand la borne vaut 0, et garde les valeurs exactes jusqu’à la fin avant d’arrondir.
+            </li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

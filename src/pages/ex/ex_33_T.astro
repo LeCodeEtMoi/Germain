@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_33_T.tsx';
+import PrimitivesClassiques from '../../components/Ex_33_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Primitives classiques",
+  description: "Détermine une primitive d'une fonction avec puissances, inverse ou forme u'/u^n",
+  chapitre: "Primitives et équations différentielles",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
-  <main>   
-    <PythonThresholdAnalysis client:load />
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <PrimitivesClassiques client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

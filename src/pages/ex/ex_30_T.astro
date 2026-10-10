@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_30_T.tsx';
+import FonctionAuxiliaire from '../../components/Ex_30_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Étude avec une fonction auxiliaire",
+  description: "Étudie une fonction avec ln à l'aide d'une fonction auxiliaire φ",
+  chapitre: "Fonction logarithme népérien",
+};
 ---
 
-<LeconLayout title="Ln">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <FonctionAuxiliaire client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

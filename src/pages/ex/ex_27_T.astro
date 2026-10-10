@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_27_T.tsx';
+import LnExp from '../../components/Ex_27_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Équations et inéquations avec ln et exp",
+  description: "Résous une équation ou une inéquation avec le logarithme népérien ou l'exponentielle",
+  chapitre: "Fonction logarithme népérien",
+};
 ---
 
-<LeconLayout title="Résoudre une équation ou inéquation avec ln ou exp">
-  <main>   
-    <PythonThresholdAnalysis client:load />
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <LnExp client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

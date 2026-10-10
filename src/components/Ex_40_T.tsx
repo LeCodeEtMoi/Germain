@@ -1,62 +1,118 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { entier, nombre, signeAleatoire } from '../lib/maths.ts';
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : encadrer ∫ de a à b de f(x) dx avec f(x) = c·x (a > 0).
+ *
+ *   f est monotone : son minimum m et son maximum M sur [a ; b] sont f(a) et f(b), dans l'ordre selon le signe de c.
+ *   m(b − a) ≤ ∫ f ≤ M(b − a)
+ *
+ * (La vraie valeur c(b² − a²)/2 est toujours dans l'encadrement : vérifié dans les tests.)
+ */
+
+/* ===== Logique ===== */
+
+export type Exercice = { c: number; a: number; b: number };
+
+export function genererExercice(): Exercice {
+  const a = entier(1, 3);
+  return { c: signeAleatoire() * entier(1, 4), a, b: a + entier(1, 3) };
 }
 
-function generateProblem() {
-  const a = getRandomInt(1, 4);
-  const b = a + getRandomInt(1, 3);
-  const coef = getRandomInt(1, 3);
-  const fType = Math.random() > 0.5 ? 'x' : 'cos(x)';
-  const m = fType === 'x' ? coef * a : -coef;
-  const M = fType === 'x' ? coef * b : coef;
+export const minMax = ({ c, a, b }: Exercice) => {
+  const fa = c * a;
+  const fb = c * b;
+  return { m: Math.min(fa, fb), M: Math.max(fa, fb) };
+};
 
-  return {
-    a,
-    b,
-    f: `${coef === 1 ? '' : coef}·${fType}`,
-    m,
-    M,
-    lowerBound: m * (b - a),
-    upperBound: M * (b - a),
-  };
-}
+export const bornes = (exo: Exercice) => {
+  const { m, M } = minMax(exo);
+  const l = exo.b - exo.a;
+  return { bas: m * l, haut: M * l };
+};
 
-export default function IntegralBoundingExercise() {
-  const [problem, setProblem] = useState(generateProblem());
-  const [showCorrection, setShowCorrection] = useState(false);
+export const questions = (exo: Exercice): Question[] => {
+  const { bas, haut } = bornes(exo);
+  return [
+    { type: 'nombre', id: 'bas', libelle: <>Borne inférieure : <MathTex tex="m(b - a)" /> =</>, attendu: bas, placeholder: 'Ex : 6' },
+    { type: 'nombre', id: 'haut', libelle: <>Borne supérieure : <MathTex tex="M(b - a)" /> =</>, attendu: haut, placeholder: 'Ex : 18' },
+  ];
+};
 
-  const newProblem = () => {
-    setProblem(generateProblem());
-    setShowCorrection(false);
-  };
+/* ===== Affichage ===== */
+
+export default function EncadrementIntegrale() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
+
+  const { c, a, b } = exo;
+  const { m, M } = minMax(exo);
+  const { bas, haut } = bornes(exo);
+  const fTex = `${c === 1 ? '' : c === -1 ? '-' : c}x`;
+  const croissante = c > 0;
 
   return (
-    <div className="box">
-      <h2 className="title is-4">Encadrement d'une intégrale</h2>
-      <p>On considère la fonction :</p>
-      <MathTex tex={`f(x) = ${problem.f}`} />
-      <p>Définie sur l’intervalle <MathTex tex={`[${problem.a}; ${problem.b}]`} />.</p>
-      <p>
-        On admet que pour tout <MathTex tex="x" /> de cet intervalle : <br />
-        <MathTex tex={`${problem.m} \\leq f(x) \\leq ${problem.M}`} />
-      </p>
-      <p>Encadrez l'intégrale <MathTex tex={`\\int_{${problem.a}}^{${problem.b}} f(x) dx`} />.</p>
-
-      <button className="button is-primary mt-4" onClick={() => setShowCorrection(true)}>Afficher la correction</button>
-      <button className="button is-light mt-4 ml-2" onClick={newProblem}>Nouvel exercice</button>
-
-      {showCorrection && (
-        <div className="notification is-info mt-4">
-          <h3 className="title is-5">Correction</h3>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Soit <MathTex tex="f" /> la fonction définie sur <MathTex tex={`[${a}\\,;\\,${b}]`} /> par <MathTex tex={`f(x) = ${fTex}`} />, et{' '}
+          <MathTex tex={`I = \\int_{${a}}^{${b}} f(x)\\,dx`} />.
+        </p>
+        <p>
+          Soient m le minimum et M le maximum de f sur <MathTex tex={`[${a}\\,;\\,${b}]`} />. On a, pour tout x de cet intervalle,{' '}
+          <MathTex tex="m \le f(x) \le M" />, donc <MathTex tex="m(b - a) \le I \le M(b - a)" />.
+        </p>
+        <p>Détermine les deux bornes de cet encadrement.</p>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
           <p>
-            D’après l’encadrement donné, on a :
+            <MathTex tex={`${bas} \\le I \\le ${haut}`} /> (la valeur exacte est <MathTex tex={`I = ${(c * (b * b - a * a)) / 2}`} />).
           </p>
-          <MathTex tex={`\\int_{${problem.a}}^{${problem.b}} f(x) dx \\in [${problem.lowerBound} ; ${problem.upperBound}]`} />
-        </div>
-      )}
-    </div>
+        }
+        correction={
+          <>
+            <li>
+              <MathTex tex={`f(x) = ${fTex}`} /> est {croissante ? 'croissante' : 'décroissante'} sur l’intervalle (le coefficient {nombre(c)} est {croissante ? 'positif' : 'négatif'}).
+            </li>
+            <li>
+              Son {croissante ? 'minimum est en a et son maximum en b' : 'maximum est en a et son minimum en b'} :{' '}
+              <MathTex tex={`f(${a}) = ${c * a}`} /> et <MathTex tex={`f(${b}) = ${c * b}`} />, donc <MathTex tex={`m = ${m}`} /> et <MathTex tex={`M = ${M}`} />.
+            </li>
+            <li>
+              La longueur de l’intervalle est <MathTex tex={`b - a = ${b} - ${a} = ${b - a}`} />.
+            </li>
+            <li>
+              <MathTex tex={`m(b - a) = ${m < 0 ? `(${m})` : m} \\times ${b - a} = ${bas}`} /> et <MathTex tex={`M(b - a) = ${M < 0 ? `(${M})` : M} \\times ${b - a} = ${haut}`} />.
+            </li>
+            <li>
+              Conclusion : <MathTex tex={`${bas} \\le I \\le ${haut}`} />.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Si le coefficient de x est négatif, la fonction décroît : le minimum est <MathTex tex="f(b)" /> et le maximum <MathTex tex="f(a)" /> (ne les inverse pas).
+            </li>
+            <li>
+              La borne inférieure doit toujours être plus petite que la borne supérieure : c’est un bon contrôle.
+            </li>
+            <li>Multiplie bien par la longueur b − a de l’intervalle, pas par b.</li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

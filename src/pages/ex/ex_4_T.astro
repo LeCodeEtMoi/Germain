@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_4_T.tsx';
+import Recurrence from '../../components/Ex_4_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Raisonnement par récurrence",
+  description: "Complète l'initialisation et l'hérédité d'une démonstration par récurrence",
+  chapitre: "Suites numériques et récurrence",
+};
 ---
 
-<LeconLayout title="Appartenance à une droite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <Recurrence client:load />
   </main>
 </LeconLayout>

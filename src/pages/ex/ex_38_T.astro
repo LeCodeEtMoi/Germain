@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_38_T.tsx';
+import IntegrationParties from '../../components/Ex_38_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Intégration par parties",
+  description: "Calcule une intégrale de la forme x·e^(kx) par intégration par parties",
+  chapitre: "Calcul intégral",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <IntegrationParties client:load />
   </main>
 </LeconLayout>

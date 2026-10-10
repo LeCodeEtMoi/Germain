@@ -1,24 +1,221 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import '../styles/bulma.min.css';
+import '../styles/theme.css';
+
+const base = '/Germain/';
 ---
 
-<Layout title="404: Page non trouvée" description="La page que vous cherchez n'existe pas." pubDate={new Date()}>
-  <section class="section">
-    <div class="container has-text-centered">
-      <div class="box" style="max-width: 600px; margin: 4rem auto;">
-        <h1 class="title is-1">Oups !</h1>
-        <p class="is-size-4 mb-4">Il semblerait que cette page n'existe pas.</p>
-        <p class="content">
-          Si vous voulez, on a quelques problèmes pour vous occuper : 
-          <a href="https://fr.wikipedia.org/wiki/Probl%C3%A8mes_non_r%C3%A9solus_en_math%C3%A9matiques" target="_blank" rel="noopener noreferrer">
-            Problèmes non résolus en mathématiques
-          </a>
-        </p>
-        <hr>
-        <a href="/Germain/" class="button is-primary">
-          Retour à l'accueil
-        </a>
-      </div>
-    </div>
-  </section>
-</Layout>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`Page non trouvée – ${SITE_TITLE}`} description="La page que vous cherchez n'existe pas." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <section class="perdu">
+        <div class="container">
+          <!-- Le « 0 » de 404 est une craie : un clin d'œil au tableau noir (et au « X » de l'accueil) -->
+          <p class="perdu-code righteous" role="img" aria-label="Erreur 404">
+            <span aria-hidden="true">4</span><span class="perdu-craie" aria-hidden="true">×</span><span aria-hidden="true">4</span>
+          </p>
+
+          <h1 class="perdu-titre righteous"><span aria-hidden="true">//</span> Oups, page introuvable</h1>
+          <p class="perdu-texte">
+            Il semblerait que cette page n'existe pas, ou qu'elle ait changé d'adresse. Pas de panique : un bon
+            mathématicien sait faire demi-tour.
+          </p>
+
+          <div class="perdu-boutons">
+            <a class="button bouton-principal" href={base}>Retour à l'accueil</a>
+            <a class="button bouton-contour" href={`${base}exercices`}>Voir les exercices</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="perdu-defi">
+        <div class="container">
+          <div class="defi">
+            <h2 class="defi-titre righteous"><span aria-hidden="true">//</span> Un peu de temps libre ?</h2>
+            <p>
+              Si vous voulez, on a quelques problèmes pour vous occuper. Certains résistent aux mathématiciens
+              depuis des siècles.
+            </p>
+            <a
+              class="defi-lien"
+              href="https://fr.wikipedia.org/wiki/Probl%C3%A8mes_non_r%C3%A9solus_en_math%C3%A9matiques"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Problèmes non résolus en mathématiques <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  /* ---------- Message d'erreur ---------- */
+  .perdu {
+    /* le header est fixe : on laisse la place en haut */
+    padding: 7rem 0 var(--espace);
+  }
+
+  .perdu-code {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.25rem, 1.5vw, 0.75rem);
+    margin: 0 0 1rem;
+    font-size: clamp(5rem, 18vw, 10rem);
+    line-height: 1;
+    color: var(--violet);
+  }
+
+  .perdu-craie {
+    display: grid;
+    place-items: center;
+    width: 0.85em;
+    height: 0.85em;
+    border-radius: 50%;
+    background: var(--craie);
+    color: var(--violet-profond);
+    font-size: 0.7em;
+  }
+
+  .perdu-titre {
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    line-height: 1.15;
+    color: var(--encre);
+    margin: 0 0 1rem;
+  }
+
+  .perdu-titre span {
+    color: var(--violet);
+  }
+
+  .perdu-texte {
+    max-width: 52ch;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    line-height: 1.65;
+    color: #3b3555;
+  }
+
+  .perdu-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ---------- Boutons en pilule (mêmes que les autres pages) ---------- */
+  .button.bouton-principal {
+    background: var(--violet);
+    border-color: var(--violet);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .button.bouton-principal:hover {
+    background: var(--violet-profond);
+    border-color: var(--violet-profond);
+    color: #fff;
+  }
+
+  .button.bouton-contour {
+    background: transparent;
+    border: 2px solid var(--violet);
+    color: var(--violet);
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .button.bouton-contour:hover {
+    background: var(--lavande-pale);
+    border-color: var(--violet);
+    color: var(--violet);
+  }
+
+  /* ---------- Défi ---------- */
+  .perdu-defi {
+    padding: 0 0 calc(var(--espace) * 1.5);
+  }
+
+  .defi {
+    border-radius: 1.5rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    background: var(--violet-profond);
+    color: #fff;
+  }
+
+  .defi-titre {
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .defi-titre span {
+    color: var(--craie);
+  }
+
+  .defi p {
+    max-width: 60ch;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.65;
+  }
+
+  .defi-lien {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .defi-lien:hover {
+    color: var(--craie);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .perdu {
+      padding-top: 6rem;
+    }
+
+    .perdu-boutons .button {
+      flex: 1 1 100%;
+    }
+  }
+</style>

@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_3_T.tsx';
+import VecteurNormal from '../../components/Ex_3_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Vecteur normal à un plan",
+  description: "Détermine si un vecteur est normal au plan (ABC)",
+  chapitre: "Espace",
+};
 ---
 
-<LeconLayout title="Appartenance à une droite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <VecteurNormal client:load />
   </main>
 </LeconLayout>

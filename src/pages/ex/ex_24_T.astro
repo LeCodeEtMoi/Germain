@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_24_T.tsx';
+import InequationTrigo from '../../components/Ex_24_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Inéquation trigonométrique",
+  description: "Résous une inéquation sin(x) ou cos(x) comparée à une valeur remarquable",
+  chapitre: "Fonctions cosinus et sinus",
+};
 ---
 
-<LeconLayout title="Inequation trigonométrique">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <InequationTrigo client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

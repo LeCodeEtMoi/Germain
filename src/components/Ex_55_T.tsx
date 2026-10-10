@@ -1,93 +1,144 @@
-import React, { useState } from 'react';
-import  MathTex  from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { choisir, entier, nombre } from '../lib/maths.ts';
 
-const ExerciceConvexiteDerivee = () => {
-  const [showCorrection, setShowCorrection] = useState(false);
+/**
+ * Exercice : convexité de f à partir du tableau de variations de f'.
+ *
+ *   f' décroissante sur un intervalle  ⇒  f'' ≤ 0  ⇒  f concave
+ *   f' croissante   sur un intervalle  ⇒  f'' ≥ 0  ⇒  f convexe
+ *
+ * Tableau : x = a < b < c, valeurs f'(a), f'(b), f'(c) avec f' « en V » (décroît puis croît) ou « en Λ » (croît puis décroît).
+ * f' change de sens en b : f'' change de signe en b, qui est donc le point d'inflexion.
+ */
 
-  // Données aléatoires
-  const a = -2;
-  const b = 0;
-  const c = 4;
-  const fpa = 5;
-  const fpb = -2;
-  const fpc = 5;
+/* ===== Logique ===== */
 
-  return (
-    <div className="box my-5">
-      <h2 className="title is-4">Étude de la convexité à partir du tableau de variation de <MathTex tex="f'" /></h2>
-      <p>
-        On considère une fonction <MathTex tex="f" /> deux fois dérivable sur <MathTex tex="\mathbb{R}" />.
-        On donne ci-dessous le tableau de variation de sa dérivée <MathTex tex="f'" /> :
-      </p>
+export type Exercice = { a: number; b: number; c: number; fa: number; fb: number; fc: number };
 
-      <div className="table-container my-4">
-        <table className="table is-bordered has-text-centered is-fullwidth">
-          <thead>
-            <tr>
-              <th><MathTex tex="x" /></th>
-              <th><MathTex tex={String(a)} /></th>
-              <th><MathTex tex={String(b)} /></th>
-              <th><MathTex tex={String(c)} /></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><MathTex tex="f'(x)" /></td>
-              <td><MathTex tex={String(fpa)} /></td>
-              <td><MathTex tex={String(fpb)} /></td>
-              <td><MathTex tex={String(fpc)} /></td>
-            </tr>
-            <tr>
-              <td>Variations</td>
-              <td colSpan={2}>↘️</td>
-              <td colSpan={2}>↗️</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+export const premiereDecroit = ({ fa, fb }: Exercice) => fb < fa;
 
-      <p>
-        <strong>Question :</strong> Déterminer les intervalles sur lesquels la fonction <MathTex tex="f" /> est convexe ou concave.
-        En déduire le signe de la dérivée seconde <MathTex tex="f''(x)" />.
-      </p>
+export function genererExercice(): Exercice {
+  const a = entier(-5, -2);
+  const b = a + entier(2, 4);
+  const c = b + entier(2, 4);
+  const enV = choisir([true, false]);
+  for (;;) {
+    const fa = entier(-6, 6);
+    const fb = entier(-6, 6);
+    const fc = entier(-6, 6);
+    if (enV ? fb < fa && fb < fc : fb > fa && fb > fc) return { a, b, c, fa, fb, fc };
+  }
+}
 
-      <button
-        className="button is-info mt-4"
-        onClick={() => setShowCorrection(!showCorrection)}
-      >
-        {showCorrection ? 'Masquer la correction' : 'Afficher la correction'}
-      </button>
-
-      {showCorrection && (
-        <div className="content mt-4">
-          <h3 className="title is-5">Correction</h3>
-
-          <p>
-            On sait que si <MathTex tex="f'" /> est décroissante sur un intervalle, alors <MathTex tex="f''" /> est négative et donc <MathTex tex="f" /> est <strong>concave</strong> sur cet intervalle.
-          </p>
-
-          <p>
-            Si <MathTex tex="f'" /> est croissante, alors <MathTex tex="f''" /> est positive et donc <MathTex tex="f" /> est <strong>convexe</strong>.
-          </p>
-
-          <ul>
-            <li>
-              Sur <MathTex tex={`[${a}, ${b}]`} />, <MathTex tex="f'" /> décroît ⇒ <MathTex tex="f''(x) < 0" /> ⇒ <strong><MathTex tex="f" /> est concave</strong>.
-            </li>
-            <li>
-              Sur <MathTex tex={`[${b}, ${c}]`} />, <MathTex tex="f'" /> croît ⇒ <MathTex tex="f''(x) > 0" /> ⇒ <strong><MathTex tex="f" /> est convexe</strong>.
-            </li>
-          </ul>
-
-          <p><strong>Conclusion :</strong></p>
-          <ul>
-            <li><MathTex tex="f" /> est concave sur <MathTex tex={`[${a}, ${b}]`} /></li>
-            <li><MathTex tex="f" /> est convexe sur <MathTex tex={`[${b}, ${c}]`} /></li>
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+export const forme = (exo: Exercice, intervalle: 1 | 2): 'convexe' | 'concave' => {
+  const decroit = intervalle === 1 ? premiereDecroit(exo) : !premiereDecroit(exo);
+  return decroit ? 'concave' : 'convexe';
 };
 
-export default ExerciceConvexiteDerivee;
+export const questions = (exo: Exercice): Question[] => {
+  const { a, b, c } = exo;
+  // Valeurs distinctes d'une question à l'autre (préfixe i1- / i2-).
+  const options = (id: string) => [
+    { valeur: `${id}-convexe`, contenu: 'convexe' },
+    { valeur: `${id}-concave`, contenu: 'concave' },
+    { valeur: `${id}-ni`, contenu: 'ni convexe ni concave' },
+  ];
+  return [
+    { type: 'choix', id: 'i1', libelle: <>Sur <MathTex tex={`[${nombre(a)}\\,;\\,${nombre(b)}]`} />, f est :</>, attendu: `i1-${forme(exo, 1)}`, options: options('i1'), enLigne: true },
+    { type: 'choix', id: 'i2', libelle: <>Sur <MathTex tex={`[${nombre(b)}\\,;\\,${nombre(c)}]`} />, f est :</>, attendu: `i2-${forme(exo, 2)}`, options: options('i2'), enLigne: true },
+    {
+      type: 'nombre', id: 'inflexion', libelle: <>Abscisse du point d’inflexion de la courbe de f :</>, attendu: b, placeholder: 'Ex : 1',
+      aide: 'Un nombre entier, négatif si besoin.',
+    },
+  ];
+};
+
+/* ===== Affichage ===== */
+
+export default function ConvexiteTableau() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
+
+  const { a, b, c, fa, fb, fc } = exo;
+  const decroitD = premiereDecroit(exo);
+  const fleche = (decroit: boolean) => (decroit ? '↘' : '↗');
+  const i1 = `[${nombre(a)}\\,;\\,${nombre(b)}]`;
+  const i2 = `[${nombre(b)}\\,;\\,${nombre(c)}]`;
+  const phrase = (decroit: boolean) => (decroit ? 'décroissante' : 'croissante');
+  const signe = (decroit: boolean) => (decroit ? '\\le 0' : '\\ge 0');
+
+  return (
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Soit <MathTex tex="f" /> une fonction deux fois dérivable sur <MathTex tex={`[${nombre(a)}\\,;\\,${nombre(c)}]`} />. On donne le tableau de variations de sa dérivée <MathTex tex="f'" /> :
+        </p>
+        <div className="exercice-tableau-conteneur">
+          <table className="exercice-tableau">
+            <thead>
+              <tr>
+                <th scope="row"><MathTex tex="x" /></th>
+                <th>{nombre(a)}</th>
+                <th aria-hidden="true"></th>
+                <th>{nombre(b)}</th>
+                <th aria-hidden="true"></th>
+                <th>{nombre(c)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><MathTex tex="f'(x)" /></th>
+                <td>{nombre(fa)}</td>
+                <td aria-label={decroitD ? 'décroît' : 'croît'}>{fleche(decroitD)}</td>
+                <td>{nombre(fb)}</td>
+                <td aria-label={decroitD ? 'croît' : 'décroît'}>{fleche(!decroitD)}</td>
+                <td>{nombre(fc)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
+          <p>
+            f est {forme(exo, 1)} sur <MathTex tex={i1} />, {forme(exo, 2)} sur <MathTex tex={i2} />, et son point d’inflexion a pour abscisse <MathTex tex={`${nombre(b)}`} />.
+          </p>
+        }
+        correction={
+          <>
+            <li>
+              Le lien entre f et sa dérivée seconde : <MathTex tex="f'' = (f')'" />. Donc si <MathTex tex="f'" /> est croissante, <MathTex tex="f'' \ge 0" /> et f est convexe ; si <MathTex tex="f'" /> est décroissante, <MathTex tex="f'' \le 0" /> et f est concave.
+            </li>
+            <li>
+              Sur <MathTex tex={i1} />, <MathTex tex="f'" /> est {phrase(decroitD)} : <MathTex tex={`f'' ${signe(decroitD)}`} />, donc f est <strong>{forme(exo, 1)}</strong>.
+            </li>
+            <li>
+              Sur <MathTex tex={i2} />, <MathTex tex="f'" /> est {phrase(!decroitD)} : <MathTex tex={`f'' ${signe(!decroitD)}`} />, donc f est <strong>{forme(exo, 2)}</strong>.
+            </li>
+            <li>
+              La convexité change en <MathTex tex={`x = ${nombre(b)}`} /> (là où <MathTex tex="f'" /> change de sens de variation) : c’est l’abscisse du point d’inflexion.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>Le tableau donne les variations de <MathTex tex="f'" />, pas celles de f : ne conclus pas sur la croissance de f.</li>
+            <li><MathTex tex="f'" /> croissante ⇒ f convexe ; <MathTex tex="f'" /> décroissante ⇒ f concave.</li>
+            <li>Un point d’inflexion se trouve là où <MathTex tex="f'" /> change de sens de variation (là où <MathTex tex="f''" /> change de signe).</li>
+          </>
+        }
+      />
+    </Cadre>
+  );
+}

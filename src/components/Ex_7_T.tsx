@@ -1,253 +1,255 @@
-import React, { useState, useEffect } from "react";
-import { generateRandomPoint, type Point3D } from "./RandomPoint3D";
+import { useState } from 'react';
+import {
+  Astuce, Boutons, Cadre, Calcul, Champ, Choix, Chargement, Correction, Enonce, Formulaire, MessageIncompris,
+  MessageSucces, Retour, Systeme, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import {
+  colineaires, entier, entreParentheses, lignesParametriques, nombre, produitMixte, signeAleatoire, triplet, valeurDuTexte,
+  vecAdd, vecAleatoire, vecCross, vecDot, vecNul, vecScale, vecSub, type Vec3,
+} from '../lib/maths.ts';
 
-// --- Vector Math Utilities ---
-const subtract = (p1: Point3D, p2: Point3D): Point3D => ({ x: p1.x - p2.x, y: p1.y - p2.y, z: p1.z - p2.z });
-const add = (p1: Point3D, p2: Point3D): Point3D => ({ x: p1.x + p2.x, y: p1.y + p2.y, z: p1.z + p2.z });
-const scale = (v: Point3D, s: number): Point3D => ({ x: v.x * s, y: v.y * s, z: v.z * s });
-const crossProduct = (v1: Point3D, v2: Point3D): Point3D => ({
-  x: v1.y * v2.z - v1.z * v2.y,
-  y: v1.z * v2.x - v1.x * v2.z,
-  z: v1.x * v2.y - v1.y * v2.x,
-});
-const dotProduct = (v1: Point3D, v2: Point3D): number => v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-const isZeroVector = (v: Point3D): boolean => v.x === 0 && v.y === 0 && v.z === 0;
-const areCollinear = (v1: Point3D, v2: Point3D): boolean => isZeroVector(crossProduct(v1, v2));
-const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : position relative de deux droites de l'espace.
+ *
+ * Maths (u₁, u₂ : vecteurs directeurs, A₁ ∈ (d₁), A₂ ∈ (d₂)) :
+ *   - u₁ ∧ u₂ = 0 (colinéaires) : droites confondues si A₁A₂ ∧ u₁ = 0, strictement parallèles sinon ;
+ *   - u₁ ∧ u₂ ≠ 0 : sécantes si le produit mixte A₁A₂ · (u₁ ∧ u₂) = 0, non coplanaires sinon.
+ * La réponse attendue est toujours recalculée par `classer` à partir des données affichées,
+ * en entiers (aucun arrondi). Pour deux droites sécantes, le point d'intersection est construit
+ * à l'avance (P = A₁ + r₀u₁ = A₂ + s₀u₂) et reste donc un point à coordonnées entières.
+ */
 
-type LineRelation = "confondues" | "parallèles" | "sécantes" | "non coplanaires";
+/* ===== Logique ===== */
 
-// --- Exercise Data Generation ---
-function generateExerciseData() {
-  let A1: Point3D, u1: Point3D, A2: Point3D, u2: Point3D;
-  let relation: LineRelation;
-  let intersectionPoint: Point3D | null = null;
+export type Relation = 'confondues' | 'paralleles' | 'secantes' | 'gauches';
 
-  const scenario = randomInt(1, 4);
+export type Exercice = {
+  A1: Vec3;
+  u1: Vec3;
+  A2: Vec3;
+  u2: Vec3;
+  relation: Relation;
+  /** Seulement pour des droites sécantes : point d'intersection et paramètres correspondants */
+  intersection: { P: Vec3; r: number; s: number } | null;
+};
 
-  // Ensure direction vectors are not zero
-  do { u1 = generateRandomPoint(-3, 3); } while (isZeroVector(u1));
-  A1 = generateRandomPoint(-5, 5);
-
-  switch (scenario) {
-    case 1: // Sécantes (Intersecting)
-      relation = "sécantes";
-      do { u2 = generateRandomPoint(-3, 3); } while (isZeroVector(u2) || areCollinear(u1, u2));
-      // Define an intersection point and construct lines passing through it
-      intersectionPoint = generateRandomPoint(-5, 5);
-      A1 = subtract(intersectionPoint, scale(u1, randomInt(-2, 2)));
-      A2 = subtract(intersectionPoint, scale(u2, randomInt(-2, 2)));
-      break;
-
-    case 2: // Parallèles (Parallel)
-      relation = "parallèles";
-      u2 = scale(u1, randomInt(1, 2) * (Math.random() > 0.5 ? 1 : -1));
-      // Ensure A2 is not on the first line
-      do {
-        A2 = generateRandomPoint(-5, 5);
-      } while (areCollinear(subtract(A2, A1), u1));
-      break;
-
-    case 3: // Non coplanaires (Skew)
-      relation = "non coplanaires";
-      do { u2 = generateRandomPoint(-3, 3); } while (isZeroVector(u2) || areCollinear(u1, u2));
-
-      // Ensure lines are not coplanar
-      do {
-        A2 = generateRandomPoint(-5, 5);
-      } while (Math.abs(dotProduct(subtract(A2, A1), crossProduct(u1, u2))) < 1e-9);
-      break;
-
-    case 4: // Confondues (Confounded)
-    default:
-      relation = "confondues";
-      u2 = scale(u1, randomInt(1, 2) * (Math.random() > 0.5 ? 1 : -1));
-      // A2 is a point on the first line
-      A2 = add(A1, scale(u1, randomInt(-3, 3)));
-      break;
-  }
-
-  return { A1, u1, A2, u2, relation, intersectionPoint };
+export function classer(A1: Vec3, u1: Vec3, A2: Vec3, u2: Vec3): Relation {
+  const A1A2 = vecSub(A2, A1);
+  if (colineaires(u1, u2)) return colineaires(A1A2, u1) ? 'confondues' : 'paralleles';
+  return produitMixte(A1A2, u1, u2) === 0 ? 'secantes' : 'gauches';
 }
 
-// --- React Component ---
-export default function LineRelationshipCheck() {
-    const [data, setData] = useState(generateExerciseData());
-    const [userAnswer, setUserAnswer] = useState<LineRelation | null>(null);
-    const [feedback, setFeedback] = useState<string | null>(null);
-    const [intersectionInput, setIntersectionInput] = useState({ x: '', y: '', z: '' });
-    const handleNewExercise = () => {
-        setData(generateExerciseData());
-        setUserAnswer(null);
-        setFeedback(null);
-        setIntersectionInput({ x: '', y: '', z: '' });
-    };
+const egaux = (p: Vec3, q: Vec3) => p[0] === q[0] && p[1] === q[1] && p[2] === q[2];
+const directeur = (): Vec3 => {
+  for (;;) {
+    const u = vecAleatoire(-3, 3);
+    if (!vecNul(u)) return u;
+  }
+};
 
-    const handleValidate = () => {
-        if (userAnswer === null) {
-            setFeedback("Veuillez sélectionner une réponse.");
-            return;
-        }
-        if (userAnswer === data.relation) {
-            if (data.relation === 'sécantes') {
-                const p = data.intersectionPoint;
-                if (!p) {
-                     setFeedback("Erreur: Le point d'intersection n'a pas été calculé.");
-                     return;
-                }
+export function genererExercice(relation: Relation = (['confondues', 'paralleles', 'secantes', 'gauches'] as const)[entier(0, 3)]): Exercice {
+  for (;;) {
+    const u1 = directeur();
+    let A1 = vecAleatoire(-5, 5);
+    let A2: Vec3;
+    let u2: Vec3;
+    let intersection: Exercice['intersection'] = null;
 
-                const userX = parseFloat(intersectionInput.x.replace(',', '.'));
-                const userY = parseFloat(intersectionInput.y.replace(',', '.'));
-                const userZ = parseFloat(intersectionInput.z.replace(',', '.'));
+    if (relation === 'secantes') {
+      u2 = directeur();
+      if (colineaires(u1, u2)) continue;
+      const P = vecAleatoire(-5, 5);
+      const r = entier(-2, 2);
+      const s = entier(-2, 2);
+      A1 = vecSub(P, vecScale(u1, r));
+      A2 = vecSub(P, vecScale(u2, s));
+      intersection = { P, r, s };
+    } else if (relation === 'paralleles' || relation === 'confondues') {
+      u2 = vecScale(u1, entier(1, 2) * signeAleatoire());
+      A2 = relation === 'confondues' ? vecAdd(A1, vecScale(u1, entier(-3, 3))) : vecAleatoire(-5, 5);
+    } else {
+      u2 = directeur();
+      if (colineaires(u1, u2)) continue;
+      A2 = vecAleatoire(-5, 5);
+    }
 
-                if (isNaN(userX) || isNaN(userY) || isNaN(userZ)) {
-                    setFeedback("Veuillez entrer des coordonnées numériques valides pour le point d'intersection.");
-                    return;
-                }
+    if (classer(A1, u1, A2, u2) !== relation) continue; // le cas tiré doit être celui voulu
+    if (egaux(A1, A2) && egaux(u1, u2)) continue; // deux systèmes identiques : sans intérêt
+    return { A1, u1, A2, u2, relation, intersection };
+  }
+}
 
-                if (Math.abs(userX - p.x) < 1e-9 && Math.abs(userY - p.y) < 1e-9 && Math.abs(userZ - p.z) < 1e-9) {
-                    setFeedback(`🎉 Bravo Maître, la réponse est correcte ! Le point d'intersection est bien (${p.x}; ${p.y}; ${p.z}).`);
-                } else {
-                    setFeedback(`❌ La position est correcte, mais les coordonnées du point d'intersection sont fausses. La bonne réponse était (${p.x}; ${p.y}; ${p.z}).`);
-                }
+export type Verdict =
+  | { type: 'incompris'; raison: string }
+  | { type: 'correct' }
+  | { type: 'faux'; cause: 'relation' | 'point' };
 
-            } else {
-                setFeedback("🎉 Bravo Maître, la réponse est correcte !");
-            }
-        } else {
-            const { A1, u1, A2, u2, relation, intersectionPoint } = data;
-            const A1A2 = subtract(A2, A1);
-            const u1_x_u2 = crossProduct(u1, u2);
-            const collinear = areCollinear(u1, u2);
-            let explanation = `❌ Oups, une erreur s'est glissée. La bonne réponse était : **${relation}**.`;
-            explanation += "\n\n**Explication :**\n";
-            explanation += `1. On compare les vecteurs directeurs u1(${u1.x}; ${u1.y}; ${u1.z}) et u2(${u2.x}; ${u2.y}; ${u2.z}).\n`;
-            if (collinear) {
-                explanation += "Le produit vectoriel u1 x u2 est le vecteur nul, donc les vecteurs sont colinéaires. Les droites sont parallèles ou confondues.\n";
-                explanation += `2. On vérifie si le point A1(${A1.x}; ${A1.y}; ${A1.z}) de (d1) appartient à (d2).\n`;
-                const A1A2_collinear_u2 = areCollinear(A1A2, u2);
-                if (A1A2_collinear_u2) {
-                    explanation += "Le vecteur A1A2 est colinéaire à u2, donc A1 est sur (d2). Les droites sont **confondues**.";
-                } else {
-                    explanation += "Le vecteur A1A2 n'est pas colinéaire à u2, donc A1 n'est pas sur (d2). Les droites sont **strictement parallèles**.";
-                }
-            } else {
-                explanation += "Les vecteurs directeurs ne sont pas colinéaires. Les droites sont sécantes ou non coplanaires.\n";
-                explanation += "2. On calcule le produit mixte (A1A2 . (u1 x u2)).\n";
-                const mixedProduct = dotProduct(A1A2, u1_x_u2);
-                if (Math.abs(mixedProduct) < 1e-9) {
-                    explanation += `Le produit mixte est nul. Les droites sont coplanaires, donc **sécantes**.`;
-                    if (intersectionPoint) {
-                        const p = intersectionPoint;
-                        explanation += ` Le point d'intersection est (${p.x}; ${p.y}; ${p.z}).`;
-                    }
-                } else {
-                    explanation += `Le produit mixte est non nul (${mixedProduct.toFixed(2)}). Les droites sont **non coplanaires**.`;
-                }
-            }
-            setFeedback(explanation);
-        }
-    };
+export function verifier(exo: Exercice, choix: string | null, saisies: [string, string, string]): Verdict {
+  if (choix === null) return { type: 'incompris', raison: 'Choisis une position relative avant de valider.' };
+  if (choix !== exo.relation) return { type: 'faux', cause: 'relation' };
+  if (exo.relation !== 'secantes') return { type: 'correct' };
 
-    const formatParametric = (A: Point3D, V: Point3D, param: string): React.ReactNode => {
-        const formatVal = (val: number, sign: boolean = false) => {
-            if (val === 0) return "";
-            const signStr = val > 0 ? "+" : "-";
-            const absVal = Math.abs(val);
-            if (absVal === 1) return `${sign ? signStr : (val > 0 ? "" : "-")}${param}`;
-            return `${sign ? signStr : (val > 0 ? "" : "-")}${absVal}${param}`;
-        }
-        return (
-            <pre className="is-family-monospace has-background-light p-3">
-                {`{\n  x = ${A.x} ${formatVal(V.x, true)}\n  y = ${A.y} ${formatVal(V.y, true)}\n  z = ${A.z} ${formatVal(V.z, true)}\n(${param} ∈ ℝ)`}
-            </pre>
-        );
-    };
+  if (saisies.some((s) => s.trim() === '')) {
+    return { type: 'incompris', raison: "Les droites sont sécantes : écris aussi les trois coordonnées de leur point d'intersection." };
+  }
+  const valeurs = saisies.map(valeurDuTexte);
+  if (valeurs.some((v) => v === null)) {
+    return { type: 'incompris', raison: 'Chaque coordonnée doit être un nombre (par exemple 3, −2 ou 1/2).' };
+  }
+  const P = exo.intersection!.P;
+  const juste = valeurs.every((v, i) => Math.abs((v as number) - P[i]) < 1e-9);
+  return juste ? { type: 'correct' } : { type: 'faux', cause: 'point' };
+}
 
-    const { A1, u1, A2, u2 } = data;
-    const options: LineRelation[] = ["confondues", "parallèles", "sécantes", "non coplanaires"];
+/* ===== Affichage ===== */
 
-    return (
-        <div className="columns is-centered">
-            <div className="column is-two-thirds">
-                <div className="box content">
-            <h2 className="title is-4">Position relative de deux droites</h2>
-            <p>On considère les droites (d1) et (d2) de représentations paramétriques :</p>
-            <div>
-                <div>
-                    <strong>(d1)</strong>
-                    {formatParametric(A1, u1, 'r')}
-                </div>
-                <div className="mt-4">
-                    <strong>(d2)</strong>
-                    {formatParametric(A2, u2, 's')}
-                </div>
-            </div>
-            <p>Les droites (d1) et (d2) sont :</p>
-            <div className="control">
-                {options.map(option => (
-                    <label className="radio" key={option}>
-                        <input
-                            type="radio"
-                            name="relation"
-                            value={option}
-                            checked={userAnswer === option}
-                            onChange={() => setUserAnswer(option)}
-                        />
-                        {` ${option.charAt(0).toUpperCase() + option.slice(1)}`}
-                    </label>
-                ))}
-            </div>
-            {userAnswer === 'sécantes' && (
-                <div className="field mt-4">
-                    <label className="label">Point d'intersection (x; y; z)</label>
-                    <div className="field is-grouped">
-                        <div className="control">
-                            <input 
-                                className="input"
-                                type="text" 
-                                placeholder="x"
-                                value={intersectionInput.x}
-                                onChange={e => setIntersectionInput({...intersectionInput, x: e.target.value})}
-                            />
-                        </div>
-                        <div className="control">
-                            <input 
-                                className="input"
-                                type="text" 
-                                placeholder="y"
-                                value={intersectionInput.y}
-                                onChange={e => setIntersectionInput({...intersectionInput, y: e.target.value})}
-                            />
-                        </div>
-                        <div className="control">
-                            <input 
-                                className="input"
-                                type="text" 
-                                placeholder="z"
-                                value={intersectionInput.z}
-                                onChange={e => setIntersectionInput({...intersectionInput, z: e.target.value})}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
-            <div className="field is-grouped is-grouped-centered mt-4">
-                <div className="control">
-                    <button className="button is-primary" onClick={handleValidate}>Valider</button>
-                </div>
-                <div className="control">
-                    <button className="button is-light" onClick={handleNewExercise}>Nouvel exercice</button>
-                </div>
-            </div>
-            {feedback && (
-                <div className={`notification ${feedback.startsWith('🎉') ? 'is-success' : 'is-warning'} is-light mt-4`}>
-                    <button className="delete" onClick={() => setFeedback(null)}></button>
-                    <div style={{ whiteSpace: 'pre-wrap' }}>{feedback}</div>
-                </div>
-            )}
-                </div>
-            </div>
-        </div>
-    );
+const OPTIONS: { valeur: Relation; contenu: string }[] = [
+  { valeur: 'confondues', contenu: 'Confondues' },
+  { valeur: 'paralleles', contenu: 'Strictement parallèles' },
+  { valeur: 'secantes', contenu: 'Sécantes' },
+  { valeur: 'gauches', contenu: 'Non coplanaires' },
+];
+const NOMS_RELATION: Record<Relation, string> = {
+  confondues: 'confondues',
+  paralleles: 'strictement parallèles',
+  secantes: 'sécantes',
+  gauches: 'non coplanaires',
+};
+
+export default function PositionRelative() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [choix, setChoix] = useState<string | null>(null);
+  const [xyz, setXyz] = useState<[string, string, string]>(['', '', '']);
+  const [verdict, setVerdict] = useState<Verdict | null>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { A1, u1, A2, u2, relation, intersection } = exo;
+
+  function valider() {
+    setVerdict(verifier(exo as Exercice, choix, xyz));
+  }
+
+  function nouvelExercice() {
+    regenerer();
+    setChoix(null);
+    setXyz(['', '', '']);
+    setVerdict(null);
+  }
+
+  const A1A2 = vecSub(A2, A1);
+  const croise = vecCross(u1, u2);
+  const colin = colineaires(u1, u2);
+  const mixte = vecDot(A1A2, croise);
+  const triplets = (v: Vec3, w: Vec3) => (
+    <Calcul>
+      ({entreParentheses(v[1])}×{entreParentheses(w[2])} − {entreParentheses(v[2])}×{entreParentheses(w[1])} ;{' '}
+      {entreParentheses(v[2])}×{entreParentheses(w[0])} − {entreParentheses(v[0])}×{entreParentheses(w[2])} ;{' '}
+      {entreParentheses(v[0])}×{entreParentheses(w[1])} − {entreParentheses(v[1])}×{entreParentheses(w[0])})
+    </Calcul>
+  );
+
+  return (
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>On considère les droites (d₁) et (d₂) données par leurs représentations paramétriques. Quelle est leur position relative ?</p>
+      </Enonce>
+      <div className="exercice-donnees">
+        <Systeme legende="(d₁), avec r ∈ ℝ" lignes={lignesParametriques(A1, u1, 'r')} />
+        <Systeme legende="(d₂), avec s ∈ ℝ" lignes={lignesParametriques(A2, u2, 's')} />
+      </div>
+
+      <Formulaire onValider={valider}>
+        <Choix legende="Les droites (d₁) et (d₂) sont :" options={OPTIONS} valeur={choix} onChange={setChoix} />
+        {choix === 'secantes' && (
+          <div className="exercice-champs">
+            {(['x', 'y', 'z'] as const).map((nom, i) => (
+              <Champ
+                key={nom}
+                libelle={`${nom} du point d'intersection`}
+                valeur={xyz[i]}
+                onChange={(v) => setXyz((ancien) => ancien.map((c, j) => (j === i ? v : c)) as [string, string, string])}
+                placeholder={nom}
+                maxLength={20}
+              />
+            ))}
+          </div>
+        )}
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {verdict?.type === 'incompris' && <MessageIncompris raison={verdict.raison} />}
+        {verdict?.type === 'correct' && (
+          <MessageSucces>
+            <p>
+              Les droites sont bien {NOMS_RELATION[relation]}
+              {intersection && <>, et leur point d'intersection est {triplet(intersection.P)}</>}.
+            </p>
+          </MessageSucces>
+        )}
+        {verdict?.type === 'faux' && (
+          <Retour type="faux">
+            <p>
+              Oups, une erreur s'est glissée.{' '}
+              {verdict.cause === 'relation'
+                ? `Les droites sont ${NOMS_RELATION[relation]}.`
+                : `La position est correcte (sécantes), mais le point d'intersection est ${triplet(intersection!.P)}.`}
+            </p>
+            <Correction>
+              <li>
+                Vecteurs directeurs : <Calcul>u₁ = {triplet(u1)}</Calcul> et <Calcul>u₂ = {triplet(u2)}</Calcul>. Points :{' '}
+                <Calcul>A₁ = {triplet(A1)}</Calcul> (sur d₁) et <Calcul>A₂ = {triplet(A2)}</Calcul> (sur d₂).
+              </li>
+              <li>
+                On teste si u₁ et u₂ sont colinéaires avec le produit vectoriel : <Calcul>u₁ ∧ u₂ = </Calcul>{' '}
+                {triplets(u1, u2)} = <Calcul>{triplet(croise)}</Calcul>.{' '}
+                {colin ? 'Il est nul : les droites sont parallèles ou confondues.' : "Il n'est pas nul : les droites ne sont pas parallèles."}
+              </li>
+              {colin ? (
+                <li>
+                  On regarde si A₂ est sur (d₁) : <Calcul>A₁A₂ = {triplet(A1A2)}</Calcul>. Le produit vectoriel{' '}
+                  <Calcul>A₁A₂ ∧ u₁ = {triplet(vecCross(A1A2, u1))}</Calcul>{' '}
+                  {relation === 'confondues'
+                    ? 'est nul : A₂ est sur (d₁), les droites sont confondues.'
+                    : "n'est pas nul : A₂ n'est pas sur (d₁), les droites sont strictement parallèles."}
+                </li>
+              ) : (
+                <>
+                  <li>
+                    On calcule le produit mixte : <Calcul>A₁A₂ = {triplet(A1A2)}</Calcul>, puis{' '}
+                    <Calcul>
+                      A₁A₂ · (u₁ ∧ u₂) = {entreParentheses(A1A2[0])}×{entreParentheses(croise[0])} + {entreParentheses(A1A2[1])}×
+                      {entreParentheses(croise[1])} + {entreParentheses(A1A2[2])}×{entreParentheses(croise[2])} = {nombre(mixte)}
+                    </Calcul>
+                    .
+                  </li>
+                  <li>
+                    {relation === 'secantes'
+                      ? 'Le produit mixte est nul : les droites sont coplanaires et non parallèles, donc sécantes.'
+                      : 'Le produit mixte n’est pas nul : les droites ne sont pas dans un même plan, elles sont non coplanaires.'}
+                  </li>
+                </>
+              )}
+              {intersection && (
+                <li>
+                  Point d'intersection : pour <Calcul>r = {nombre(intersection.r)}</Calcul> on obtient{' '}
+                  <Calcul>A₁ + r·u₁ = {triplet(intersection.P)}</Calcul>, et pour <Calcul>s = {nombre(intersection.s)}</Calcul>{' '}
+                  on obtient <Calcul>A₂ + s·u₂ = {triplet(intersection.P)}</Calcul> : c'est le même point.
+                </li>
+              )}
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Commence toujours par comparer les vecteurs directeurs : colinéaires ou non ?</li>
+                <li>Des vecteurs directeurs non colinéaires ne suffisent pas pour dire « sécantes » : il faut vérifier la coplanarité.</li>
+                <li>Pour le point d'intersection, résous A₁ + r·u₁ = A₂ + s·u₂ puis remplace r (ou s) dans la représentation.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
+  );
 }

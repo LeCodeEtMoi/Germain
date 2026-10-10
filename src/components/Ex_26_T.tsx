@@ -1,82 +1,193 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import {
+  Astuce, Boutons, Cadre, Calcul, ChampAvecTouches, Chargement, Correction, Enonce, Formulaire, MessageIncompris, MessageSucces,
+  Retour, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import { type Fraction, choisir, combinaison, fraction, texteFraction } from '../lib/maths.ts';
+import { type Union, type VerdictUnion, comparerUnion, texteUnion } from '../lib/intervalles.ts';
+import { texComparateur } from '../lib/algo.ts';
+import {
+  type Ang, type Comparaison, type FonctionTrig, DOMAINE_2PI, VALEURS, fonction, racines, resoudre, signes, symbole, texteAng,
+} from '../lib/trigo.ts';
 
-// Utilitaire de génération aléatoire d'entiers
-function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : inéquation trigonométrique du second degré dans [0 ; 2π].
+ *
+ *   A·t(x)² + B·t(x) + C  ⊳  0,    t = cos ou sin.
+ *
+ * Le trinôme est construit à partir de DEUX racines rationnelles choisies parmi −1, −1/2, 0, 1/2, 1 :
+ * A·u² + B·u + C = k(q₁u − p₁)(q₂u − p₂) avec uᵢ = pᵢ/qᵢ et k = ±1. Les racines sont donc exactes, et chacune
+ * correspond à une valeur remarquable de cos ou de sin.
+ * L'ensemble des solutions est calculé par resoudre() (racines en x, signe au milieu de chaque intervalle) ;
+ * les tirages qui donneraient un point isolé sont écartés.
+ */
+
+/* ===== Logique ===== */
+
+const RACINES: Fraction[] = [fraction(-1), fraction(-1, 2), fraction(0), fraction(1, 2), fraction(1)];
+
+export type Exercice = {
+  t: FonctionTrig;
+  A: number;
+  B: number;
+  C: number;
+  u1: Fraction;
+  u2: Fraction;
+  op: Comparaison;
+  zeros: Ang[];
+  reponse: Union;
+};
+
+export function genererExercice(): Exercice {
+  for (;;) {
+    const t = choisir<FonctionTrig>(['cos', 'sin']);
+    const i = choisir([0, 1, 2, 3]);
+    const j = choisir([1, 2, 3, 4].filter((x) => x > i));
+    const u1 = RACINES[i];
+    const u2 = RACINES[j];
+    const k = choisir([-1, 1]);
+    const A = k * u1.d * u2.d;
+    const B = -k * (u1.d * u2.n + u2.d * u1.n);
+    const C = k * u1.n * u2.n;
+    const op = choisir<Comparaison>(['<', '>', '<=', '>=']);
+    const f = fonction(t);
+    const zeros = [u1, u2].flatMap((u) => racines(t, VALEURS.find((v) => Math.abs(v.num - u.n / u.d) < 1e-12) as (typeof VALEURS)[number], DOMAINE_2PI));
+    const reponse = resoudre((x) => A * f(x) ** 2 + B * f(x) + C, zeros, DOMAINE_2PI, op);
+    if (reponse) return { t, A, B, C, u1, u2, op, zeros: zeros.sort((p, q) => p.n * q.d - q.n * p.d), reponse };
+  }
 }
 
-// Générateur de fonction trigonométrique de degré 2, donnant lieu à une équation de degré 3
-function generateTrigInequation() {
-  const type = Math.random() < 0.5 ? 'cos' : 'sin';
-  const u = type;
-  const a = randomInt(1, 3);
-  const b = randomInt(-6, 6);
-  const c = randomInt(-4, 4);
+export type Verdict = VerdictUnion;
+export const verifier = (exo: Exercice, saisie: string): Verdict => comparerUnion(saisie, exo.reponse);
 
-  const fExpression = `${a}${u}²(x) ${b >= 0 ? '+' : '-'} ${Math.abs(b)}${u}(x) ${c >= 0 ? '+' : '-'} ${Math.abs(c)}`;
-  const reducedForm = `${a}u² ${b >= 0 ? '+' : '-'} ${Math.abs(b)}u ${c >= 0 ? '+' : '-'} ${Math.abs(c)}`;
-  const checkValue = a * 1 * 1 + b * 1 + c; // f(1)
-  return { type, a, b, c, fExpression, reducedForm, checkValue };
+/** Condition sur u pour que A·u² + B·u + C ⊳ 0, écrite en toutes lettres. */
+export function conditionSurU({ A, u1, u2, op }: Pick<Exercice, 'A' | 'u1' | 'u2' | 'op'>): string {
+  const large = op === '<=' || op === '>=';
+  const veutPositif = op === '>' || op === '>=';
+  const dehors = A > 0 === veutPositif;
+  const [r1, r2] = [texteFraction(u1), texteFraction(u2)];
+  if (dehors) return `u ${large ? '≤' : '<'} ${r1}  ou  u ${large ? '≥' : '>'} ${r2}`;
+  return `${r1} ${large ? '≤' : '<'} u ${large ? '≤' : '<'} ${r2}`;
 }
 
-export default function TrigInequationDegree3() {
-  const [problem, setProblem] = useState(generateTrigInequation());
-  const [showCorrection, setShowCorrection] = useState(false);
+/* ===== Affichage ===== */
 
-  const { type, a, b, c, fExpression, reducedForm, checkValue } = problem;
+const TOUCHES = [
+  { label: ']', texte: ']' },
+  { label: '[', texte: '[' },
+  { label: ';', texte: ' ; ' },
+  { label: '∪', texte: ' ∪ ' },
+  { label: 'π', texte: 'π' },
+  { label: '÷', texte: '/' },
+  { label: '∅', texte: '∅' },
+];
 
-  const u = `${type}`;
+export default function InequationTrigoDegre2() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [saisie, setSaisie] = useState('');
+  const [verdict, setVerdict] = useState<Verdict | null>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { t, A, B, C, u1, u2, op, zeros, reponse } = exo;
+  const nom = t === 'cos' ? '\\cos' : '\\sin';
+  const trinome = combinaison([[A, 'u^{2}'], [B, 'u'], [C, '']], true);
+  const fTex = combinaison([[A, `${nom}^{2}(x)`], [B, `${nom}(x)`], [C, '']], true);
+  const delta = B * B - 4 * A * C;
+  const f = fonction(t);
+  const morceaux = signes((x) => A * f(x) ** 2 + B * f(x) + C, zeros, DOMAINE_2PI);
+
+  function valider() {
+    setVerdict(verifier(exo as Exercice, saisie));
+  }
+
+  function nouvelExercice() {
+    regenerer();
+    setSaisie('');
+    setVerdict(null);
+  }
 
   return (
-    <div className="columns is-centered mt-6">
-      <div className="column is-10">
-        <div className="box content">
-          <h2 className="title is-4">Inéquation trigonométrique de degré 3</h2>
-          <p>Soit la fonction f définie sur ℝ par :</p>
-          <p className="has-text-centered mb-4"><strong>f(x) = {fExpression}</strong></p>
-          <p>On souhaite résoudre l’inéquation suivante :</p>
-          <p className="has-text-centered mb-4"><strong>{fExpression} &gt; 0</strong> sur <strong>[0, 2π]</strong></p>
-
-          <ol>
-            <li>Vérifier que f(1) = {checkValue}</li>
-            <li>Exprimer f(x) sous la forme : <strong>f(x) = {reducedForm}</strong> avec u = {u}</li>
-            <li>Étudier le signe de f(x)</li>
-            <li>En déduire les solutions de l’inéquation sur [0, 2π]</li>
-          </ol>
-
-          <div className="buttons mt-4">
-            <button className="button is-primary" onClick={() => setShowCorrection(true)}>Afficher la correction</button>
-            <button className="button is-light" onClick={() => { setProblem(generateTrigInequation()); setShowCorrection(false); }}>
-              Nouvel exercice
-            </button>
-          </div>
-
-          {showCorrection && (
-            <div className="notification is-info mt-4">
-              <h3 className="title is-5">Correction</h3>
-              <ul>
-                <li><strong>1.</strong> f(1) = {a}×1² + {b}×1 + {c} = <strong>{checkValue}</strong></li>
-                <li><strong>2.</strong> Posons u = {u}, alors f(x) = <strong>{reducedForm}</strong></li>
-                <li>
-                  <strong>3.</strong> Étude de signe :
-                  <ul>
-                    <li>On résout <strong>{a}u² + {b}u + {c} &gt; 0</strong></li>
-                    <li>Discriminant Δ = {b}² - 4×{a}×{c} = {b * b - 4 * a * c}</li>
-                    <li>Racines (si Δ ≥ 0) : <br />
-                      u₁ = {((-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a)).toFixed(2)} <br />
-                      u₂ = {((-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a)).toFixed(2)}
-                    </li>
-                    <li>On dresse le tableau de signes selon le tableau de variations d’un trinôme.</li>
-                  </ul>
-                </li>
-                <li>
-                  <strong>4.</strong> Ensuite, on cherche les x ∈ [0, 2π] tels que {type}(x) ∈ les bons intervalles en fonction du signe.
-                </li>
-              </ul>
-            </div>
-          )}
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Résous dans l'intervalle <Calcul>[0 ; 2π]</Calcul> l'inéquation :
+        </p>
+        <div className="exercice-formule">
+          <MathTex tex={`${fTex} ${texComparateur(op)} 0`} />
         </div>
-      </div>
-    </div>
+        <p>
+          <em>Indication : pose u = {t}(x) et étudie d'abord le signe du trinôme en u.</em>
+        </p>
+      </Enonce>
+
+      <Formulaire onValider={valider}>
+        <ChampAvecTouches
+          libelle="Ensemble des solutions"
+          valeur={saisie}
+          onChange={setSaisie}
+          maxLength={120}
+          placeholder="Ex : [0 ; π/3[ ∪ ]5π/3 ; 2π]"
+          aide="Écris des intervalles avec leurs crochets, séparés par ∪. Les bornes s'écrivent avec π : 2π/3, 5π/6…"
+          touches={TOUCHES}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {verdict?.type === 'incompris' && <MessageIncompris raison={verdict.raison} />}
+        {verdict?.type === 'correct' && (
+          <MessageSucces>
+            <p>
+              L'ensemble des solutions est bien <Calcul>{texteUnion(reponse)}</Calcul>.
+            </p>
+          </MessageSucces>
+        )}
+        {verdict?.type === 'faux' && (
+          <Retour type="faux">
+            <p>Oups, une erreur s'est glissée. {verdict.indice}</p>
+            <Correction>
+              <li>
+                On pose <MathTex tex={`u = ${nom}(x)`} />. L'inéquation devient <MathTex tex={`${trinome} ${texComparateur(op)} 0`} /> avec u ∈ [−1 ; 1].
+              </li>
+              <li>
+                Discriminant : <MathTex tex={`\\Delta = ${B < 0 ? `(${B})` : B}^{2} - 4 \\times ${A < 0 ? `(${A})` : A} \\times ${C < 0 ? `(${C})` : C} = ${delta}`} />, donc deux racines :{' '}
+                <Calcul>
+                  u₁ = {texteFraction(u1)} et u₂ = {texteFraction(u2)}
+                </Calcul>
+                .
+              </li>
+              <li>
+                Le coefficient de u² vaut {A}, {A > 0 ? 'positif' : 'négatif'} : le trinôme est du signe de {A} à l'extérieur des racines et du signe contraire entre
+                les racines. Donc {symbole(op)} 0 pour <Calcul>{conditionSurU({ A, u1, u2, op })}</Calcul>.
+              </li>
+              <li>
+                On revient à x dans [0 ; 2π]. Les racines en x sont les solutions de {t}(x) = {texteFraction(u1)} et de {t}(x) = {texteFraction(u2)} :{' '}
+                <Calcul>{zeros.map(texteAng).join(' ; ')}</Calcul>. Signe du trinôme sur chaque intervalle :
+                <ul>
+                  {morceaux.map((m, i) => (
+                    <li key={i}>
+                      sur <Calcul>{`${texteAng(m.gauche)} ; ${texteAng(m.droite)}`}</Calcul> : {m.positif ? 'positif' : 'négatif'}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+              <li>
+                Ensemble des solutions : <Calcul>{texteUnion(reponse)}</Calcul>.
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Le changement de variable u = cos(x) ou u = sin(x) ramène l'inéquation à un trinôme ordinaire.</li>
+                <li>N'oublie pas que u reste dans [−1 ; 1] : une racine hors de cet intervalle ne donne aucune solution en x.</li>
+                <li>Revenir à x : résous t(x) = racine dans [0 ; 2π], puis vérifie le signe sur chaque intervalle obtenu.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
   );
 }

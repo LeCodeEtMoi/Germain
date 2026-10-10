@@ -1,86 +1,100 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { entier, fraction, type Fraction } from '../lib/maths.ts';
+import { AIDE_FRACTION, attenduFraction, parTex, texFrac } from '../lib/reponses.ts';
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : calculer ∫ de a à b de xⁿ dx  (n = 1, 2 ou 3).
+ *
+ *   ∫ xⁿ dx = [xⁿ⁺¹/(n+1)]  →  (bⁿ⁺¹ − aⁿ⁺¹)/(n+1), calculé en fraction exacte.
+ */
+
+/* ===== Logique ===== */
+
+export type Exercice = { n: number; a: number; b: number };
+
+export function genererExercice(): Exercice {
+  const a = entier(-3, 2);
+  return { n: entier(1, 3), a, b: a + entier(1, 4) };
 }
 
-function computeIntegral(a: number, b: number): number {
-  return (1 / 2) * (b ** 2 - a ** 2);
-}
+export const valeur = ({ n, a, b }: Exercice): Fraction => fraction(b ** (n + 1) - a ** (n + 1), n + 1);
 
-export default function DefiniteIntegralExercise() {
-  const generateProblem = () => {
-    const a = getRandomInt(0, 5);
-    const b = getRandomInt(a + 1, a + 6); // garantit que b > a
-    const result = computeIntegral(a, b);
-    return { a, b, result };
-  };
+export const questions = (exo: Exercice): Question[] => {
+  const { attendu, tolerance } = attenduFraction(valeur(exo));
+  return [
+    {
+      type: 'nombre',
+      id: 'I',
+      libelle: <>Valeur de l’intégrale <MathTex tex="I" /> :</>,
+      attendu,
+      tolerance,
+      placeholder: 'Ex : 7/3',
+      aide: AIDE_FRACTION,
+    },
+  ];
+};
 
-  const [problem, setProblem] = useState(generateProblem());
-  const [userAnswer, setUserAnswer] = useState('');
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [showCorrection, setShowCorrection] = useState(false);
+/* ===== Affichage ===== */
 
-  const checkAnswer = () => {
-    const parsed = parseFloat(userAnswer.replace(',', '.'));
-    const epsilon = 0.01;
-    if (Math.abs(parsed - problem.result) < epsilon) {
-      setFeedback('✅ Bonne réponse, Maître.');
-    } else {
-      setFeedback(`❌ Le résultat exact est ${problem.result.toFixed(2)}`);
-    }
-    setShowCorrection(true);
-  };
+export default function IntegralePuissance() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
 
-  const newExercise = () => {
-    setProblem(generateProblem());
-    setUserAnswer('');
-    setFeedback(null);
-    setShowCorrection(false);
-  };
+  const { n, a, b } = exo;
+  const v = valeur(exo);
+  const Fa = `\\frac{${parTex(a)}^{${n + 1}}}{${n + 1}}`;
+  const Fb = `\\frac{${parTex(b)}^{${n + 1}}}{${n + 1}}`;
 
   return (
-    <div className="box">
-      <h2 className="title is-4">Calcul d’une intégrale définie</h2>
-      <p>Calculez l'intégrale suivante :</p>
-      <MathTex tex={`\\int_{${problem.a}}^{${problem.b}} x \\, dx`} />
-
-      <div className="field mt-4">
-        <input
-          type="text"
-          className="input"
-          placeholder="Votre réponse (ex: 12.5)"
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-        />
-      </div>
-
-      <div className="buttons mt-3">
-        <button className="button is-primary" onClick={checkAnswer}>Valider</button>
-        <button className="button is-light" onClick={newExercise}>Nouvel exercice</button>
-      </div>
-
-      {feedback && (
-        <div className="notification is-info mt-4">
-          <p>{feedback}</p>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Calcule l’intégrale suivante :</p>
+        <div className="exercice-formule">
+          <MathTex tex={`I = \\int_{${a}}^{${b}} x^{${n}} \\, dx`} />
         </div>
-      )}
-
-      {showCorrection && (
-        <div className="mt-4">
-          <h3 className="title is-5">Correction</h3>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
           <p>
-            On utilise la formule : <MathTex tex="\int_a^b x\,dx = \frac{1}{2}(b^2 - a^2)" />
+            <MathTex tex={`I = ${texFrac(v)}`} />.
           </p>
-          <p>
-            Ici, <MathTex tex={`a = ${problem.a}, \\quad b = ${problem.b}`} />
-          </p>
-          <p>
-            Donc&nbsp;: <MathTex tex={`\\int_{${problem.a}}^{${problem.b}} x \\, dx = \\frac{1}{2}(${problem.b}^2 - ${problem.a}^2) = ${problem.result.toFixed(2)}`} />
-          </p>
-        </div>
-      )}
-    </div>
+        }
+        correction={
+          <>
+            <li>
+              Une primitive de <MathTex tex={`x^{${n}}`} /> est <MathTex tex={`F(x) = \\frac{x^{${n + 1}}}{${n + 1}}`} />.
+            </li>
+            <li>
+              <MathTex tex={`I = F(${b}) - F(${a}) = ${Fb} - ${a < 0 ? `\\left(${Fa}\\right)` : Fa}`} />.
+            </li>
+            <li>
+              <MathTex tex={`I = ${texFrac(fraction(b ** (n + 1), n + 1))} - ${a < 0 ? '(' : ''}${texFrac(fraction(a ** (n + 1), n + 1))}${a < 0 ? ')' : ''} = ${texFrac(v)}`} />.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Calcule <MathTex tex="F(b)" /> et <MathTex tex="F(a)" /> séparément, puis fais la différence <MathTex tex="F(b) - F(a)" /> (pas l’inverse).
+            </li>
+            <li>
+              Si a est négatif, mets-le entre parenthèses : <MathTex tex="(-2)^{3} = -8" /> mais <MathTex tex="(-2)^{2} = 4" />.
+            </li>
+            <li>N’oublie pas de diviser par n + 1 (l’exposant augmenté de 1).</li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

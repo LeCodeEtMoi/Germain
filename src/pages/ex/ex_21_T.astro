@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_21_T.tsx';
+import ContinuiteMorceaux from '../../components/Ex_21_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Continuité et dérivabilité en un point",
+  description: "Étudie la continuité et la dérivabilité d'une fonction définie par morceaux",
+  chapitre: "Continuité et dérivabilité",
+};
 ---
 
-<LeconLayout title=" Continuité et dérivabilité en un point">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <ContinuiteMorceaux client:load />
   </main>
 </LeconLayout>

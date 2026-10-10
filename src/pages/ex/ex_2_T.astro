@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_2_T.tsx';
+import Coplanarite from '../../components/Ex_2_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Points coplanaires",
+  description: "Détermine si quatre points de l'espace sont coplanaires",
+  chapitre: "Espace",
+};
 ---
 
-<LeconLayout title="Appartenance à une droite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <Coplanarite client:load />
   </main>
 </LeconLayout>

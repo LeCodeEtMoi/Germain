@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonScriptCompletion from '../../components/Ex_15_T.tsx';
+import SeuilWhile from '../../components/Ex_15_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Seuil d'une suite : la condition du while",
+  description: "Complète la condition d'une boucle while pour trouver le premier rang qui dépasse un seuil",
+  chapitre: "Algorithmique et suites",
+};
 ---
 
-<LeconLayout title="Exercice 15T - Algorithmique - Calcul de seuil">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonScriptCompletion client:load />
+    <SeuilWhile client:load />
   </main>
 </LeconLayout>

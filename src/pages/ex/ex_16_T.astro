@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonAlgorithmAnalysis from '../../components/Ex_16_T.tsx';
+import ListeTermes from '../../components/Ex_16_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Liste des termes d'une suite",
+  description: "Détermine ce que renvoie une fonction Python qui construit la liste des premiers termes d'une suite",
+  chapitre: "Algorithmique et suites",
+};
 ---
 
-<LeconLayout title="Exercice 16T - Algorithmique - Analyse de fonction">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonAlgorithmAnalysis client:load />
+    <ListeTermes client:load />
   </main>
 </LeconLayout>

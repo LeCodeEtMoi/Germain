@@ -1,14 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_1_T.tsx';
+import EquationCartesienne from '../../components/Ex_1_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Équation cartésienne d'un plan",
+  description: "Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗",
+  chapitre: "Espace",
+};
 ---
 
-<LeconLayout title="Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <EquationCartesienne client:load />
   </main>
 </LeconLayout>
-
-
-
-

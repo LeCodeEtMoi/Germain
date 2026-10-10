@@ -1,109 +1,149 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MathTex from './MathTex.tsx';
+import {
+  Astuce, Boutons, Cadre, Calcul, Choix, Chargement, Correction, Enonce, Formulaire, MessageIncompris, MessageSucces,
+  Retour, Titre, ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import { arrangements, binomial, entier, grandNombre, melanger } from '../lib/maths.ts';
 
-// Génère un nombre aléatoire entre un intervalle
-const random = (type: number) => {
-  if (type === 1) {
-    return Math.floor(Math.random() * (40 - 27 + 1)) + 27; // entre 27 et 40
-  } else {
-    return Math.floor(Math.random() * (10 - 3 + 1)) + 3;   // entre 3 et 10
-  }
-};
+/**
+ * Exercice : dénombrer les groupes de k élèves parmi n (combinaisons).
+ *
+ * Maths : former un groupe = choisir k élèves parmi n, sans ordre ni répétition : C(n, k) possibilités.
+ * Les trois propositions fausses sont les erreurs classiques :
+ *   - arrangement  n(n−1)…(n−k+1) : l'ordre compte, chaque groupe est compté k! fois ;
+ *   - somme        n + (n−1) + … : une addition ne dénombre pas des choix successifs ;
+ *   - puissance    n^k : tirages avec remise, dans l'ordre.
+ * Les valeurs numériques des quatre propositions sont calculées en BigInt (exact) et on
+ * vérifie qu'elles sont toutes différentes ; le mélange est un vrai mélange de Fisher–Yates.
+ */
 
-// Génère une expression descendante (ex: 27 × 26 × 25...)
-const expressionDescendante = (n: number, k: number): string => {
-  const termes = [];
-  for (let i = 0; i < k; i++) {
-    termes.push(n - i);
-  }
-  return termes.join(" × ");
-};
+/* ===== Logique ===== */
 
-// Génère une expression descendante (ex: 27 + 26 + 25...)
-const expressionDescendante1 = (n: number, k: number): string => {
-    const termes = [];
-    for (let i = 0; i < k; i++) {
-      termes.push(n - i);
-    }
-    return termes.join(" + ");
-  };
+export type TypeProposition = 'combinaison' | 'arrangement' | 'somme' | 'puissance';
+export type Proposition = { type: TypeProposition; tex: string; valeur: bigint };
+export type Exercice = { n: number; k: number; propositions: Proposition[] };
 
-// Fonction pour créer un nouvel exercice
-const genererExercice = () => {
-  const nb_eleves = random(1);
-  const groupe = random(0);
-  const propositions = [
-    { tex: `\\binom{${nb_eleves}}{${groupe}}`, correct: true },
-    { tex: expressionDescendante(nb_eleves, groupe), correct: false },
-    { tex: expressionDescendante1(nb_eleves, groupe), correct: false },
-    { tex: `${nb_eleves}^{${groupe}}`, correct: false },
+/** « 27 \times 26 \times 25 » ou « 27 \times 26 \times \cdots \times 18 » quand c'est long. */
+function listeDescendante(n: number, k: number, operateur: string): string {
+  const termes = Array.from({ length: k }, (_, i) => String(n - i));
+  const garde = k <= 4 ? termes : [termes[0], termes[1], '\\cdots', termes[k - 1]];
+  return garde.join(` ${operateur} `);
+}
+
+const sommeDescendante = (n: number, k: number) => BigInt((k * (2 * n - k + 1)) / 2);
+
+export function genererExercice(): Exercice {
+  const n = entier(27, 40);
+  const k = entier(3, 10);
+  const propositions: Proposition[] = [
+    { type: 'combinaison', tex: `\\binom{${n}}{${k}}`, valeur: binomial(n, k) },
+    { type: 'arrangement', tex: listeDescendante(n, k, '\\times'), valeur: arrangements(n, k) },
+    { type: 'somme', tex: listeDescendante(n, k, '+'), valeur: sommeDescendante(n, k) },
+    { type: 'puissance', tex: `${n}^{${k}}`, valeur: BigInt(n) ** BigInt(k) },
   ];
-  const melange = propositions.sort(() => Math.random() - 0.5);
-  return { nb_eleves, groupe, propositions: melange };
-};
+  return { n, k, propositions: melanger(propositions) };
+}
 
-const Denombremement: React.FC = () => {
-  const [exercice, setExercice] = useState(genererExercice());
-  const [checked, setChecked] = useState<number | null>(null);
-  const [validated, setValidated] = useState<boolean>(false);
+const factorielle = (k: number) => Array.from({ length: k }, (_, i) => BigInt(i + 1)).reduce((a, b) => a * b, 1n);
 
-  const handleChange = (index: number) => () => {
-    setChecked(index);
-  };
+/* ===== Affichage ===== */
 
-  const handleValidate = () => {
-    setValidated(true);
-  };
+export default function Combinaisons() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [choisi, setChoisi] = useState<string | null>(null);
+  const [retour, setRetour] = useState<null | 'vide' | 'correct' | 'faux'>(null);
 
-  const handleNewExercise = () => {
-    setExercice(genererExercice());
-    setChecked(null);
-    setValidated(false);
+  if (!exo) return <Chargement />;
+
+  const { n, k, propositions } = exo;
+  const bonne = propositions.find((p) => p.type === 'combinaison')!;
+
+  function valider() {
+    if (choisi === null) return setRetour('vide');
+    setRetour(propositions[Number(choisi)].type === 'combinaison' ? 'correct' : 'faux');
+  }
+
+  function nouvelExercice() {
+    regenerer();
+    setChoisi(null);
+    setRetour(null);
+  }
+
+  const pourquoi: Record<Exclude<TypeProposition, 'combinaison'>, string> = {
+    arrangement: `Cette expression compte les groupes en tenant compte de l'ordre (premier élève, deuxième élève…). Un même groupe est alors compté ${k}! = ${grandNombre(factorielle(k))} fois : on obtient ${grandNombre(arrangements(n, k))} au lieu de ${grandNombre(bonne.valeur)}.`,
+    somme: `Une somme ne dénombre pas des choix successifs : pour des choix qui s'enchaînent, on multiplie, on n'additionne pas. Ici elle vaut seulement ${grandNombre(sommeDescendante(n, k))}.`,
+    puissance: `Elle compte des tirages avec répétition (un élève pourrait être choisi plusieurs fois) et dans l'ordre. Or un groupe contient ${k} élèves différents, sans ordre.`,
   };
 
   return (
-    <div className="box content">
-      <h4 className="title is-5">
-        Une professeure enseigne la spécialité mathématiques dans une classe de {exercice.nb_eleves} élèves de terminale.
-      </h4>
-      <p>Elle veut former un groupe de {exercice.groupe} élèves.</p>
-      <p>De combien de façons différentes peut-elle former un tel groupe ?</p>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Une professeure enseigne la spécialité mathématiques dans une classe de {n} élèves de terminale.</p>
+        <p>Elle veut former un groupe de {k} élèves.</p>
+        <p>De combien de façons différentes peut-elle former un tel groupe ?</p>
+      </Enonce>
 
-      <div className="field">
-        <div className="control">
-            {exercice.propositions.map((item, index) => (
-                <label className="radio" key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    <input
-                        type="radio"
-                        name="proposition"
-                        checked={checked === index}
-                        onChange={handleChange(index)}
-                    />
-                    <span className="ml-2"><MathTex tex={item.tex} /></span>
-                </label>
-            ))}
-        </div>
-      </div>
+      <Formulaire onValider={valider}>
+        <Choix
+          legende="Choisis la bonne expression"
+          valeur={choisi}
+          onChange={setChoisi}
+          options={propositions.map((p, i) => ({ valeur: String(i), contenu: <MathTex tex={p.tex} /> }))}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
 
-      <div className="field is-grouped">
-        <div className="control">
-            <button className="button is-primary" onClick={handleValidate} disabled={checked === null}>
-                Valider
-            </button>
-        </div>
-        <div className="control">
-            <button className="button is-light" onClick={handleNewExercise}>Nouvel exercice</button>
-        </div>
-      </div>
-
-      {validated && checked !== null && (
-        <div className={`notification ${exercice.propositions[checked].correct ? 'is-success' : 'is-danger'} is-light mt-4`}>
-            <button className="delete" onClick={() => setValidated(false)}></button>
-            {exercice.propositions[checked].correct ? 'Bonne réponse !' : 'Mauvaise réponse.'}
-        </div>
-      )}
-    </div>
+      <ZoneRetour>
+        {retour === 'vide' && <MessageIncompris raison="Choisis une proposition avant de valider." />}
+        {retour === 'correct' && (
+          <MessageSucces>
+            <p>
+              Il y a <MathTex tex={bonne.tex} /> = {grandNombre(bonne.valeur)} groupes possibles.
+            </p>
+          </MessageSucces>
+        )}
+        {retour === 'faux' && (
+          <Retour type="faux">
+            <p>Oups, une erreur s'est glissée. La bonne réponse est :</p>
+            <div className="exercice-formule">
+              <MathTex tex={bonne.tex} />
+            </div>
+            <Correction>
+              <li>
+                Un groupe est un ensemble d'élèves : l'ordre n'a pas d'importance, et un élève ne peut pas y figurer deux fois.
+              </li>
+              <li>
+                On choisit donc {k} élèves parmi {n}, sans ordre et sans répétition : c'est une combinaison.
+              </li>
+              <li>
+                Le nombre de groupes est <Calcul>C({n}, {k}) = {n}! ÷ ({k}! × {n - k}!) = {grandNombre(bonne.valeur)}</Calcul>.
+              </li>
+              <li>
+                Pourquoi les autres propositions sont fausses :
+                <ul>
+                  {propositions
+                    .filter((p) => p.type !== 'combinaison')
+                    .map((p) => (
+                      <li key={p.type}>
+                        <MathTex tex={p.tex} /> {propositions[Number(choisi)].type === p.type && <strong>(ta réponse) </strong>}
+                        {pourquoi[p.type as Exclude<TypeProposition, 'combinaison'>]}
+                      </li>
+                    ))}
+                </ul>
+              </li>
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Pose-toi deux questions : l'ordre compte-t-il ? Peut-on répéter un élément ?</li>
+                <li>Ni ordre ni répétition : combinaison, « k parmi n ». Ordre sans répétition : arrangement, qui vaut k! fois plus.</li>
+                <li>Pour passer d'un arrangement à une combinaison, on divise par k!.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
   );
-};
-
-export default Denombremement;
+}

@@ -1,93 +1,724 @@
 ---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import '../styles/bulma.min.css';
+import '../styles/theme.css';
+import '../styles/outils.css';
+import '../styles/apropos.css';
+import '../styles/exercice.css';
 
-import Layout from '../layouts/BlogPost.astro';
+const pageTitle = 'Charte graphique';
+const pageDescription =
+  'Les couleurs, les polices et les composants du projet Germain, et le rôle de chaque fichier CSS.';
 
-const colors = [
-  { name: 'Violet-50', hex: '#f4f3ff' },
-  { name: 'Violet-100', hex: '#ece9fe' },
-  { name: 'Violet-200', hex: '#dbd6fe' },
-  { name: 'Violet-300', hex: '#c1b5fd' },
-  { name: 'Violet-400', hex: '#a28bfa' },
-  { name: 'Violet-500 (Primaire)', hex: '#845cf6' },
-  { name: 'Violet-600', hex: '#743aed' },
-  { name: 'Violet-700', hex: '#6528d9' },
-  { name: 'Violet-800', hex: '#5421b6' },
-  { name: 'Violet-900', hex: '#461d95' },
-  { name: 'Violet-950', hex: '#2a1065' },
+// Variables définies dans theme.css
+const couleurs = [
+  { variable: '--violet', hex: '#6528d9', role: 'Couleur principale : boutons, liens, titres de section, bordures des champs.', texte: '#fff' },
+  { variable: '--violet-profond', hex: '#2a1466', role: 'Fonds sombres (panneaux, message de réussite) et survol des boutons violets.', texte: '#fff' },
+  { variable: '--lavande', hex: '#a28bfa', role: 'Accent doux, pour les détails décoratifs.', texte: '#1f1a3d' },
+  { variable: '--lavande-pale', hex: '#efeaff', role: 'Fonds de panneaux, de cartes de données et de champs mis en avant.', texte: '#1f1a3d' },
+  { variable: '--papier', hex: '#faf9ff', role: 'Fond très clair des sections en alternance et des survols.', texte: '#1f1a3d' },
+  { variable: '--encre', hex: '#1f1a3d', role: 'Texte courant et titres (un noir légèrement violet).', texte: '#fff' },
+  { variable: '--craie', hex: '#ffd25e', role: 'Touche de jaune : « X », signes // sur fond sombre, survol des boutons clairs.', texte: '#1f1a3d' },
+];
+
+const fichiers = [
+  {
+    nom: 'theme.css',
+    ou: 'Toutes les pages',
+    role: 'Le socle commun. Il définit les 7 couleurs (variables CSS), la police du texte (Inter), la classe .righteous pour les titres et le contour de focus au clavier. Rien d’autre : c’est ce qui garantit que chaque page a la même identité.',
+  },
+  {
+    nom: 'outils.css',
+    ou: 'Accueil (composant Explication)',
+    role: 'Le carrousel Leçon / Exercice / Quiz : grande carte lavande en deux colonnes (illustration + texte), flèches rondes (.arrow), petits points de navigation (.point). Passe sur une seule colonne sur mobile.',
+  },
+  {
+    nom: 'apropos.css',
+    ou: 'Page À propos (composant About)',
+    role: 'La liste de questions à gauche (.apropos__onglets, l’onglet actif a un trait violet) et le texte à droite (.apropos__panneau), avec portrait optionnel et une petite animation d’apparition. Les noms suivent la convention apropos__élément pour ne jamais entrer en conflit avec d’autres styles.',
+  },
+  {
+    nom: 'exercice.css',
+    ou: 'Tous les exercices',
+    role: 'Tout l’habillage des exercices : énoncé, cartes de données, champs, choix (boutons radio), boutons, aide à la saisie, formules, et les trois retours après validation (réussite, erreur, incompris). Importé par chaque page ex_N_T.astro, jamais par les composants .tsx.',
+  },
+  {
+    nom: 'Bloc <style> de chaque page',
+    ou: 'Une seule page',
+    role: 'La mise en page propre à la page (titre d’introduction, rythme vertical --espace, panneaux). Les boutons en pilule sont redéfinis dans chaque page qui les utilise.',
+  },
+];
+
+const classesExercice = [
+  ['.exercice', 'Conteneur de l’exercice (largeur maximale 46 rem).'],
+  ['.exercice-titre', 'Titre « // Énoncé » en Righteous.'],
+  ['.exercice-enonce / .exercice-formule', 'Texte de l’énoncé et encadré lavande pour une formule.'],
+  ['.exercice-donnees / .exercice-donnee', 'Grille de cartes « libellé : valeur » (points, vecteurs).'],
+  ['.exercice-champ, .exercice-label, .exercice-aide', 'Champ texte à bordure violette, son libellé et son aide.'],
+  ['.exercice-choix', 'Choix unique : chaque option devient une carte, violette quand elle est cochée.'],
+  ['.exercice-touches / .exercice-touche', 'Petits boutons d’aide à la saisie (√, ln, sin…).'],
+  ['.exercice-bouton--principal / --secondaire', 'Valider (plein) et Nouvel exercice (contour).'],
+  ['.exercice-retour--correct / --faux / --incompris', 'Message de réussite (violet profond), d’erreur (rose) et d’incompréhension (lavande).'],
+  ['.exercice-correction, .exercice-astuce', 'Étapes numérotées de la correction et encadré de conseils.'],
 ];
 ---
 
-  <style>
-    .color-box {
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .color-swatch {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
-      margin-right: 1rem;
-      border: 1px solid #dbdbdb;
-    }
-    img {
-        width: 10%;
-      height:10%;
-    }
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-  </style>
-<Layout
-  title=""
-  description="Guide de style et composants pour le projet Germain."
-  pubDate={new Date()}
-> 
-  <section class="section">
-    <div class="container">
-      <h1 class="title is-1">Charte Graphique</h1><br>
-      <p class="subtitle is-3">Guide de style et composants pour le projet <strong>Germain</strong>.</p>
-      <hr />
-      <!-- Réaliser des composants comment dans framasoft . Avec les bouton décalée  -->
-      <!-- Logo -->
-      Le logo est le pprtrait de Sophie Germain. L'image est vient de wikipedia. Source de l'image <a href="https://commons.wikimedia.org/wiki/File:Germain_-_%C5%92uvres_philosophiques,_1896_(Illustration_page_4).jpg?uselang=fr">Ici</a>
-      <!--  Couleurs -->
-      <h2 class="title is-2 mt-6">Palette de Couleurs</h2>
-      <div class="box">
-        <div class="columns is-multiline">
-          {colors.map(color => (
-            <div class="column is-one-third">
-              <div class="color-box">
-                <div class="color-swatch" style={`background-color: ${color.hex};`}></div>
-                <div>
-                  <p class="has-text-weight-bold">{color.name}</p>
-                  <code>{color.hex}</code>
+  <body>
+    <Header />
+
+    <main>
+      <!-- ============ Introduction ============ -->
+      <section class="ui-intro">
+        <div class="container">
+          <h1 class="ui-titre righteous"><span aria-hidden="true">//</span> {pageTitle}</h1>
+          <p class="ui-chapeau">{pageDescription}</p>
+          <ul class="ui-sommaire">
+            <li><a href="#fichiers">Les fichiers CSS</a></li>
+            <li><a href="#couleurs">Couleurs</a></li>
+            <li><a href="#typographie">Typographie</a></li>
+            <li><a href="#boutons">Boutons et commandes</a></li>
+            <li><a href="#panneaux">Panneaux</a></li>
+            <li><a href="#exercices">Exercices</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ Fichiers CSS ============ -->
+      <section class="ui-section" id="fichiers">
+        <div class="container">
+          <h2 class="ui-sous-titre righteous"><span aria-hidden="true">//</span> Les fichiers CSS</h2>
+          <p class="ui-texte">
+            Le style est réparti en quatre fichiers à placer dans <code>src/styles/</code>, plus le bloc
+            <code>&lt;style&gt;</code> de chaque page. Chacun a un rôle précis, pour éviter qu’un style en écrase un autre.
+          </p>
+          <dl class="ui-fichiers">
+            {
+              fichiers.map((f) => (
+                <div class="ui-fichier">
+                  <dt>
+                    <code>{f.nom}</code>
+                    <span>{f.ou}</span>
+                  </dt>
+                  <dd>{f.role}</dd>
                 </div>
+              ))
+            }
+          </dl>
+        </div>
+      </section>
+
+      <!-- ============ Couleurs ============ -->
+      <section class="ui-section ui-section--papier" id="couleurs">
+        <div class="container">
+          <h2 class="ui-sous-titre righteous"><span aria-hidden="true">//</span> Couleurs</h2>
+          <p class="ui-texte">
+            Définies une fois dans <code>theme.css</code>, utilisées partout avec <code>var(--nom)</code>. On ne tape
+            jamais un code hexadécimal à la main dans une page.
+          </p>
+          <div class="ui-couleurs">
+            {
+              couleurs.map((c) => (
+                <div class="ui-couleur">
+                  <div class="ui-echantillon" style={`background:${c.hex}; color:${c.texte};`}>
+                    <span class="righteous">Aa</span>
+                  </div>
+                  <p class="ui-couleur-nom">
+                    <code>{c.variable}</code> <span>{c.hex}</span>
+                  </p>
+                  <p class="ui-couleur-role">{c.role}</p>
+                </div>
+              ))
+            }
+          </div>
+          <p class="ui-texte ui-note">
+            Pour rappel, <code>--primary-color</code> reprend <code>--violet</code> : le pied de page l’utilise.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ Typographie ============ -->
+      <section class="ui-section" id="typographie">
+        <div class="container">
+          <h2 class="ui-sous-titre righteous"><span aria-hidden="true">//</span> Typographie</h2>
+          <div class="ui-duo">
+            <div class="ui-carte">
+              <p class="ui-etiquette">Titres : Righteous</p>
+              <p class="righteous ui-demo-titre"><span aria-hidden="true">//</span> Le titre de section</p>
+              <p class="ui-texte">
+                Classe <code>.righteous</code>. Chaque titre commence par la signature <code>//</code> en violet (ou en
+                jaune craie sur fond sombre), marquée <code>aria-hidden</code> pour les lecteurs d’écran.
+              </p>
+            </div>
+            <div class="ui-carte">
+              <p class="ui-etiquette">Texte : Inter</p>
+              <p class="ui-demo-texte">
+                Les mathématiques permettent de réaliser d’innombrables choses : musique, météorologie, cryptographie,
+                médecine, sport…
+              </p>
+              <p class="ui-texte">
+                Défini sur <code>body</code> : taille de lecture 1,1 à 1,2 rem, interligne ample, lignes limitées à environ
+                55 caractères.
+              </p>
+            </div>
+          </div>
+          <p class="ui-texte">
+            <strong>Focus au clavier.</strong> Tout élément atteint avec Tab reçoit un contour violet de 3 px
+            (<code>:focus-visible</code> dans <code>theme.css</code>). Essayez :
+            <a href="#typographie" class="ui-lien">ce lien</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ Boutons et commandes ============ -->
+      <section class="ui-section ui-section--papier" id="boutons">
+        <div class="container">
+          <h2 class="ui-sous-titre righteous"><span aria-hidden="true">//</span> Boutons et commandes</h2>
+          <p class="ui-texte">
+            Tous les boutons sont en pilule (<code>border-radius: 999px</code>) et changent de couleur au survol.
+          </p>
+          <div class="ui-demos">
+            <div class="ui-demo">
+              <button type="button" class="ui-bouton ui-bouton--principal">Principal</button>
+              <p>Action principale. Survol : violet profond. <code>.bouton-principal</code></p>
+            </div>
+            <div class="ui-demo">
+              <button type="button" class="ui-bouton ui-bouton--contour">Secondaire</button>
+              <p>Action secondaire, sur fond clair. Survol : fond lavande pâle. <code>.bouton-contour</code></p>
+            </div>
+            <div class="ui-demo ui-demo--sombre">
+              <button type="button" class="ui-bouton ui-bouton--clair">Sur fond sombre</button>
+              <p>Bouton blanc pour les panneaux violets. Survol : jaune craie. <code>.bouton-clair</code></p>
+            </div>
+            <div class="ui-demo">
+              <div class="l" style="margin-top:0">
+                <button type="button" class="arrow left-arrow" aria-label="Précédent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <div class="points">
+                  <button type="button" class="point" aria-current="true" aria-label="Premier"></button>
+                  <button type="button" class="point" aria-label="Deuxième"></button>
+                  <button type="button" class="point" aria-label="Troisième"></button>
+                </div>
+                <button type="button" class="arrow right-arrow" aria-label="Suivant">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+                </button>
+              </div>
+              <p>Commandes du carrousel (<code>outils.css</code>) : flèches rondes et points ; le point actif est plein.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Panneaux ============ -->
+      <section class="ui-section" id="panneaux">
+        <div class="container">
+          <h2 class="ui-sous-titre righteous"><span aria-hidden="true">//</span> Panneaux</h2>
+          <p class="ui-texte">
+            Des blocs aux coins très arrondis (1,5 rem), en deux tons : clair pour l’information, sombre pour l’appel à
+            l’action.
+          </p>
+          <div class="ui-duo">
+            <div class="ui-panneau ui-panneau--clair">
+              <h3 class="righteous"><span aria-hidden="true">//</span> Panneau clair</h3>
+              <p>Fond <code>--lavande-pale</code>, texte <code>--encre</code>.</p>
+            </div>
+            <div class="ui-panneau ui-panneau--sombre">
+              <h3 class="righteous"><span aria-hidden="true">//</span> Panneau sombre</h3>
+              <p>Fond <code>--violet-profond</code>, signe // en <code>--craie</code>.</p>
+            </div>
+          </div>
+
+          <p class="ui-etiquette ui-etiquette--espace">Liste de questions (apropos.css)</p>
+          <div class="ui-onglets">
+            <div class="apropos__onglets" role="tablist" aria-label="Exemple">
+              <button type="button" role="tab" class="apropos__onglet" aria-selected="true">Question active</button>
+              <button type="button" role="tab" class="apropos__onglet" aria-selected="false">Autre question</button>
+              <button type="button" role="tab" class="apropos__onglet" aria-selected="false">Encore une question</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Exercices ============ -->
+      <section class="ui-section ui-section--papier" id="exercices">
+        <div class="container">
+          <h2 class="ui-sous-titre righteous"><span aria-hidden="true">//</span> Exercices</h2>
+          <p class="ui-texte">
+            Voici les composants de <code>exercice.css</code>, tels qu’ils s’affichent dans un exercice.
+          </p>
+
+          <div class="exercice ui-exemple">
+            <dl class="exercice-donnees">
+              <div class="exercice-donnee"><dt>Point A</dt><dd>(2 ; −1 ; 3)</dd></div>
+              <div class="exercice-donnee"><dt>Vecteur n⃗</dt><dd>(1 ; 0 ; −2)</dd></div>
+            </dl>
+
+            <div class="exercice-formulaire">
+              <label class="exercice-label" for="ui-champ">Un champ de réponse</label>
+              <input id="ui-champ" class="exercice-champ" type="text" placeholder="Ex : 2x - 3y + z + 1 = 0" />
+              <p class="exercice-aide">Une ligne d’aide sous le champ.</p>
+
+              <div class="exercice-touches" role="group" aria-label="Aide à la saisie">
+                <button type="button" class="exercice-touche">√</button>
+                <button type="button" class="exercice-touche">ln</button>
+                <button type="button" class="exercice-touche">sin</button>
+                <button type="button" class="exercice-touche">+ C</button>
+              </div>
+
+              <fieldset class="exercice-choix">
+                <legend class="exercice-label">Un choix unique</legend>
+                <div class="exercice-choix__liste exercice-choix__liste--ligne">
+                  <label class="exercice-choix__option"><input type="radio" name="ui-choix" checked /> <span>Oui</span></label>
+                  <label class="exercice-choix__option"><input type="radio" name="ui-choix" /> <span>Non</span></label>
+                </div>
+              </fieldset>
+
+              <div class="exercice-boutons">
+                <button type="button" class="exercice-bouton exercice-bouton--principal">Valider</button>
+                <button type="button" class="exercice-bouton exercice-bouton--secondaire">Nouvel exercice</button>
               </div>
             </div>
-          ))}
+
+            <div class="exercice-retour exercice-retour--correct">
+              <p class="exercice-retour__etat">Correct</p>
+              <p>Bravo,  la réponse est correcte !</p>
+            </div>
+            <div class="exercice-retour exercice-retour--faux">
+              <p class="exercice-retour__etat">Pas tout à fait</p>
+              <p>Oups, une erreur s’est glissée. Voici la correction étape par étape.</p>
+              <ol class="exercice-correction">
+                <li>Première étape de la méthode.</li>
+                <li>Deuxième étape, avec le calcul <span class="exercice-math">2 × 3 = 6</span>.</li>
+              </ol>
+              <div class="exercice-astuce">
+                <p class="exercice-astuce__titre">Pour réussir la prochaine fois</p>
+                <ul><li>Un conseil pour éviter l’erreur fréquente.</li></ul>
+              </div>
+            </div>
+            <div class="exercice-retour exercice-retour--incompris">
+              <p class="exercice-retour__etat">Je n’ai pas compris</p>
+              <p>La saisie est illisible : rien n’est compté comme faux.</p>
+            </div>
+          </div>
+
+          <h3 class="ui-sous-titre ui-sous-titre--petit righteous">Les classes de exercice.css</h3>
+          <dl class="ui-classes">
+            {
+              classesExercice.map(([classe, role]) => (
+                <div>
+                  <dt><code>{classe}</code></dt>
+                  <dd>{role}</dd>
+                </div>
+              ))
+            }
+          </dl>
         </div>
-      </div>
+      </section>
 
-      <!-- Composants UI -->
-      <h2 class="title is-2 mt-6 ">Composants d'Interface</h2>
-      
-      <!-- Boutons -->
-      <h3 class="title is-4">Boutons</h3>
-      <div class="box">
-        <div class="field is-grouped">
-          <p class="control"><button class="button is-germain">Primaire</button></p>
-          <p class="control"><button class="button is-link">Lien</button></p>
-          <p class="control"><button class="button is-info">Info</button></p>
-          <p class="control"><button class="button is-success">Succès</button></p>
-          <p class="control"><button class="button is-warning">Avertissement</button></p>
-          <p class="control"><button class="button is-danger">Danger</button></p>
-          <p class="control"><button class="button is-light">Léger</button></p>
+      <!-- ============ Logo ============ -->
+      <section class="ui-section">
+        <div class="container">
+          <p class="ui-texte ui-note">
+            Le logo est le portrait de Sophie Germain. L’image vient de Wikimedia Commons :
+            <a
+              class="ui-lien"
+              href="https://commons.wikimedia.org/wiki/File:Germain_-_%C5%92uvres_philosophiques,_1896_(Illustration_page_4).jpg?uselang=fr"
+              target="_blank"
+              rel="noopener noreferrer">source de l’image</a
+            >.
+          </p>
         </div>
-      </div>
+      </section>
+    </main>
 
-      
+    <Footer />
+  </body>
+</html>
 
-      
+<style>
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
 
-    </div>
-  </section>
-</Layout>
+  /* ---------- Introduction ---------- */
+  .ui-intro {
+    padding: 7rem 0 var(--espace);
+  }
+
+  .ui-titre {
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--encre);
+    margin: 0 0 1.25rem;
+  }
+
+  .ui-titre span,
+  .ui-sous-titre span,
+  .ui-panneau h3 span {
+    color: var(--violet);
+  }
+
+  .ui-chapeau {
+    max-width: 55ch;
+    font-size: 1.2rem;
+    line-height: 1.65;
+    color: #3b3555;
+  }
+
+  .ui-sommaire {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-sommaire a {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border: 2px solid var(--lavande-pale);
+    border-radius: 999px;
+    color: var(--violet);
+    font-weight: 600;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .ui-sommaire a:hover {
+    border-color: var(--violet);
+    background: var(--lavande-pale);
+  }
+
+  /* ---------- Sections ---------- */
+  .ui-section {
+    padding: var(--espace) 0;
+  }
+
+  .ui-section--papier {
+    background: var(--papier);
+  }
+
+  .ui-sous-titre {
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+    line-height: 1.2;
+    color: var(--encre);
+    margin-bottom: 1rem;
+  }
+
+  .ui-sous-titre--petit {
+    margin-top: 2.5rem;
+    font-size: 1.5rem;
+  }
+
+  .ui-texte {
+    max-width: 62ch;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.65;
+    color: #3b3555;
+  }
+
+  .ui-note {
+    margin-bottom: 0;
+    font-size: 1rem;
+  }
+
+  .ui-etiquette {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--violet);
+  }
+
+  .ui-etiquette--espace {
+    margin-top: 2rem;
+  }
+
+  code {
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.4rem;
+    background: var(--lavande-pale);
+    color: var(--violet-profond);
+    font-size: 0.9em;
+  }
+
+  .ui-lien {
+    color: var(--violet);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  /* ---------- Fichiers ---------- */
+  .ui-fichiers {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .ui-fichier {
+    display: grid;
+    grid-template-columns: minmax(12rem, 1fr) minmax(0, 3fr);
+    gap: 1rem 2rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1.25rem;
+    background: var(--lavande-pale);
+  }
+
+  .ui-fichier dt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-start;
+    font-weight: 700;
+  }
+
+  .ui-fichier dt code {
+    background: #fff;
+  }
+
+  .ui-fichier dt span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #5b5476;
+  }
+
+  .ui-fichier dd {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ---------- Couleurs ---------- */
+  .ui-couleurs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ui-echantillon {
+    display: grid;
+    place-items: center;
+    height: 6rem;
+    border: 1px solid rgba(31, 26, 61, 0.12);
+    border-radius: 1rem;
+    font-size: 2rem;
+  }
+
+  .ui-couleur-nom {
+    margin: 0.6rem 0 0.2rem;
+    font-weight: 700;
+  }
+
+  .ui-couleur-nom span {
+    margin-left: 0.3rem;
+    font-weight: 400;
+    color: #5b5476;
+  }
+
+  .ui-couleur-role {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #3b3555;
+  }
+
+  /* ---------- Typographie ---------- */
+  .ui-duo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ui-carte {
+    padding: 1.5rem;
+    border: 2px solid var(--lavande-pale);
+    border-radius: 1.5rem;
+  }
+
+  .ui-demo-titre {
+    margin-bottom: 0.75rem;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .ui-demo-titre span {
+    color: var(--violet);
+  }
+
+  .ui-demo-texte {
+    margin-bottom: 0.75rem;
+    font-size: 1.15rem;
+    line-height: 1.65;
+  }
+
+  /* ---------- Boutons ---------- */
+  .ui-demos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  .ui-demo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    background: #fff;
+  }
+
+  .ui-demo--sombre {
+    background: var(--violet-profond);
+    color: #fff;
+  }
+
+  .ui-demo--sombre code {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  .ui-demo p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .ui-bouton {
+    padding: 0.85rem 1.6rem;
+    border: 2px solid var(--violet);
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .ui-bouton--principal {
+    background: var(--violet);
+    color: #fff;
+  }
+
+  .ui-bouton--principal:hover {
+    background: var(--violet-profond);
+    border-color: var(--violet-profond);
+  }
+
+  .ui-bouton--contour {
+    background: transparent;
+    color: var(--violet);
+  }
+
+  .ui-bouton--contour:hover {
+    background: var(--lavande-pale);
+  }
+
+  .ui-bouton--clair {
+    background: #fff;
+    border-color: #fff;
+    color: var(--violet-profond);
+  }
+
+  .ui-bouton--clair:hover {
+    background: var(--craie);
+    border-color: var(--craie);
+  }
+
+  /* ---------- Panneaux ---------- */
+  .ui-panneau {
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border-radius: 1.5rem;
+  }
+
+  .ui-panneau h3 {
+    margin-bottom: 0.75rem;
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .ui-panneau p {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .ui-panneau--clair {
+    background: var(--lavande-pale);
+    color: var(--encre);
+  }
+
+  .ui-panneau--sombre {
+    background: var(--violet-profond);
+    color: #fff;
+  }
+
+  .ui-panneau--sombre h3 span {
+    color: var(--craie);
+  }
+
+  .ui-panneau--sombre code {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  .ui-onglets {
+    max-width: 22rem;
+  }
+
+  /* ---------- Exercices ---------- */
+  .ui-exemple {
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border-radius: 1.5rem;
+    background: #fff;
+  }
+
+  .ui-classes {
+    display: grid;
+    gap: 0.6rem;
+    margin: 1rem 0 0;
+  }
+
+  .ui-classes > div {
+    display: grid;
+    grid-template-columns: minmax(14rem, 1fr) minmax(0, 2fr);
+    gap: 0.5rem 1.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--lavande-pale);
+  }
+
+  .ui-classes dt {
+    font-weight: 600;
+  }
+
+  .ui-classes dd {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .ui-intro {
+      padding-top: 6rem;
+    }
+
+    .ui-duo,
+    .ui-fichier,
+    .ui-classes > div {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

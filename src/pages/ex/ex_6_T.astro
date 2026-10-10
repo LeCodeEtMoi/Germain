@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_6_T.tsx';
+import PointSurDroite from '../../components/Ex_6_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Point et droite de l'espace",
+  description: "Détermine si un point appartient à une droite donnée par une représentation paramétrique",
+  chapitre: "Espace",
+};
 ---
 
-<LeconLayout title="Appartenance à une droite">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <PointSurDroite client:load />
   </main>
 </LeconLayout>

@@ -1,105 +1,163 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { Fragment, useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { choisir, entier, signeAleatoire } from '../lib/maths.ts';
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : combien de solutions pour f(x) = 0 d'après un tableau de variations ?
+ *
+ * f est continue et strictement monotone sur chaque « morceau » du tableau (de 0 à +∞).
+ * Sur un morceau qui va de la valeur u à la valeur v (v peut être une limite en +∞) :
+ *   - exactement UNE solution si u et v sont de signes contraires (théorème des valeurs intermédiaires + stricte monotonie) ;
+ *   - AUCUNE sinon.
+ * Le nombre de solutions est la somme sur les morceaux. Les valeurs du tableau ne sont jamais nulles.
+ */
+
+/* ===== Logique ===== */
+
+export type Exercice = {
+  /** Valeurs successives (en 0, éventuellement en x0, puis la limite en +∞). */
+  valeurs: number[];
+  /** Abscisse du changement de sens (si le tableau a 3 colonnes de valeurs), sinon null. */
+  x0: number | null;
+};
+
+const nonNul = (max: number) => signeAleatoire() * entier(1, max);
+
+function tirer(): Exercice {
+  const type = choisir(['dec', 'inc', 'dec_inc', 'inc_dec']);
+  for (;;) {
+    const P = nonNul(6);
+    const m = nonNul(6);
+    const L = nonNul(6);
+    if (type === 'dec' && L < P) return { valeurs: [P, L], x0: null };
+    if (type === 'inc' && L > P) return { valeurs: [P, L], x0: null };
+    if (type === 'dec_inc' && m < P && m < L) return { valeurs: [P, m, L], x0: entier(1, 4) };
+    if (type === 'inc_dec' && m > P && m > L) return { valeurs: [P, m, L], x0: entier(1, 4) };
+  }
 }
 
-function generateVariationData() {
-  const a = getRandomInt(1, 4); // minimum de la fonction
-  const x0 = getRandomInt(1, 3); // abscisse du minimum
-  const f0 = -getRandomInt(1, 5); // valeur minimale (f(x0))
-  const L = getRandomInt(4, 8); // valeur limite en +∞
-
-  return {
-    a,
-    x0,
-    f0,
-    L,
-  };
+/** Nombre de solutions de f(x) = 0 sur [0 ; +∞[ . */
+export function nombreSolutions({ valeurs }: Exercice): number {
+  let total = 0;
+  for (let i = 0; i + 1 < valeurs.length; i++) if (valeurs[i] * valeurs[i + 1] < 0) total += 1;
+  return total;
 }
 
-export default function ExerciceTableauVariationUniqueZero() {
-  const [problem, setProblem] = useState(generateVariationData());
-  const [showCorrection, setShowCorrection] = useState(false);
+/** On tire d'abord le nombre de solutions voulu (0, 1 ou 2), puis un tableau qui y correspond : les trois cas sont équilibrés. */
+export function genererExercice(): Exercice {
+  const voulu = entier(0, 2);
+  for (;;) {
+    const exo = tirer();
+    if (nombreSolutions(exo) === voulu) return exo;
+  }
+}
 
-  const newExercise = () => {
-    setProblem(generateVariationData());
-    setShowCorrection(false);
-  };
+export const questions = (exo: Exercice): Question[] => [
+  {
+    type: 'choix',
+    id: 'nb',
+    libelle: <>Combien de solutions l’équation <MathTex tex="f(x) = 0" /> admet-elle sur <MathTex tex="[0\,;\,+\infty[" /> ?</>,
+    attendu: String(nombreSolutions(exo)),
+    enLigne: true,
+    options: [
+      { valeur: '0', contenu: 'aucune' },
+      { valeur: '1', contenu: 'exactement une' },
+      { valeur: '2', contenu: 'exactement deux' },
+    ],
+  },
+];
 
-  const { x0, f0, L } = problem;
+/* ===== Affichage ===== */
+
+const signe = (v: number) => (v > 0 ? 'positif' : 'négatif');
+
+export default function TableauVariations() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
+
+  const { valeurs, x0 } = exo;
+  const nb = nombreSolutions(exo);
+  const abscisses = x0 === null ? ['0', '+\\infty'] : ['0', String(x0), '+\\infty'];
+  const flechesTex = valeurs.slice(0, -1).map((v, i) => (valeurs[i + 1] > v ? '\\nearrow' : '\\searrow'));
+  const fleches = valeurs.slice(0, -1).map((v, i) => (valeurs[i + 1] > v ? 'croissante' : 'décroissante'));
 
   return (
-    <div className="box">
-      <h2 className="title is-4">Étude graphique d'une fonction</h2>
-
-      <p>Soit une fonction <MathTex tex="f" /> définie sur <MathTex tex="[0, +\\infty[" /> dont le tableau de variations est donné ci-dessous :</p>
-
-      <table className="table is-bordered is-striped is-narrow is-hoverable mt-4 has-text-centered">
-        <thead>
-          <tr>
-            <th><MathTex tex="x" /></th>
-            <th>0</th>
-            <th><MathTex tex={String(x0)} /></th>
-            <th><MathTex tex="+\\infty" /></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th><MathTex tex="f(x)" /></th>
-            <td><MathTex tex="+" /></td>
-            <td><MathTex tex={String(f0)} /></td>
-            <td><MathTex tex={String(L)} /></td>
-          </tr>
-          <tr>
-            <th>Variations</th>
-            <td colSpan={1}><MathTex tex="\\searrow" /></td>
-            <td colSpan={1}><MathTex tex="\\nearrow" /></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p className="mt-4">
-        Justifier que l'équation <MathTex tex="f(x) = 0" /> admet une <strong>unique solution</strong> sur <MathTex tex="[0, +\\infty[" />.
-      </p>
-
-      <button className="button is-primary mt-4" onClick={() => setShowCorrection(true)}>
-        Afficher la correction
-      </button>
-      <button className="button is-light mt-4 ml-2" onClick={newExercise}>
-        Nouvel exercice
-      </button>
-
-      {showCorrection && (
-        <div className="notification is-info mt-4">
-          <h3 className="title is-5">Correction</h3>
-          <ul>
-            <li>La fonction <MathTex tex="f" /> est continue par hypothèse sur <MathTex tex="[0, +\\infty[" />.</li>
-            <li>Le tableau de variations montre que :
-              <ul>
-                <li><MathTex tex={`f(0) > 0`} />,</li>
-                <li><MathTex tex={`f(${x0}) = ${f0}`} /> avec <MathTex tex={`${f0} < 0`} />,</li>
-                <li><MathTex tex={`f(x) \\to ${L} > 0`} /> quand <MathTex tex="x \\to +\\infty" />.</li>
-              </ul>
-            </li>
-            <li>Donc, <MathTex tex="f" /> passe de positif à négatif, puis redevient positif.</li>
-            <li>Par le théorème des valeurs intermédiaires, il existe :
-              <ul>
-                <li>au moins une solution<MathTex tex={`\\alpha_1 \\in (0, ${x0})`} />
-                   avec <MathTex tex="f(\\alpha_1) = 0" /></li>
-                <li>au moins une solution <MathTex tex="\\alpha_1 < x_0 < \\alpha_2" />
-
- avec <MathTex tex="f(\\alpha_2) = 0" /></li>
-              </ul>
-            </li>
-            <li><strong>Mais</strong> comme le minimum est atteint en <MathTex tex={`x = ${x0}`} /> et que <MathTex tex={`f(${x0}) = ${f0} < 0`} />, il y a un seul zéro de part et d’autre de ce minimum.</li>
-            <li>Donc, l’équation <MathTex tex="f(x) = 0" /> admet exactement deux solutions réelles distinctes <MathTex tex="\\alpha_1 < x_0 < \\alpha_2" /> sur <MathTex tex="[0, +\\infty[" />.</li>
-            <li><strong>Mais si</strong> vous voulez uniquement une solution (et que la fonction est strictement décroissante par exemple jusqu’à +∞), vous pouvez ajuster le générateur.</li>
-          </ul>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Soit <MathTex tex="f" /> une fonction continue sur <MathTex tex="[0\,;\,+\infty[" /> dont voici le tableau de variations (la valeur en <MathTex tex="+\infty" /> est la limite de f).
+        </p>
+        <div className="exercice-tableau-conteneur">
+          <table className="exercice-tableau">
+            <tbody>
+              <tr>
+                <th scope="row"><MathTex tex="x" /></th>
+                {abscisses.map((x, i) => (
+                  <Fragment key={i}>
+                    {i > 0 && <td />}
+                    <td><MathTex tex={x} /></td>
+                  </Fragment>
+                ))}
+              </tr>
+              <tr>
+                <th scope="row"><MathTex tex="f(x)" /></th>
+                {valeurs.map((v, i) => (
+                  <Fragment key={i}>
+                    {i > 0 && <td><MathTex tex={flechesTex[i - 1]} /></td>}
+                    <td><MathTex tex={String(v)} /></td>
+                  </Fragment>
+                ))}
+              </tr>
+            </tbody>
+          </table>
         </div>
-      )}
-    </div>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
+          <p>
+            L’équation <MathTex tex="f(x) = 0" /> a {nb === 0 ? 'aucune solution' : nb === 1 ? 'exactement une solution' : 'exactement deux solutions'} sur <MathTex tex="[0\,;\,+\infty[" />.
+          </p>
+        }
+        correction={
+          <>
+            <li>f est continue et strictement monotone sur chaque intervalle du tableau : on étudie les intervalles un par un.</li>
+            {valeurs.slice(0, -1).map((v, i) => {
+              const w = valeurs[i + 1];
+              const oppose = v * w < 0;
+              const intervalle = i === valeurs.length - 2 ? `[${abscisses[i]}\\,;\\,+\\infty[` : `[${abscisses[i]}\\,;\\,${abscisses[i + 1]}]`;
+              return (
+                <li key={i}>
+                  Sur <MathTex tex={intervalle} />, f est {fleches[i]}, avec <MathTex tex={`${v}`} /> ({signe(v)}) au début et {i === valeurs.length - 2 ? 'pour limite ' : ''}
+                  <MathTex tex={`${w}`} /> ({signe(w)}) à la fin :{' '}
+                  {oppose
+                    ? 'les signes sont contraires, donc 0 est atteint une fois et une seule (théorème des valeurs intermédiaires, f strictement monotone) : 1 solution.'
+                    : 'les deux valeurs ont le même signe, et f est monotone : elle ne s’annule pas sur cet intervalle : 0 solution.'}
+                </li>
+              );
+            })}
+            <li>
+              Au total : <strong>{nb}</strong> solution{nb > 1 ? 's' : ''} de <MathTex tex="f(x) = 0" /> sur <MathTex tex="[0\,;\,+\infty[" />.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>Étudie chaque colonne du tableau séparément : un intervalle sur lequel f est strictement monotone contient au plus une solution.</li>
+            <li>Pour qu’il y ait une solution sur un intervalle, les valeurs aux deux extrémités doivent être de signes contraires.</li>
+            <li>N’oublie pas le dernier intervalle, vers +∞ : sa « valeur d’arrivée » est la limite de f.</li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

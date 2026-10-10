@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import StaticLinePlaneCheck from '../../components/Ex_12_T.tsx';
+import DroitePlan from '../../components/Ex_12_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Droite et plan de l'espace",
+  description: "Détermine la position relative d'une droite et d'un plan",
+  chapitre: "Espace",
+};
 ---
 
-<LeconLayout title="Exercice 12T - Position relative (Fixe)">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <StaticLinePlaneCheck client:load />
+    <DroitePlan client:load />
   </main>
 </LeconLayout>

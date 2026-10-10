@@ -1,0 +1,433 @@
+/* ==========================================================================
+   Germain — éditeur de code Python (style « IDE »)
+   --------------------------------------------------------------------------
+   À importer dans la page .astro, après exercice.css :
+     import '../../styles/exercice.css';
+     import '../../styles/python.css';
+
+   Fonctionne tel quel avec <BlocCode> (figure.exercice-code-bloc > figcaption + pre > code) :
+     - la légende devient l'onglet du fichier (ex. « seuil.py »),
+     - la fenêtre, la barre d'état et le thème s'appliquent automatiquement.
+
+   Classes facultatives
+     Coloration : py-kw  py-def  py-cls  py-fn  py-bi  py-dec  py-cst  py-self
+                  py-par  py-str  py-esc  py-int  py-num  py-op  py-pt  py-com
+     Lignes     : <span class="py-l"> … </span>  + .exercice-code-bloc--lignes (numéros)
+                  py-l--focus (ligne à regarder) · py-l--erreur (ligne fausse) · py-l--ajout (ligne ajoutée)
+     Retrait    : <span class="py-gu"></span> par niveau d'indentation (repères verticaux)
+     Variantes  : .exercice-code-bloc--clair (thème clair) · --sans-barre (sans barre d'état)
+     Sortie     : <div class="py-sortie"> … </div> (console) · <div class="py-sortie py-sortie--erreur">
+     Aussi       : les classes Pygments (.k .nf .s …) sont reconnues si vous utilisez un coloriseur.
+   ========================================================================== */
+
+.exercice-code-bloc {
+  /* Surfaces */
+  --py-fond: #1b1636;
+  --py-fond-haut: #241d47;
+  --py-fond-gouttiere: #17122e;
+  --py-fond-bas: #2e2557;
+  --py-bordure: rgba(196, 164, 255, 0.18);
+  --py-ligne-active: rgba(196, 164, 255, 0.07);
+  --py-guide: rgba(196, 164, 255, 0.16);
+  --py-selection: rgba(124, 77, 255, 0.45);
+
+  /* Texte */
+  --py-texte: #ece8ff;
+  --py-discret: #8279b3;
+  --py-numero: #5d5490;
+  --py-numero-actif: #c4a4ff;
+
+  /* Jetons — palette Germain : violet, lavande, craie jaune, + deux accents */
+  --py-mot-cle: #b78cff;
+  --py-definition: #d8b9ff;
+  --py-classe: #ffe27a;
+  --py-fonction: #ffd84d;
+  --py-natif: #7fd7ff;
+  --py-decorateur: #ffab70;
+  --py-constante: #ff8fc2;
+  --py-self: #cbbdf7;
+  --py-parametre: #f4dcff;
+  --py-chaine: #8de9b0;
+  --py-echappe: #5fd18f;
+  --py-interpole: #ffd84d;
+  --py-nombre: #ffab70;
+  --py-operateur: #ff8fc2;
+  --py-ponctuation: #a79fd6;
+  --py-commentaire: #7a71a8;
+
+  /* États */
+  --py-ok: #8de9b0;
+  --py-erreur: #ff7a90;
+  --py-ajout: #8de9b0;
+  --py-accent: #ffd84d;
+
+  position: relative;
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+  border: 1px solid var(--py-bordure);
+  border-radius: 1rem;
+  background: var(--py-fond);
+  color: var(--py-texte);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 14px 30px -12px rgba(27, 22, 54, 0.55);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---------- Fenêtre : barre de titre + onglet ---------- */
+.exercice-code-bloc figcaption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  margin: 0;
+  padding: 0 1rem 0 5.2rem;
+  background: var(--py-fond-haut);
+  border-bottom: 1px solid var(--py-bordure);
+  color: var(--py-discret);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+}
+
+/* Les trois pastilles de la fenêtre (une seule balise, trois ombres) */
+.exercice-code-bloc figcaption::before {
+  content: '';
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-top: -0.35rem;
+  border-radius: 50%;
+  background: #ff7a90;
+  box-shadow: 1.1rem 0 0 #ffd84d, 2.2rem 0 0 #8de9b0;
+}
+
+/* L'onglet du fichier : la légende elle-même, avec l'icône Python */
+.exercice-code-bloc figcaption::after {
+  content: 'Python 3';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.12rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 216, 77, 0.14);
+  color: var(--py-accent);
+  font-family: 'Righteous', 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+/* Habillage de la légende en onglet (texte placé dans la barre, soulignement jaune) */
+.exercice-code-bloc figcaption {
+  color: var(--py-texte);
+  font-weight: 500;
+  text-decoration: underline 2px var(--py-accent);
+  text-underline-offset: 0.65rem;
+  text-decoration-skip-ink: none;
+}
+
+/* ---------- Zone d'édition ---------- */
+.exercice-code-bloc pre {
+  margin: 0;
+  padding: 1rem 1.25rem 1.15rem;
+  background: transparent;
+  color: var(--py-texte);
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.98rem;
+  line-height: 1.8;
+  tab-size: 4;
+  white-space: pre;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--py-fond-bas) transparent;
+}
+
+.exercice-code-bloc code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.exercice-code-bloc pre::-webkit-scrollbar { height: 0.55rem; }
+.exercice-code-bloc pre::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--py-fond-bas); }
+.exercice-code-bloc ::selection { background: var(--py-selection); color: #fff; }
+
+/* ---------- Barre d'état (bas de la fenêtre) ---------- */
+.exercice-code-bloc::after {
+  content: 'Python 3.12   ·   UTF-8   ·   Espaces : 4';
+  display: block;
+  padding: 0.3rem 1rem;
+  background: var(--py-fond-bas);
+  border-top: 1px solid var(--py-bordure);
+  color: var(--py-discret);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-align: right;
+  white-space: pre;
+}
+.exercice-code-bloc--sans-barre::after { display: none; }
+
+/* ---------- Lignes, numéros et gouttière ---------- */
+.exercice-code-bloc--lignes pre {
+  padding-left: 0;
+  background-image: linear-gradient(to right, var(--py-fond-gouttiere) 3.6rem, var(--py-bordure) 3.6rem, var(--py-bordure) calc(3.6rem + 1px), transparent calc(3.6rem + 1px));
+  background-repeat: no-repeat;
+  background-attachment: local;
+}
+.exercice-code-bloc--lignes code { counter-reset: py-ligne; }
+.exercice-code-bloc .py-l { counter-increment: py-ligne; }
+.exercice-code-bloc--lignes .py-l::before {
+  content: counter(py-ligne);
+  display: inline-block;
+  box-sizing: border-box;
+  width: 3.6rem;
+  padding-right: 0.9rem;
+  margin-right: 1.1rem;
+  color: var(--py-numero);
+  text-align: right;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Survol : la ligne s'allume comme dans un éditeur */
+.exercice-code-bloc--lignes .py-l:hover { background: var(--py-ligne-active); }
+.exercice-code-bloc--lignes .py-l:hover::before { color: var(--py-numero-actif); }
+
+/* Lignes à signaler : sur toute la largeur, avec liseré dans la gouttière */
+.exercice-code-bloc .py-l--focus,
+.exercice-code-bloc .py-l--erreur,
+.exercice-code-bloc .py-l--ajout {
+  display: inline-block;
+  min-width: 100%;
+  box-sizing: border-box;
+  margin-right: -1.25rem;
+  padding-right: 1.25rem;
+}
+.exercice-code-bloc .py-l--focus  { background: rgba(255, 216, 77, 0.11); box-shadow: inset 3px 0 0 var(--py-accent); }
+.exercice-code-bloc .py-l--erreur { background: rgba(255, 122, 144, 0.13); box-shadow: inset 3px 0 0 var(--py-erreur); }
+.exercice-code-bloc .py-l--ajout  { background: rgba(141, 233, 176, 0.11); box-shadow: inset 3px 0 0 var(--py-ajout); }
+.exercice-code-bloc .py-l--erreur .py-l-soulign,
+.exercice-code-bloc .py-l--erreur::after {
+  text-decoration: underline wavy var(--py-erreur);
+  text-underline-offset: 0.25em;
+}
+.exercice-code-bloc .py-l--erreur::after { content: none; }
+
+/* Repères d'indentation : un <span class="py-gu"></span> par niveau (4 espaces) */
+.exercice-code-bloc .py-gu {
+  display: inline-block;
+  width: 4ch;
+  height: 1.8em;
+  margin-bottom: -0.45em;
+  vertical-align: top;
+  background: linear-gradient(var(--py-guide), var(--py-guide)) left / 1px 100% no-repeat;
+}
+
+/* ---------- Jetons : coloration syntaxique ---------- */
+.exercice-code-bloc .py-kw   { color: var(--py-mot-cle); font-weight: 600; }
+.exercice-code-bloc .py-def  { color: var(--py-definition); font-weight: 700; }
+.exercice-code-bloc .py-cls  { color: var(--py-classe); }
+.exercice-code-bloc .py-fn   { color: var(--py-fonction); }
+.exercice-code-bloc .py-bi   { color: var(--py-natif); }
+.exercice-code-bloc .py-dec  { color: var(--py-decorateur); }
+.exercice-code-bloc .py-cst  { color: var(--py-constante); font-style: italic; }
+.exercice-code-bloc .py-self { color: var(--py-self); font-style: italic; }
+.exercice-code-bloc .py-par  { color: var(--py-parametre); }
+.exercice-code-bloc .py-str  { color: var(--py-chaine); }
+.exercice-code-bloc .py-esc  { color: var(--py-echappe); font-weight: 600; }
+.exercice-code-bloc .py-int  { color: var(--py-interpole); }   /* { } d'une f-string */
+.exercice-code-bloc .py-num  { color: var(--py-nombre); }
+.exercice-code-bloc .py-op   { color: var(--py-operateur); }
+.exercice-code-bloc .py-pt   { color: var(--py-ponctuation); }
+.exercice-code-bloc .py-com  { color: var(--py-commentaire); font-style: italic; }
+
+/* Compatibilité Pygments / highlight.js-like (si vous branchez un coloriseur plus tard) */
+.exercice-code-bloc :is(.k, .kc, .kd, .kn, .kp, .kr, .kt, .ow) { color: var(--py-mot-cle); font-weight: 600; }
+.exercice-code-bloc :is(.kc) { color: var(--py-constante); font-style: italic; }
+.exercice-code-bloc :is(.nf, .fm) { color: var(--py-fonction); }
+.exercice-code-bloc :is(.nc, .ne) { color: var(--py-classe); }
+.exercice-code-bloc :is(.nb, .bp) { color: var(--py-natif); }
+.exercice-code-bloc :is(.nd) { color: var(--py-decorateur); }
+.exercice-code-bloc :is(.s, .s1, .s2, .sa, .sb, .sc, .sd, .sh) { color: var(--py-chaine); }
+.exercice-code-bloc :is(.se) { color: var(--py-echappe); font-weight: 600; }
+.exercice-code-bloc :is(.si) { color: var(--py-interpole); }
+.exercice-code-bloc :is(.m, .mi, .mf, .mh, .mo, .mb) { color: var(--py-nombre); }
+.exercice-code-bloc :is(.o) { color: var(--py-operateur); }
+.exercice-code-bloc :is(.p) { color: var(--py-ponctuation); }
+.exercice-code-bloc :is(.c, .c1, .cm, .cs, .sd) { color: var(--py-commentaire); font-style: italic; }
+
+/* ---------- Bouton « Copier » (dans la barre de titre) ---------- */
+.exercice-code-bloc .py-copier {
+  position: absolute;
+  right: 6.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.1rem 0.7rem;
+  border: 1px solid var(--py-bordure);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--py-discret);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.exercice-code-bloc .py-copier:hover,
+.exercice-code-bloc .py-copier:focus-visible {
+  border-color: var(--py-accent);
+  background: rgba(255, 216, 77, 0.1);
+  color: var(--py-accent);
+  outline: none;
+}
+
+/* ---------- Champ à compléter dans le code ---------- */
+.exercice-code-bloc .exercice-champ--ligne {
+  width: 9rem;
+  margin: 0 0.1rem;
+  padding: 0 0.55rem;
+  border: 1.5px dashed var(--py-accent);
+  border-radius: 0.45rem;
+  background: rgba(255, 216, 77, 0.08);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.5;
+  caret-color: var(--py-accent);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.exercice-code-bloc .exercice-champ--ligne::placeholder { color: var(--py-discret); }
+.exercice-code-bloc .exercice-champ--ligne:focus {
+  border-style: solid;
+  background: rgba(255, 216, 77, 0.14);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--py-selection);
+}
+
+/* ---------- Console : sortie du programme ---------- */
+.exercice-code-bloc .py-sortie {
+  position: relative;
+  margin: 0;
+  padding: 1.9rem 1.25rem 0.9rem;
+  border-top: 1px solid var(--py-bordure);
+  background: #120e26;
+  color: #dcd5ff;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.exercice-code-bloc .py-sortie::before {
+  content: '▸ Sortie';
+  position: absolute;
+  top: 0.45rem;
+  left: 1.25rem;
+  color: var(--py-ok);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.exercice-code-bloc .py-sortie--erreur { color: #ffc2cc; }
+.exercice-code-bloc .py-sortie--erreur::before { content: '▸ Erreur'; color: var(--py-erreur); }
+
+/* ---------- Thème clair (même palette, sur fond lavande) ---------- */
+.exercice-code-bloc--clair {
+  --py-fond: #faf8ff;
+  --py-fond-haut: #efeaff;
+  --py-fond-gouttiere: #f3efff;
+  --py-fond-bas: #efeaff;
+  --py-bordure: rgba(101, 40, 217, 0.18);
+  --py-ligne-active: rgba(101, 40, 217, 0.06);
+  --py-guide: rgba(101, 40, 217, 0.16);
+  --py-selection: rgba(124, 77, 255, 0.25);
+  --py-texte: #1f1a3d;
+  --py-discret: #6d6590;
+  --py-numero: #a59cc9;
+  --py-numero-actif: #6528d9;
+  --py-mot-cle: #6528d9;
+  --py-definition: #4a1fb8;
+  --py-classe: #a15c00;
+  --py-fonction: #b25e00;
+  --py-natif: #0b7a9e;
+  --py-decorateur: #c2410c;
+  --py-constante: #c0266d;
+  --py-self: #7a5bd1;
+  --py-parametre: #6a2f8f;
+  --py-chaine: #12805c;
+  --py-echappe: #0b6a4a;
+  --py-interpole: #b25e00;
+  --py-nombre: #c2410c;
+  --py-operateur: #c0266d;
+  --py-ponctuation: #7b72a6;
+  --py-commentaire: #8a82ae;
+  --py-ok: #12805c;
+  --py-erreur: #c62a47;
+  --py-ajout: #12805c;
+  --py-accent: #b25e00;
+  box-shadow: 0 10px 24px -14px rgba(101, 40, 217, 0.4);
+}
+.exercice-code-bloc--clair figcaption::after { background: rgba(101, 40, 217, 0.1); color: #6528d9; }
+.exercice-code-bloc--clair .py-sortie { background: #f3efff; color: #2b2552; }
+.exercice-code-bloc--clair ::selection { color: inherit; }
+.exercice-code-bloc--clair .exercice-champ--ligne { color: #1f1a3d; }
+
+/* ---------- Code Python en ligne dans un texte ---------- */
+.exercice code,
+.exercice-enonce code {
+  padding: 0.1em 0.45em;
+  border: 1px solid rgba(101, 40, 217, 0.14);
+  border-radius: 0.4rem;
+  background: var(--lavande-pale, #efeaff);
+  color: #4a1fb8;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  font-variant-ligatures: none;
+}
+.exercice-code-bloc code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* ---------- Petits écrans ---------- */
+@media (max-width: 560px) {
+  .exercice-code-bloc { border-radius: 0.8rem; }
+  .exercice-code-bloc pre { padding: 0.8rem 0.9rem; font-size: 0.86rem; line-height: 1.7; }
+  .exercice-code-bloc figcaption { padding-left: 4.4rem; }
+  .exercice-code-bloc figcaption::before { left: 0.8rem; box-shadow: 0.95rem 0 0 #ffd84d, 1.9rem 0 0 #8de9b0; }
+  .exercice-code-bloc figcaption::after { display: none; }
+  .exercice-code-bloc .py-copier { right: 0.8rem; }
+  .exercice-code-bloc::after { font-size: 0.64rem; padding: 0.25rem 0.8rem; }
+  .exercice-code-bloc--lignes pre { background-image: none; }
+  .exercice-code-bloc--lignes .py-l::before { width: 2.3rem; padding-right: 0.6rem; margin-right: 0.7rem; }
+  .exercice-code-bloc .py-sortie { padding-inline: 0.9rem; font-size: 0.84rem; }
+}
+
+/* ---------- Préférences utilisateur ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .exercice-code-bloc * { transition: none !important; }
+}
+@media print {
+  .exercice-code-bloc, .exercice-code-bloc * {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .exercice-code-bloc { border: 1px solid #888; }
+  .exercice-code-bloc figcaption::before, .exercice-code-bloc figcaption::after, .exercice-code-bloc::after { display: none; }
+}

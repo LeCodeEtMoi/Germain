@@ -1,117 +1,133 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { apercuExpression, type Question } from './Questions.tsx';
+import { combinaison, entier, fraction, signeAleatoire, type Fraction } from '../lib/maths.ts';
+import { verifieResidu, type ResultatExpression } from '../lib/reponses.ts';
 
-type Coeffs = { a: number; b: number; c: number; };
+/**
+ * Exercice : résoudre a·y′ = b·y + c  (a, b non nuls).
+ *
+ *   y′ = (b/a)·y + c/a      solutions : y(x) = C·e^((b/a)x) − c/b
+ *
+ * Correction : on lit la fonction saisie, on la DÉRIVE, et on vérifie a·y′ = b·y + c pour plusieurs x
+ * et plusieurs valeurs de la constante C. La solution générale doit contenir une constante (la lettre C).
+ */
 
-function getRandomInt(min: number, max: number, avoidZero = false): number {
-  let n = Math.floor(Math.random() * (max - min + 1)) + min;
-  if (avoidZero && n === 0) return getRandomInt(min, max, true);
-  return n;
+/* ===== Logique ===== */
+
+export type Exercice = { a: number; b: number; c: number };
+
+export function genererExercice(): Exercice {
+  return { a: entier(1, 4), b: signeAleatoire() * entier(1, 5), c: entier(-6, 6) };
 }
 
-function generateEquation(): Coeffs {
-  const a = getRandomInt(1, 5, true);
-  const b = getRandomInt(-5, 5, true);
-  const c = getRandomInt(-5, 5);
-  return { a, b, c };
-}
+const POINTS = [-1.3, -0.4, 0.3, 0.9, 1.7];
 
-function buildEquation({ a, b, c }: Coeffs): string {
-  const bTerm = b === 1 ? 'y' : b === -1 ? '-y' : `${b}y`;
-  const cTerm = c === 0 ? '' : (c > 0 ? ` + ${c}` : ` - ${-c}`);
-  return `${a}y' = ${bTerm}${cTerm}`;
-}
-
-function solveEquation({ a, b, c }: Coeffs): string {
-  const ratio = b / a;
-  const homogeneous = `Ce^{${ratio}x}`;
-  if (c === 0) return `y(x) = ${homogeneous}`;
-  const constant = (-c / b).toFixed(2).replace('.00', '');
-  return `y(x) = ${homogeneous} + ${constant}`;
-}
-
-function explanation({ a, b, c }: Coeffs): string {
-  const ratio = b / a;
-  let text = `On écrit l’équation sous forme canonique : $y' - \\frac{${b}}{${a}}y = \\frac{${c}}{${a}}$.\\\\`;
-  text += `C’est une équation différentielle linéaire du 1er ordre.\\\\`;
-  text += `La solution générale est : $y(x) = Ce^{${ratio}x}`;
-  if (c !== 0) {
-    const constant = (-c / b).toFixed(2).replace('.00', '');
-    text += ` + ${constant}`;
+export function verifier({ a, b, c }: Exercice, saisie: string): ResultatExpression {
+  const texte = saisie.replace(/^\s*y\s*(\(x\))?\s*=/i, '');
+  const complet = verifieResidu(texte, 'x', (_x, y, dy) => a * dy - b * y - c, POINTS);
+  if (!complet.lecture.ok) return { ok: false, incompris: complet.lecture.message };
+  if (complet.verifie) {
+    return complet.avecConstante
+      ? { ok: true }
+      : { ok: false, indice: 'Ta fonction est bien une solution, mais ce n’est qu’une solution particulière : la solution générale contient une constante C.' };
   }
-  text += `$.`;
-  return text;
+  const homogene = verifieResidu(texte, 'x', (_x, y, dy) => a * dy - b * y, POINTS);
+  if (c !== 0 && homogene.verifie) {
+    return { ok: false, indice: 'Ta fonction résout l’équation sans le second membre « c », mais pas l’équation complète : il manque une solution particulière.' };
+  }
+  return { ok: false, indice: 'En remplaçant y et y′ par ta fonction et sa dérivée, l’égalité a·y′ = b·y + c n’est pas vérifiée.' };
 }
 
-export default function EDL1Recognizer() {
-  const [coeffs, setCoeffs] = useState(generateEquation());
-  const [userAnswer, setUserAnswer] = useState('');
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [showCorrection, setShowCorrection] = useState(false);
+export const questions = (exo: Exercice): Question[] => [
+  {
+    type: 'expression',
+    id: 'y',
+    libelle: 'Solutions de l’équation :  y(x) =',
+    placeholder: 'Ex : C*e^(2x) - 3',
+    aide: 'Écris la solution générale avec la lettre C : C*e^(2x) + 1/2, C*e^(-x/3)… (fractions avec /, exponentielle avec e^( )).',
+    verifier: (s) => verifier(exo, s),
+    apercu: (s) => apercuExpression(s, 'y(x)', { retirer: /^\s*y\s*(\(x\))?\s*=/i, constantes: ['c'] }),
+  },
+];
 
-  const checkAnswer = () => {
-    const expected = solveEquation(coeffs).replace(/\s+/g, '').toLowerCase();
-    const cleaned = userAnswer.replace(/\s+/g, '').toLowerCase();
-    const isCorrect = cleaned.includes('e') && cleaned.includes('x') && cleaned.includes('c');
+/* ===== Affichage ===== */
 
-    if (cleaned === expected) {
-      setFeedback('✅ Réponse exacte, Maître.');
-    } else if (isCorrect) {
-      setFeedback("🟡 C'est une forme acceptable, Maître. Mais la simplification pourrait être améliorée.");
-    } else {
-      setFeedback(`❌ Hélas, Maître. Une solution correcte est : \\(${solveEquation(coeffs)}\\)`);
-    }
+const texFraction = ({ n, d }: Fraction) => (d === 1 ? `${Math.abs(n)}` : `\\frac{${Math.abs(n)}}{${d}}`);
+const signeFraction = (f: Fraction) => (f.n < 0 ? '-' : '');
+export const expo = (r: Fraction) => `e^{${signeFraction(r)}${r.d === 1 && Math.abs(r.n) === 1 ? '' : texFraction(r)}x}`;
 
-    setShowCorrection(true);
-  };
+export default function EquationLineaire() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
 
-  const newExercise = () => {
-    setCoeffs(generateEquation());
-    setUserAnswer('');
-    setFeedback(null);
-    setShowCorrection(false);
-  };
+  const { a, b, c } = exo;
+  const r = fraction(b, a);
+  const k = fraction(-c, b);
+  const eq = `${a === 1 ? '' : a}y' = ${combinaison([[b, 'y'], [c, '']], true)}`;
+  const kTex = k.n === 0 ? '' : ` ${k.n < 0 ? '-' : '+'} ${texFraction(k)}`;
+  const solTex = `C${expo(r)}${kTex}`;
+  const droite = c === 0 ? `${signeFraction(r)}${texFraction(r)}y` : `${signeFraction(r)}${texFraction(r)}y ${c < 0 ? '-' : '+'} ${texFraction(fraction(c, a))}`;
 
   return (
-    <div className="columns is-centered mt-6">
-      <div className="column is-10">
-        <div className="box content">
-          <h2 className="title is-4">Équation différentielle du 1er ordre</h2>
-          <p>Résolvez l'équation suivante :</p>
-          <p><strong><MathTex tex={buildEquation(coeffs)} /></strong></p>
-
-          <div className="field mt-4">
-            <input
-              type="text"
-              className="input"
-              placeholder="Ex: Ce^{2x} - 3"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-            />
-          </div>
-
-          <div className="buttons mt-3">
-            <button className="button is-primary" onClick={checkAnswer}>Valider</button>
-            <button className="button is-light" onClick={newExercise}>Nouvel exercice</button>
-          </div>
-
-          {feedback && (
-            <div className="notification is-info mt-4">
-              <MathTex tex={feedback} />
-            </div>
-          )}
-
-          {showCorrection && (
-            <div className="mt-4">
-              <h3 className="title is-5">Correction</h3>
-              <p><strong>Solution générale :</strong></p>
-              <MathTex tex={solveEquation(coeffs)} />
-              <p><strong>Justification :</strong></p>
-              <MathTex tex={explanation(coeffs)} />
-            </div>
-          )}
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Résous sur ℝ l’équation différentielle :</p>
+        <div className="exercice-formule">
+          <MathTex tex={eq} />
         </div>
-      </div>
-    </div>
+        <p>Donne toutes les solutions (avec la constante C).</p>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
+          <p>
+            Les solutions sont les fonctions <MathTex tex={`y(x) = ${solTex}`} />, C réel.
+          </p>
+        }
+        correction={
+          <>
+            <li>
+              On met l’équation sous la forme <MathTex tex="y' = \alpha y + \beta" /> en divisant par {a} : <MathTex tex={`y' = ${droite}`} />.
+            </li>
+            <li>
+              Sans second membre, <MathTex tex={`y' = ${signeFraction(r)}${texFraction(r)}y`} /> a pour solutions <MathTex tex={`y = C${expo(r)}`} />.
+            </li>
+            <li>
+              {c === 0 ? (
+                <>Le second membre est nul : il n’y a pas de solution particulière à ajouter.</>
+              ) : (
+                <>
+                  Solution constante <MathTex tex="y = k" /> : alors <MathTex tex="y' = 0" />, donc <MathTex tex={`0 = ${b}k ${c < 0 ? '-' : '+'} ${Math.abs(c)}`} />, d’où{' '}
+                  <MathTex tex={`k = ${signeFraction(k)}${texFraction(k)}`} />.
+                </>
+              )}
+            </li>
+            <li>
+              Solutions générales : <MathTex tex={`y(x) = ${solTex}`} />, avec C réel.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Ramène toujours l’équation à <MathTex tex="y' = \alpha y + \beta" /> : l’exposant est <MathTex tex="\alpha x" /> avec <MathTex tex="\alpha = \frac{b}{a}" />, pas b.
+            </li>
+            <li>
+              La solution constante vaut <MathTex tex="-\frac{c}{b}" /> : attention au signe.
+            </li>
+            <li>Vérifie en remplaçant dans l’équation de départ : a·y′ doit être égal à b·y + c.</li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

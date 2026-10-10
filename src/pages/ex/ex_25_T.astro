@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_25_T.tsx';
+import EtudeTrig from '../../components/Ex_25_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Étude d'une fonction trigonométrique",
+  description: "Détermine la période, le maximum et le minimum d'une fonction a·cos²(x) + b·cos(x) (ou en sin)",
+  chapitre: "Fonctions cosinus et sinus",
+};
 ---
 
-<LeconLayout title="Étude de fonction  trigonométrique">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <EtudeTrig client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

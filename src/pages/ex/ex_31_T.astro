@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_31_T.tsx';
+import TangenteLn from '../../components/Ex_31_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Tangente et position d'une courbe",
+  description: "Détermine l'équation d'une tangente à la courbe d'une fonction avec un logarithme et sa position par rapport à la courbe",
+  chapitre: "Fonction logarithme népérien",
+};
 ---
 
-<LeconLayout title="Ln">
-  <main>   
-    <PythonThresholdAnalysis client:load />
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <TangenteLn client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

@@ -1,77 +1,116 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { choisir, entier, melanger, nombre } from '../lib/maths.ts';
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : théorème des gendarmes pour uₙ = m + b·g(n)/n  (n ≥ 1, g ∈ {sin, cos, (−1)ⁿ}).
+ *
+ *   |g(n)| ≤ 1  donc  m − b/n ≤ uₙ ≤ m + b/n, et les deux bornes tendent vers m.
+ */
+
+/* ===== Logique ===== */
+
+export type Oscillation = 'sin' | 'cos' | 'alt';
+export type Exercice = { m: number; b: number; g: Oscillation; ordre: string[] };
+
+export function genererExercice(): Exercice {
+  let m = 0;
+  while (m === 0) m = entier(-3, 5);
+  return { m, b: entier(1, 4), g: choisir<Oscillation>(['sin', 'cos', 'alt']), ordre: melanger(['gendarmes', 'inutile', 'inverse', 'faux']) };
 }
 
-function generateProblem() {
-  const a = getRandomInt(1, 5) * (Math.random() < 0.5 ? -1 : 1);
-  const k = getRandomInt(1, 3);
+const gTex = (g: Oscillation) => (g === 'sin' ? '\\sin(n)' : g === 'cos' ? '\\cos(n)' : '(-1)^{n}');
+
+export function propositionsTex({ m, b }: Pick<Exercice, 'm' | 'b'>): Record<string, string> {
+  const bas = `${m} - \\frac{${b}}{n}`;
+  const haut = `${m} + \\frac{${b}}{n}`;
   return {
-    a,
-    k,
-    simplifiedExponent: k === 1 ? '' : `^{${k}}`,
-    limit: 0,
+    gendarmes: `${bas} \\le u_n \\le ${haut}`,
+    inutile: `${m - b} \\le u_n \\le ${m + b}`,
+    inverse: `${haut} \\le u_n \\le ${bas}`,
+    faux: `${m} \\le u_n \\le ${haut}`,
   };
 }
 
-export default function ExoGendarmes() {
-  const [problem, setProblem] = useState(generateProblem());
-  const [showCorrection, setShowCorrection] = useState(false);
+export const questions = (exo: Exercice): Question[] => {
+  const p = propositionsTex(exo);
+  return [
+    {
+      type: 'choix',
+      id: 'encadrement',
+      libelle: <>Quel encadrement, vrai pour tout n ≥ 1, permet de conclure avec le théorème des gendarmes ?</>,
+      attendu: 'gendarmes',
+      options: exo.ordre.map((id) => ({ valeur: id, contenu: <MathTex tex={p[id]} /> })),
+    },
+    { type: 'nombre', id: 'limite', libelle: <>Limite de <MathTex tex="(u_n)" /> :</>, attendu: exo.m, placeholder: 'Ex : 3' },
+  ];
+};
 
-  const newExercise = () => {
-    setProblem(generateProblem());
-    setShowCorrection(false);
-  };
+/* ===== Affichage ===== */
+
+export default function Gendarmes() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
+
+  const { m, b, g } = exo;
+  const p = propositionsTex(exo);
+  const osc = b === 1 ? gTex(g) : `${b}${gTex(g)}`;
 
   return (
-    <div className="box">
-      <h2 className="title is-4">Théorème des gendarmes – Limite d’une suite</h2>
-
-      <p>On considère la suite définie pour tout entier naturel <MathTex tex="n \geq 1" /> par :</p>
-
-      <p className="mt-2">
-        <MathTex tex={`u_n = \\frac{${problem.a}\\sin(n)}{n${problem.simplifiedExponent}}`} />
-      </p>
-
-      <p className="mt-4">Déterminer la limite de <MathTex tex="u_n" /> lorsque <MathTex tex="n \\to +\\infty" />.</p>
-
-      <button className="button is-primary mt-4" onClick={() => setShowCorrection(true)}>
-        Afficher la correction
-      </button>
-      <button className="button is-light mt-4 ml-2" onClick={newExercise}>
-        Nouvel exercice
-      </button>
-
-      {showCorrection && (
-        <div className="notification is-info mt-4">
-          <h3 className="title is-5">Correction</h3>
-          <p>
-            On sait que pour tout <MathTex tex="n \in \mathbb{N}" />, on a :
-            <br />
-            <MathTex tex={`-1 \\leq \\sin(n) \\leq 1`} />
-          </p>
-          <p className="mt-3">
-            En multipliant par {problem.a} (constante), on obtient :
-            <br />
-            <MathTex tex={`${-Math.abs(problem.a)} \\leq ${problem.a}\\sin(n) \\leq ${Math.abs(problem.a)}`} />
-          </p>
-          <p className="mt-3">
-            En divisant par <MathTex tex={`n${problem.simplifiedExponent}`} />, strictement positif, on encadre :
-            <br />
-            <MathTex tex={`\\frac{${-Math.abs(problem.a)}}{n${problem.simplifiedExponent}} \\leq u_n \\leq \\frac{${Math.abs(problem.a)}}{n${problem.simplifiedExponent}}`} />
-          </p>
-          <p className="mt-3">
-            Or, <MathTex tex={`\\frac{${Math.abs(problem.a)}}{n${problem.simplifiedExponent}} \\to 0`} /> quand <MathTex tex="n \\to +\\infty" />.
-          </p>
-          <p className="mt-3">
-            Par le théorème des gendarmes, on en déduit que :
-            <br />
-            <MathTex tex={`\\lim_{n \\to +\\infty} u_n = 0`} />
-          </p>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Soit <MathTex tex="(u_n)" /> la suite définie pour tout entier <MathTex tex="n \ge 1" /> par :
+        </p>
+        <div className="exercice-formule">
+          <MathTex tex={`u_n = ${m} + \\frac{${osc}}{n}`} />
         </div>
-      )}
-    </div>
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
+          <p>
+            <MathTex tex={`${p.gendarmes}`} /> avec deux bornes de limite {nombre(m)} : <MathTex tex={`\\lim_{n\\to+\\infty} u_n = ${m}`} />.
+          </p>
+        }
+        correction={
+          <>
+            <li>
+              Pour tout n, <MathTex tex={`-1 \\le ${gTex(g)} \\le 1`} />. En multipliant par <MathTex tex={`\\frac{${b}}{n} > 0`} /> (le sens ne change pas) :{' '}
+              <MathTex tex={`-\\frac{${b}}{n} \\le \\frac{${osc}}{n} \\le \\frac{${b}}{n}`} />.
+            </li>
+            <li>
+              En ajoutant {nombre(m)} : <MathTex tex={p.gendarmes} />.
+            </li>
+            <li>
+              Or <MathTex tex={`\\frac{${b}}{n} \\to 0`} />, donc les deux bornes tendent vers {nombre(m)}.
+            </li>
+            <li>
+              Théorème des gendarmes : <MathTex tex={`\\lim_{n \\to +\\infty} u_n = ${m}`} />.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Les deux bornes doivent avoir <strong>la même limite</strong> : l’encadrement <MathTex tex={p.inutile} /> est vrai mais ne permet pas de conclure.
+            </li>
+            <li>La borne de gauche doit être plus petite que celle de droite pour tout n.</li>
+            <li>
+              Pour encadrer un quotient dont le numérateur oscille, utilise <MathTex tex="-1 \le \sin n \le 1" /> (ou cos, ou (−1)ⁿ) puis divise par n, positif.
+            </li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

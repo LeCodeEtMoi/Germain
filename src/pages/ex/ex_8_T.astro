@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_8_T.tsx';
+import Combinaisons from '../../components/Ex_8_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Dénombrer des groupes",
+  description: "Choisis l'expression qui dénombre les groupes de k élèves parmi n",
+  chapitre: "Dénombrement",
+};
 ---
 
-<LeconLayout title="Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <Combinaisons client:load />
   </main>
 </LeconLayout>

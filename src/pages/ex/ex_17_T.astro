@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_17_T.tsx';
+import SeuilWhileAnalyse from '../../components/Ex_17_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Que renvoie ce script ?",
+  description: "Détermine la valeur renvoyée par un script Python avec une boucle while",
+  chapitre: "Algorithmique et suites",
+};
 ---
 
-<LeconLayout title="Exercice 17T - Algorithmique - Analyse de seuil">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <SeuilWhileAnalyse client:load />
   </main>
 </LeconLayout>

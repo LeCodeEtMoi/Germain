@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_34_T.tsx';
+import EquationLineaire from '../../components/Ex_34_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Équation différentielle a·y' = b·y + c",
+  description: "Résous une équation différentielle linéaire du premier ordre à coefficients constants",
+  chapitre: "Primitives et équations différentielles",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <EquationLineaire client:load />
   </main>
 </LeconLayout>

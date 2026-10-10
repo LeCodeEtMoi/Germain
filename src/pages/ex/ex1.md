@@ -1,778 +1,533 @@
 ---
-layout: ../../layouts/Leçon.astro
-title: 'Exercices de Mathématiques'
-description: 'Tout le programme de terminale'
-pubDate: 'Jul 08 2022'
-heroImage: '/blog-placeholder-3.jpg'
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import '../styles/bulma.min.css';
+import '../styles/theme.css';
+
+const base = '/Germain/';
+
+const pageTitle = 'Exercices';
+const pageDescription =
+  'Tout le programme de terminale : des exercices pour pratiquer et renforcer vos connaissances, classés par chapitre.';
+
+/* ------------------------------------------------------------------
+   Ordre des chapitres, comme dans le programme.
+   - Un chapitre listé ici s'affiche toujours (avec « en cours de
+     réalisation » s'il n'a encore aucun exercice).
+   - Un chapitre absent de cette liste mais utilisé par un exercice
+     apparaît automatiquement à la fin.
+   Pour ajouter un exercice : aucune modification ici, seulement le
+   frontmatter du fichier de l'exercice.
+------------------------------------------------------------------ */
+const ordreChapitres = [
+  'Algorithmique',
+  'Espace',
+  'Étude de fonction',
+  'Dénombrement',
+  'Limites de fonction',
+  'Fonction cosinus et sinus',
+  'Continuité',
+  'Dérivation et convexité',
+  'Fonction logarithme népérien',
+  'Primitives et équations différentielles',
+  'Calcul intégral',
+  'Variables aléatoires et loi des grands nombres',
+  'Suites numériques et récurrence',
+];
+
+/* ------------------------------------------------------------------
+   Lecture automatique de tous les exercices : src/pages/ex/**/*.md(x)
+   Chaque fichier doit avoir dans son frontmatter :
+     title, description, chapitre
+   et, en option :
+     statut: valide | fini | erreur   (absent = en cours de création)
+     ordre: 3                         (sinon : numéro lu dans le nom du fichier)
+------------------------------------------------------------------ */
+const modules = import.meta.glob('./ex/**/*.{md,mdx}', { eager: true }) as Record<string, any>;
+
+// « Dérivation » et « derivation » doivent désigner le même chapitre
+const cle = (texte: string) =>
+  texte
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const identifiant = (texte: string) => cle(texte).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+type Statut = 'valide' | 'fini' | 'erreur' | null;
+
+const statutDe = (brut: unknown, slug: string): Statut => {
+  if (brut === undefined || brut === null || brut === '') return null;
+  const valeur = cle(String(brut));
+  if (valeur === 'valide' || valeur === 'fini' || valeur === 'erreur') return valeur;
+  console.warn(`[exercices] statut inconnu « ${brut} » dans ${slug} (attendu : valide, fini ou erreur)`);
+  return null;
+};
+
+const exercices = Object.entries(modules).map(([chemin, module]) => {
+  const fm = module.frontmatter ?? {};
+  const slug = chemin
+    .replace('./ex/', '')
+    .replace(/\.(md|mdx)$/, '')
+    .replace(/\/index$/, '');
+  const numero = Number(slug.match(/\d+/)?.[0] ?? Number.MAX_SAFE_INTEGER);
+
+  if (!fm.chapitre) console.warn(`[exercices] « ${slug} » n'a pas de champ « chapitre » : classé dans « Autres ».`);
+
+  return {
+    slug,
+    href: `${base}ex/${slug}/`,
+    titre: (fm.title ?? slug) as string,
+    description: (fm.description ?? '') as string,
+    chapitre: (fm.chapitre ?? 'Autres') as string,
+    statut: statutDe(fm.statut, slug),
+    ordre: typeof fm.ordre === 'number' ? fm.ordre : numero,
+  };
+});
+
+// Regroupement par chapitre
+const parCle = new Map<string, { nom: string; exercices: typeof exercices }>();
+
+for (const nom of ordreChapitres) parCle.set(cle(nom), { nom, exercices: [] });
+
+for (const exercice of exercices) {
+  const k = cle(exercice.chapitre);
+  if (!parCle.has(k)) parCle.set(k, { nom: exercice.chapitre, exercices: [] }); // chapitre inconnu : ajouté à la fin
+  parCle.get(k)!.exercices.push(exercice);
+}
+
+const chapitres = [...parCle.values()].map((c) => ({
+  id: identifiant(c.nom),
+  nom: c.nom,
+  exercices: c.exercices.sort((a, b) => a.ordre - b.ordre || a.slug.localeCompare(b.slug, 'fr', { numeric: true })),
+}));
+
+const libelles: Record<Exclude<Statut, null>, string> = {
+  valide: 'Validé',
+  fini: 'Fini',
+  erreur: 'Erreur',
+};
+
+const pluriel = (n: number) => `${n} exercice${n > 1 ? 's' : ''}`;
 ---
 
-<div class="card">
-<div class="card-content">
-<p> ⚠️ Attention s'il n'y as pas <span class="tag"> Validé </span> cela veux dire que l'exercie peut comporter des erreurs ou n'est pas encore finit ⚠️ </p>
-<ul>
-  <li><span class="tag">Validé</span> : Plusieur personnes on tester l'exercice et non pas trouvé d'erreur</li>
-  <li><span class="tag">Erreur</span> : l'exercice comporte des erreurs</li>
-  <li><span class="tag is-link is-light">Fini</span> : l'exercice comporte des erreurs</li>
-  Si il n'y a pas de tag l'exrcice est en cours de création
-</ul>
-</div>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
+  <body>
+    <Header />
 
-<div class="content">
-  <h2 class="title is-4 mb-5">Liste des exercices</h2>
-  
-  <div class="block">
-    <h3 class="title is-5 mb-4">Algorithmique</h3>
-    <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_15_T/" class="has-text-link is-size-5">
-                <strong>Compléter un script Python (Seuil)</strong>
-              </a>
-              <br>
-              Compléter une fonction Python pour trouver un seuil dans une suite.
-            </p>
-          </div>
+    <main>
+      <!-- ============ Introduction ============ -->
+      <section class="exo-intro">
+        <div class="container">
+          <h1 class="exo-titre righteous"><span aria-hidden="true">//</span> {pageTitle}</h1>
+          <p class="exo-chapeau">{pageDescription}</p>
         </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_16_T/" class="has-text-link is-size-5">
-                <strong>Analyse d'algorithme (Liste)</strong>
-              </a>
-              <br>
-              Déterminer ce que retourne une fonction Python qui génère une liste de termes.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_17_T/" class="has-text-link is-size-5">
-                <strong>Analyse d'algorithme (Seuil)</strong>
-              </a>
-              <br>
-              Déterminer ce que retourne une fonction Python qui calcule un seuil.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_19_T/" class="has-text-link is-size-5">
-                <strong>Analyse d'algorithme (Seuil)</strong>
-              </a>
-              <br>
-              Déterminer ce que retourne une fonction Python qui calcule un seuil.
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
-  </div>
+      </section>
 
-  <div class="block">
-    <h3 class="title is-5 mb-4">Espace</h3>
-    <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_1_T/" class="has-text-link is-size-5">
-                <strong>Équation cartésienne d'un plan</strong>
-              </a>
-              <br>
-              Détermine une équation cartésienne du plan passant par A et de vecteur normal n⃗
+      <!-- ============ Légende des statuts ============ -->
+      <section class="exo-legende">
+        <div class="container">
+          <div class="legende">
+            <p class="legende-alerte">
+              Attention : un exercice sans pastille « Validé » peut comporter des erreurs ou ne pas être terminé.
             </p>
+            <dl class="legende-liste">
+              <div>
+                <dt><span class="badge badge-valide">Validé</span></dt>
+                <dd>Plusieurs personnes ont testé l'exercice et n'ont trouvé aucune erreur.</dd>
+              </div>
+              <div>
+                <dt><span class="badge badge-fini">Fini</span></dt>
+                <dd>L'exercice est terminé, mais pas encore relu.</dd>
+              </div>
+              <div>
+                <dt><span class="badge badge-erreur">Erreur</span></dt>
+                <dd>L'exercice comporte des erreurs connues.</dd>
+              </div>
+              <div>
+                <dt class="sans-pastille">Sans pastille</dt>
+                <dd>L'exercice est en cours de création.</dd>
+              </div>
+            </dl>
           </div>
         </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_6_T/" class="has-text-link is-size-5">
-                <strong>Appartenance à une droite</strong>
-              </a>
-              <br>
-              Détermine si un point appartient à une droite de l'espace
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_2_T/" class="has-text-link is-size-5">
-                <strong>Points coplanaires</strong>
-              </a>
-              <br>
-              Déterminer si des points sont ou non coplanaires
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_3_T/" class="has-text-link is-size-5">
-                <strong>Appartenance à une droite</strong>
-              </a>
-              <br>
-              Déterminer si un point appartient à une droite de l'espace
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_7_T/" class="has-text-link is-size-5">
-                <strong>Position relative de deux droites</strong>
-              </a>
-              <br>
-              Déterminer si deux droites dans l'espace sont confondues, parallèles, sécantes ou non coplanaires
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_12_T/" class="has-text-link is-size-5">
-                <strong>Position relative Plan Droite </strong>
-              </a>
-              <br>
-              Déterminer si une droite est parallèle, orthogonale, incluse ou sécante à un plan
-            </p>
-          </div>
-        </div>
-      </article>
-       <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_13_T/" class="has-text-link is-size-5">
-                <strong>Position relative Plan Plan </strong>
-              </a>
-              <br>
-              Déterminer si deux plans dans l'espace sont confondues, parallèles, sécants ou non coplanaires  
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
-    
+      </section>
 
-  <div class="block">
-    <h3 class="title is-5  mb-4">Étude de fonction</h3>
-    <div class="box">
-    </div>
+      <!-- ============ Accès rapide aux chapitres ============ -->
+      <section class="exo-nav">
+        <div class="container">
+          <nav aria-label="Chapitres">
+            <ul class="chapitres-liens" role="list">
+              {
+                chapitres.map((c) => (
+                  <li>
+                    <a href={`#${c.id}`}>
+                      {c.nom}
+                      {c.exercices.length > 0 && <span class="nb">{c.exercices.length}</span>}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </section>
 
-                  
+      <!-- ============ Chapitres ============ -->
+      <section class="exo-chapitres">
+        <div class="container">
+          {
+            chapitres.map((c) => (
+              <section class="chapitre" id={c.id}>
+                <div class="chapitre-tete">
+                  <h2 class="chapitre-titre righteous">
+                    <span aria-hidden="true">//</span> {c.nom}
+                  </h2>
+                  {c.exercices.length > 0 && <p class="chapitre-compte">{pluriel(c.exercices.length)}</p>}
+                </div>
 
+                {c.exercices.length > 0 ? (
+                  <ul class="exos" role="list">
+                    {c.exercices.map((e) => (
+                      <li class="exo">
+                        <a class="exo-lien" href={e.href}>
+                          <span class="exo-nom">{e.titre}</span>
+                          {e.description && <span class="exo-desc">{e.description}</span>}
+                        </a>
+                        {e.statut && <span class={`badge badge-${e.statut}`}>{libelles[e.statut]}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="exos-vide">Exercices en cours de réalisation.</p>
+                )}
+              </section>
+            ))
+          }
+        </div>
+      </section>
 
-  <div class="block">
-    <h3 class="title is-5  mb-4">Dénombrement</h3>
-    <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_8_T/" class="has-text-link is-size-5">
-                <strong>Exercice de dénombrement</strong>
-              </a>
-              <br>
-              Exercices de dénombrement - Niveau terminale
-            </p>
-          </div>
+      <!-- ============ Appel à contribuer ============ -->
+      <section class="exo-appel">
+        <div class="container">
+          <p>Une idée d'exercice ? Germain s'écrit à plusieurs mains.</p>
+          <a class="button bouton-principal" href={`${base}aide`}>Participer au projet</a>
         </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_9_T/" class="has-text-link is-size-5">
-                <strong>Exercice de dénombrement</strong>
-              </a>
-              <br>
-              Exercices de dénombrement - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
+      </section>
+    </main>
 
-  <h3 class="title is-5  mb-4">Limites de fonction</h3>
-    <div class="box">
-     <p>En cours de réalisation</p>
-    </div>
+    <Footer />
+  </body>
+</html>
 
-  <h3 class="title is-5  mb-4">Fonction cosinus et sinus</h3>
-    <div class="box">
-     <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_22_T/" class="has-text-link is-size-5">
-                <strong>Connaitre les valeur remarquables de sin et cos</strong>
-              </a>
-              <br>
-              Compléter une fonction Python pour trouver un seuil dans une suite.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_23_T/" class="has-text-link is-size-5">
-                <strong>Equation trigonométrique</strong>
-              </a>
-              <br>
-              Résoudre une équation trigonométrique.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_2 4_T/" class="has-text-link is-size-5">
-                <strong>Inequation trigonométrique</strong>
-              </a>
-              <br>
-              Résoudre une inéquation trigonométrique.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_25_T/" class="has-text-link is-size-5">
-                <strong>Étude de fonction trigonométrique</strong>
-              </a>
-              <br>
-              Étudier une fonction trigonométrique.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_26_T/" class="has-text-link is-size-5">
-                <strong>Resoudre une inequation trigonometrique de degré 3</strong>
-              </a>
-              <br>
-              Résoudre une inéquation trigonométrique de degré 3.
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
+<style>
+  /* Même rythme vertical que les autres pages */
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
 
-<h3 class="title is-5  mb-4">Continuité</h3>
-    <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_21_T/" class="has-text-link is-size-5">
-                <strong>Étudier la continuite et la dérivabilité en un point </strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_49_T/" class="has-text-link is-size-5">
-                <strong>Trouver le nombre de solution d'un équation</strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples (A refaire)
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_50_T/" class="has-text-link is-size-5">
-                <strong>Trouver le nombre de solution d'un équation tableau de signe</strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples (A refaire)
-            </p>
-          </div>
-        </div>
-      </article>
-       <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_51_T/" class="has-text-link is-size-5">
-                <strong>Trouver le nombre de solution d'un équation tableau de signe autre</strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples (A refaire)
-            </p>
-          </div>
-        </div>
-      </article>
-         </article>
-       <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_52_T/" class="has-text-link is-size-5">
-                <strong>Trouver le nombre de solution d'un équation tableau de signe autre Fête</strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples (A refaire)
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
+  /* ---------- Introduction ---------- */
+  .exo-intro {
+    /* le header est fixe : on laisse la place en haut */
+    padding: 7rem 0 0;
+  }
 
-<h3 class="title is-5  mb-4">Derivation et convexité</h3>
-    <div class="box">
-     <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_5_T/" class="has-text-link is-size-5">
-                <strong>Exercice de dérivation </strong>
-              </a>
-              <br>
-              Dérivation de fonctions simples - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_53_T/" class="has-text-link is-size-5">
-                <strong>Exercice de dérivation </strong>
-              </a>
-              <br>
-              Dérivation de fonctions composée
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_54_T/" class="has-text-link is-size-5">
-                <strong>Exercice de concave convexe graphique</strong>
-              </a>
-              <br>
-              Dérivation de fonctions composée
-            </p>
-          </div>
-        </div>
-      </article>
-       <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_55_T/" class="has-text-link is-size-5">
-                <strong>Exercice de dérivation f'' </strong>
-              </a>
-              <br>
-              Dérivation de fonctions composée
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_56_T/" class="has-text-link is-size-5">
-                <strong>Étudier le a convexitie de f en fonction du signe de f'' </strong>
-              </a>
-              <br>
-              Exo que l'on veux teste
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
-   
+  .exo-titre {
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--encre);
+    margin: 0 0 1.25rem;
+  }
 
-<h3 class="title is-5  mb-4">Fonction logarithme népérien</h3>
-    <div class="box">
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_27_T/" class="has-text-link is-size-5">
-                <strong>Résoudre une équation ou inéquation avec ln ou exp </strong>
-              </a>
-              <br>
-              Résoudre une équation ou inéquation avec ln ou exp.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_28_T/" class="has-text-link is-size-5">
-                <strong>Résoudre une équation ou inéquation avec ln ou exp (plus difficile)</strong>
-              </a>
-              <br>
-              Résoudre une équation ou inéquation avec ln ou exp.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_29_T/" class="has-text-link is-size-5">
-                <strong>Résoudre une équation ou inéquation avec ln ou exp (plus difficile)</strong>
-              </a>
-              <br>
-              Résoudre une équation ou inéquation avec ln ou exp.
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_30_T/" class="has-text-link is-size-5">
-                <strong>Étuider une fonction à l'aide d'une fonction auxiliaire</strong>
-              </a>
-              <br>
-              Étuider une fonction à l'aide d'une fonction auxiliaire.
-            </p>  
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_31_T/" class="has-text-link is-size-5">
-                <strong>Étuider une fonction à l'aide d'une fonction auxiliaire</strong>
-              </a>
-              <br>
-              Étuider une fonction à l'aide d'une fonction auxiliaire.
-            </p>  
-          </div>
-        </div>  
-      </article>
-    </div>
-<h3 class="title is-5  mb-4">Primitive et équation differentielle</h3>
-    <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_11_T/" class="has-text-link is-size-5">
-                <strong>Exercice de primitive</strong>
-              </a>
-              <br>
-              Calcul de primitive
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_32_T/" class="has-text-link is-size-5">
-                <strong>Reconnaissance d'une fonction usuelle</strong>
-              </a>
-              <br>
-              Reconnaissance d'une fonction usuelle
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_33_T/" class="has-text-link is-size-5">
-                <strong>Étuider une fonction à l'aide d'une fonction auxiliaire</strong>
-              </a>
-              <br>
-              Étuider une fonction à l'aide d'une fonction auxiliaire.
-            </p>  
-          </div>
-        </div>  
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_34_T/" class="has-text-link is-size-5">
-                <strong>Résoudre une équation differencielle du type ay′=by+c</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article>  
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_35_T/" class="has-text-link is-size-5">
-                <strong>Modélisation d’un médicament dans le sang</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-    </div>
-<h3 class="title is-5  mb-4">Calcule Integrale</h3>
-    <div class="box">
-     <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_36_T/" class="has-text-link is-size-5">
-                <strong>Calcule integrale classique</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_37_T/" class="has-text-link is-size-5">
-                <strong>Calcule integrale plus dure</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_38_T/" class="has-text-link is-size-5">
-                <strong>Calcule integrale par partie</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_39_T/" class="has-text-link is-size-5">
-                <strong>Calcule d'air avec une integrale</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_40_T/" class="has-text-link is-size-5">
-                <strong>Majoré ou minorer une integrale</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-    </div>
-<h3 class="title is-5  mb-4">Variables aléatoire et loi des grands nombre</h3>
-    <div class="box">
-     <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_41_T/" class="has-text-link is-size-5">
-                <strong>Calcule esperance variance </strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_42_T/" class="has-text-link is-size-5">
-                <strong>Sommer des variable aléatoire independantes suivant la loi de B(P)</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_43_T/" class="has-text-link is-size-5">
-                <strong>Inégalité de Bienaymé-Tchebychev</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article>
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_44_T/" class="has-text-link is-size-5">
-                <strong>Loi des grands nombres</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-      <article class="media mt-4">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_45_T/" class="has-text-link is-size-5">
-                <strong>Sommer des variables aléatoires independantes suivant une même loi</strong>
-              </a>
-              <br>
-              ay′=by+c
-            </p>  
-          </div>
-        </div>  
-      </article> 
-    </div>
+  .exo-titre span {
+    color: var(--violet);
+  }
 
-    
-    
-  <h3 class="title is-5  mb-4">Suite numerique et récurence</h3>
-    <div class="box">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_4_T/" class="has-text-link is-size-5">
-                <strong>Exercice de suite numerique</strong>
-              </a>
-              <br>
-              Raisonnement par récurrence - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_14_T/" class="has-text-link is-size-5">
-                <strong>Exercice de limite de suite</strong>
-              </a>
-              <br>
-              Calcul de limites de suites  - Niveau terminale
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_46_T/" class="has-text-link is-size-5">
-                <strong>Théoreme de comparaison</strong>
-              </a>
-              <br>
-              Calcul de limites de suites
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_47_T/" class="has-text-link is-size-5">
-                <strong>Théoreme des gendarmes</strong>
-              </a>
-              <br>
-              Calcul de limites de suites
-            </p>
-          </div>
-        </div>
-      </article>
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <p>
-              <a href="/Germain/ex/ex_48_T/" class="has-text-link is-size-5">
-                <strong>Étude de convergence de deux suites monotones opposées</strong>
-              </a>
-              <br>
-              Calcul de limites de suites
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
+  .exo-chapeau {
+    font-size: 1.2rem;
+    line-height: 1.65;
+    max-width: 55ch;
+    color: #3b3555;
+  }
 
-  </div>
-</div>
+  /* ---------- Légende ---------- */
+  .exo-legende {
+    padding: var(--espace) 0 0;
+  }
+
+  .legende {
+    background: var(--lavande-pale);
+    border-radius: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .legende-alerte {
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 0 1.25rem;
+  }
+
+  .legende-liste {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.25rem 2rem;
+    margin: 0;
+  }
+
+  .legende-liste dt {
+    margin-bottom: 0.4rem;
+  }
+
+  .legende-liste dd {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: #3b3555;
+  }
+
+  .sans-pastille {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #3b3555;
+  }
+
+  /* ---------- Pastilles de statut ---------- */
+  .badge {
+    display: inline-block;
+    flex: none;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .badge-valide {
+    background: var(--violet);
+    color: #fff;
+  }
+
+  .badge-fini {
+    background: #fff;
+    border: 1px solid var(--lavande);
+    color: var(--violet-profond);
+  }
+
+  .badge-erreur {
+    background: #fde8e8;
+    color: #9b1c1c;
+  }
+
+  /* ---------- Accès rapide ---------- */
+  .exo-nav {
+    padding: var(--espace) 0 0;
+  }
+
+  .chapitres-liens {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chapitres-liens a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    border: 2px solid var(--violet);
+    border-radius: 999px;
+    color: var(--violet);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .chapitres-liens a:hover {
+    background: var(--lavande-pale);
+  }
+
+  .chapitres-liens .nb {
+    color: #5b5476;
+    font-weight: 400;
+  }
+
+  /* ---------- Chapitres ---------- */
+  .exo-chapitres {
+    padding: var(--espace) 0;
+  }
+
+  .chapitre {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 1rem 2.5rem;
+    padding: 2rem 0;
+    border-top: 2px solid var(--lavande-pale);
+    scroll-margin-top: 4.5rem;
+  }
+
+  .chapitre:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .chapitre:last-child {
+    padding-bottom: 0;
+  }
+
+  .chapitre-tete {
+    align-self: start;
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .chapitre-titre {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    line-height: 1.25;
+    color: var(--encre);
+    margin: 0 0 0.4rem;
+  }
+
+  .chapitre-titre span {
+    color: var(--violet);
+  }
+
+  .chapitre-compte {
+    font-size: 0.95rem;
+    color: #5b5476;
+    margin: 0;
+  }
+
+  .exos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .exo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--lavande-pale);
+  }
+
+  .exo:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .exo:last-child {
+    padding-bottom: 0;
+  }
+
+  .exo-lien {
+    display: block;
+    min-width: 0;
+    color: var(--encre);
+  }
+
+  .exo-nom {
+    display: block;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 0.2s ease, color 0.2s ease;
+  }
+
+  .exo-lien:hover .exo-nom {
+    color: var(--violet);
+    text-decoration-color: currentColor;
+  }
+
+  .exo-desc {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 60ch;
+    color: #3b3555;
+  }
+
+  .exo .badge {
+    margin-top: 0.1rem;
+  }
+
+  .exos-vide {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #5b5476;
+  }
+
+  /* ---------- Bande finale ---------- */
+  .exo-appel {
+    background: var(--papier);
+    padding: var(--espace) 0;
+  }
+
+  .exo-appel .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .exo-appel p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .button.bouton-principal {
+    background: var(--violet);
+    border-color: var(--violet);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .button.bouton-principal:hover {
+    background: var(--violet-profond);
+    border-color: var(--violet-profond);
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .exo-intro {
+      padding-top: 6rem;
+    }
+
+    .chapitre {
+      grid-template-columns: 1fr;
+    }
+
+    .chapitre-tete {
+      position: static;
+    }
+  }
+</style>

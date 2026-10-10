@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_18_T.tsx';
+import SommeTermes from '../../components/Ex_18_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Somme des termes d'une suite",
+  description: "Détermine ce que renvoie une fonction Python qui calcule une somme de termes",
+  chapitre: "Algorithmique et suites",
+};
 ---
 
-<LeconLayout title="Exercice 18T - Algorithmique - Analyse de seuil">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <SommeTermes client:load />
   </main>
 </LeconLayout>

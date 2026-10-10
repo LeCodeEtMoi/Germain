@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_53_T.tsx';
+import FonctionComposee from '../../components/Ex_53_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Fonctions composées",
+  description: "Détermine l'expression de f∘g et g∘f pour une fonction affine et une fonction carré",
+  chapitre: "Fonctions composées",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <FonctionComposee client:load />
   </main>
 </LeconLayout>

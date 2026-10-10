@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_29_T.tsx';
+import ProprietesLn from '../../components/Ex_29_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Propriétés algébriques de ln",
+  description: "Simplifie des expressions avec les propriétés algébriques du logarithme népérien",
+  chapitre: "Fonction logarithme népérien",
+};
 ---
 
-<LeconLayout title="Ln">
-  <main>   
-    <PythonThresholdAnalysis client:load />
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ProprietesLn client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

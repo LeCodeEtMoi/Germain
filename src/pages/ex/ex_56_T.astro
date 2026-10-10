@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_56_T.tsx';
+import ConvexiteSeconde from '../../components/Ex_56_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Convexité et dérivée seconde",
+  description: "Calcule la dérivée seconde d'un polynôme de degré 3 et étudie la convexité",
+  chapitre: "Convexité",
+};
 ---
 
-<LeconLayout title="Reconnaissance d'une fonction usuelle">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <ConvexiteSeconde client:load />
   </main>
 </LeconLayout>

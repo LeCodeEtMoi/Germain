@@ -1,92 +1,101 @@
-import React, { useState } from 'react';
-import MathTex from '@/components/MathTex';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { type Question } from './Questions.tsx';
+import { combinaison, entier, fraction, signeAleatoire, type Fraction } from '../lib/maths.ts';
+import { AIDE_FRACTION, attenduFraction, texFrac } from '../lib/reponses.ts';
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/**
+ * Exercice : calculer ∫ de a à b de (m·x + p) dx.
+ *
+ *   ∫ (mx + p) dx = [m·x²/2 + p·x]  →  m(b² − a²)/2 + p(b − a), calculé en fraction exacte.
+ */
+
+/* ===== Logique ===== */
+
+export type Exercice = { m: number; p: number; a: number; b: number };
+
+export function genererExercice(): Exercice {
+  const a = entier(-3, 2);
+  return { m: signeAleatoire() * entier(1, 5), p: signeAleatoire() * entier(1, 6), a, b: a + entier(1, 4) };
 }
 
-function computeIntegral(m: number, p: number, a: number, b: number): number {
-  const primitive = (x: number) => (m / 2) * x ** 2 + p * x;
-  return primitive(b) - primitive(a);
-}
+export const valeur = ({ m, p, a, b }: Exercice): Fraction => fraction(m * (b * b - a * a) + 2 * p * (b - a), 2);
 
-export default function AdvancedIntegralExercise() {
-  const generateProblem = () => {
-    const m = getRandomInt(1, 5);
-    const p = getRandomInt(-4, 4);
-    const a = getRandomInt(0, 4);
-    const b = getRandomInt(a + 1, a + 5);
-    const result = computeIntegral(m, p, a, b);
-    return { m, p, a, b, result };
-  };
+export const questions = (exo: Exercice): Question[] => {
+  const { attendu, tolerance } = attenduFraction(valeur(exo));
+  return [
+    {
+      type: 'nombre',
+      id: 'I',
+      libelle: <>Valeur de l’intégrale <MathTex tex="I" /> :</>,
+      attendu,
+      tolerance,
+      placeholder: 'Ex : 7/2',
+      aide: AIDE_FRACTION,
+    },
+  ];
+};
 
-  const [problem, setProblem] = useState(generateProblem());
-  const [userAnswer, setUserAnswer] = useState('');
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [showCorrection, setShowCorrection] = useState(false);
+/* ===== Affichage ===== */
 
-  const checkAnswer = () => {
-    const parsed = parseFloat(userAnswer.replace(',', '.'));
-    const epsilon = 0.01;
-    if (Math.abs(parsed - problem.result) < epsilon) {
-      setFeedback('✅ Bonne réponse, Maître.');
-    } else {
-      setFeedback(`❌ Non Maître. Le résultat exact est ${problem.result.toFixed(2)}`);
-    }
-    setShowCorrection(true);
-  };
+export default function IntegraleAffine() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
 
-  const newExercise = () => {
-    setProblem(generateProblem());
-    setUserAnswer('');
-    setFeedback(null);
-    setShowCorrection(false);
-  };
-
-  const { m, p, a, b, result } = problem;
-  const functionTex = `${m}x${p >= 0 ? `+${p}` : p}`;
+  const { m, p, a, b } = exo;
+  const v = valeur(exo);
+  const fTex = combinaison([[m, 'x'], [p, '']], true);
+  const c2 = fraction(m, 2); // coefficient de x² dans F
+  const coefX2 = c2.d === 1 && Math.abs(c2.n) === 1 ? (c2.n < 0 ? '-' : '') : texFrac(c2);
+  const Ftex = `${coefX2}x^{2} ${p < 0 ? '-' : '+'} ${Math.abs(p) === 1 ? '' : Math.abs(p)}x`;
+  const F = (x: number) => fraction(m * x * x + 2 * p * x, 2);
 
   return (
-    <div className="box">
-      <h2 className="title is-4">Intégrale définie (fonction affine)</h2>
-      <p>Calculez l'intégrale suivante :</p>
-      <MathTex tex={`\\int_{${a}}^{${b}} (${functionTex}) \\, dx`} />
-
-      <div className="field mt-4">
-        <input
-          type="text"
-          className="input"
-          placeholder="Votre réponse (ex: 17.5)"
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-        />
-      </div>
-
-      <div className="buttons mt-3">
-        <button className="button is-primary" onClick={checkAnswer}>Valider</button>
-        <button className="button is-light" onClick={newExercise}>Nouvel exercice</button>
-      </div>
-
-      {feedback && (
-        <div className="notification is-info mt-4">
-          <p>{feedback}</p>
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Calcule l’intégrale suivante :</p>
+        <div className="exercice-formule">
+          <MathTex tex={`I = \\int_{${a}}^{${b}} \\left(${fTex}\\right) dx`} />
         </div>
-      )}
-
-      {showCorrection && (
-        <div className="mt-4">
-          <h3 className="title is-5">Correction</h3>
-          <p>On pose \( f(x) = ${m}x ${p >= 0 ? '+' : ''}${p} \)</p>
-          <p>Une primitive de \( f \) est :
-            <MathTex tex={`F(x) = \\frac{${m}}{2}x^2 + ${p}x`} />
-          </p>
-          <p>Donc :</p>
-          <MathTex tex={`\\int_{${a}}^{${b}} (${functionTex}) \\, dx = F(${b}) - F(${a})`} />
+      </Enonce>
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
           <p>
-            <MathTex tex={`= \\left(\\frac{${m}}{2} \\times ${b}^2 + ${p} \\times ${b}\\right) - \\left(\\frac{${m}}{2} \\times ${a}^2 + ${p} \\times ${a}\\right) = ${result.toFixed(2)}`} />
+            <MathTex tex={`I = ${texFrac(v)}`} />.
           </p>
-        </div>
-      )}
-    </div>
+        }
+        correction={
+          <>
+            <li>
+              Une primitive de <MathTex tex={`${fTex}`} /> est <MathTex tex={`F(x) = ${Ftex}`} /> (primitive de <MathTex tex="x" /> : <MathTex tex="\frac{x^{2}}{2}" />, primitive d’une constante p : <MathTex tex="px" />).
+            </li>
+            <li>
+              <MathTex tex={`F(${b}) = ${texFrac(F(b))}`} /> et <MathTex tex={`F(${a}) = ${texFrac(F(a))}`} />.
+            </li>
+            <li>
+              <MathTex tex={`I = F(${b}) - F(${a}) = ${texFrac(F(b))} - ${F(a).n < 0 ? `\\left(${texFrac(F(a))}\\right)` : texFrac(F(a))} = ${texFrac(v)}`} />.
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Primitive terme à terme : <MathTex tex="x \mapsto x" /> donne <MathTex tex="\frac{x^{2}}{2}" /> (et non x²).
+            </li>
+            <li>Calcule F(b) et F(a) séparément ; attention aux signes quand a est négatif.</li>
+            <li>La constante p devient p·x dans la primitive.</li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

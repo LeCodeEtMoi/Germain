@@ -1,117 +1,175 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import {
+  Astuce, Boutons, Cadre, Chargement, Choix, Correction, Enonce, Formulaire, MessageIncompris, MessageSucces, Retour, Titre,
+  ZoneRetour, useTirage,
+} from './ExerciceUI.tsx';
+import { choisir, combinaison, entier } from '../lib/maths.ts';
 
-// Génère un entier aléatoire entre min et max inclus
-function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+/**
+ * Exercice : continuité et dérivabilité d'une fonction définie par morceaux.
+ *
+ *   f(x) = a·x² + b   si x ≤ x₀
+ *   f(x) = c·x + d    si x > x₀
+ *
+ * Les trois situations sont tirées avec la même probabilité (l'énoncé d'origine ne donnait presque jamais une fonction
+ * continue) :
+ *   · non continue en x₀ ;
+ *   · continue mais non dérivable en x₀ ;
+ *   · continue et dérivable en x₀ (c = 2·a·x₀).
+ * La bonne réponse est CALCULÉE à partir des coefficients : limites à gauche et à droite, puis nombres dérivés.
+ */
 
-// Génère les deux fonctions f1 et f2
-function generatePiecewiseFunction() {
-  const a = randomInt(1, 5);
-  const b = randomInt(1, 5);
-  const c = randomInt(1, 5);
-  const d = randomInt(1, 5);
+/* ===== Logique ===== */
 
-  const f1 = `${a}x^2 + ${b}`;
-  const f2 = `${c}x + ${d}`;
+export type Cas = 'discontinue' | 'continue' | 'derivable';
 
-  const f1_derivative = `${2 * a}x`;
-  const f2_derivative = `${c}`;
+export type Exercice = { a: number; b: number; c: number; d: number; x0: number };
 
-  const f1_at1 = a * 1 ** 2 + b;
-  const f2_at1 = c * 1 + d;
-
-  const f1_prime_at1 = 2 * a * 1;
-  const f2_prime_at1 = c;
-
-  const isContinuous = f1_at1 === f2_at1;
-  const isDerivable = isContinuous && f1_prime_at1 === f2_prime_at1;
-
+/** Valeur et dérivée à gauche, valeur et dérivée à droite, en x₀. */
+export function bilan({ a, b, c, d, x0 }: Exercice) {
   return {
-    a, b, c, d,
-    f1, f2,
-    f1_derivative,
-    f2_derivative,
-    f1_at1,
-    f2_at1,
-    f1_prime_at1,
-    f2_prime_at1,
-    isContinuous,
-    isDerivable
+    gauche: a * x0 * x0 + b,
+    droite: c * x0 + d,
+    deriveeGauche: 2 * a * x0,
+    deriveeDroite: c,
   };
 }
 
-export default function ContinuityExercise() {
-  const [problem, setProblem] = useState(generatePiecewiseFunction());
-  const [step, setStep] = useState(0);
-  const [feedback, setFeedback] = useState<string | null>(null);
+export function situation(exo: Exercice): Cas {
+  const t = bilan(exo);
+  if (t.gauche !== t.droite) return 'discontinue';
+  return t.deriveeGauche === t.deriveeDroite ? 'derivable' : 'continue';
+}
 
-  function handleCheckContinuity(answer: string) {
-    const correct = problem.isContinuous ? 'oui' : 'non';
-    if (answer.toLowerCase() === correct) {
-      setFeedback("✅ Bonne réponse ! Passons à l'étude des dérivées.");
-      setStep(1);
-    } else {
-      setFeedback(`❌ Mauvaise réponse. La fonction est ${correct === 'oui' ? 'continue' : 'non continue'} en x = 1.`);
-    }
+export function genererExercice(voulu: Cas = choisir<Cas>(['discontinue', 'continue', 'derivable'])): Exercice {
+  for (;;) {
+    const a = choisir([-1, 1]) * entier(1, 4);
+    const b = entier(-5, 5);
+    const x0 = choisir([-2, -1, 1, 2, 3]);
+    const gauche = a * x0 * x0 + b;
+    let c = 2 * a * x0;
+    if (voulu === 'continue') c = entier(-8, 8);
+    if (voulu === 'discontinue') c = entier(-8, 8);
+    let d = gauche - c * x0;
+    if (voulu === 'discontinue') d += choisir([-1, 1]) * entier(1, 4);
+    const exo = { a, b, c, d, x0 };
+    if (situation(exo) === voulu) return exo;
+  }
+}
+
+const LIBELLES: Record<Cas, string> = {
+  discontinue: "f n'est pas continue en x₀",
+  continue: "f est continue en x₀ mais n'est pas dérivable en x₀",
+  derivable: 'f est continue et dérivable en x₀',
+};
+
+/* ===== Affichage ===== */
+
+export default function ContinuiteMorceaux() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [reponse, setReponse] = useState<string | null>(null);
+  const [retour, setRetour] = useState<null | 'vide' | 'correct' | 'faux'>(null);
+
+  if (!exo) return <Chargement />;
+
+  const { a, b, c, d, x0 } = exo;
+  const juste = situation(exo);
+  const t = bilan(exo);
+  const f1 = combinaison([[a, 'x^{2}'], [b, '']], true);
+  const f2 = combinaison([[c, 'x'], [d, '']], true);
+  const x0Tex = String(x0);
+  const lib = (cas: Cas) => LIBELLES[cas].replace('x₀', `x = ${x0}`).replace('x₀', `x = ${x0}`);
+
+  function valider() {
+    if (reponse === null) return setRetour('vide');
+    setRetour(reponse === juste ? 'correct' : 'faux');
   }
 
-  function handleNextExercise() {
-    setProblem(generatePiecewiseFunction());
-    setStep(0);
-    setFeedback(null);
+  function nouvelExercice() {
+    regenerer();
+    setReponse(null);
+    setRetour(null);
   }
 
   return (
-    <div className="columns is-centered mt-6">
-      <div className="column is-two-thirds">
-        <div className="box content">
-          <h2 className="title is-4">Continuité en un point</h2>
-          <p>Soit la fonction définie par morceaux :</p>
-          <pre>
-            f(x) = {"{"} {`
-              ${problem.f1} si x ≤ 1
-              ${problem.f2} si x > 1
-            `}{"}"}
-          </pre>
-
-          {step === 0 && (
-            <>
-              <p>La fonction f est-elle continue en x = 1 ? (oui / non)</p>
-              <input
-                className="input"
-                type="text"
-                placeholder="oui ou non"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleCheckContinuity((e.target as HTMLInputElement).value);
-                }}
-              />
-            </>
-          )}
-
-          {step === 1 && (
-            <>
-              <h3 className="title is-5">Correction</h3>
-              <p>f(1⁻) = {problem.f1_at1}, f(1⁺) = {problem.f2_at1} → donc f est {problem.isContinuous ? 'continue' : 'non continue'}.</p>
-              <p>f₁'(x) = {problem.f1_derivative}, donc f₁'(1) = {problem.f1_prime_at1}</p>
-              <p>f₂'(x) = {problem.f2_derivative}, donc f₂'(1) = {problem.f2_prime_at1}</p>
-              <p>Conclusion : f est {problem.isDerivable ? 'dérivable' : 'non dérivable'} en x = 1</p>
-
-              <div className="buttons mt-4">
-                <button className="button is-primary" onClick={handleNextExercise}>
-                  Nouvel exercice
-                </button>
-              </div>
-            </>
-          )}
-
-          {feedback && (
-            <div className="notification is-light mt-4">
-              {feedback}
-            </div>
-          )}
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>Soit f la fonction définie sur ℝ par :</p>
+        <div className="exercice-formule">
+          <MathTex
+            tex={`f(x) = \\begin{cases} ${f1} & \\text{si } x \\le ${x0Tex} \\\\ ${f2} & \\text{si } x > ${x0Tex} \\end{cases}`}
+          />
         </div>
-      </div>
-    </div>
+        <p>Que peut-on dire de f en x = {x0} ?</p>
+      </Enonce>
+
+      <Formulaire onValider={valider}>
+        <Choix
+          legende="Choisis la bonne affirmation"
+          valeur={reponse}
+          onChange={setReponse}
+          options={(Object.keys(LIBELLES) as Cas[]).map((valeur) => ({ valeur, contenu: lib(valeur) }))}
+        />
+        <Boutons onNouveau={nouvelExercice} />
+      </Formulaire>
+
+      <ZoneRetour>
+        {retour === 'vide' && <MessageIncompris raison="Choisis une réponse avant de valider." />}
+        {retour === 'correct' && (
+          <MessageSucces>
+            <p>
+              {juste === 'discontinue'
+                ? `Les limites à gauche (${t.gauche}) et à droite (${t.droite}) sont différentes : f n’est pas continue en ${x0}.`
+                : juste === 'continue'
+                  ? `Les deux morceaux se rejoignent (${t.gauche}), mais les nombres dérivés à gauche (${t.deriveeGauche}) et à droite (${t.deriveeDroite}) diffèrent.`
+                  : `Les deux morceaux se rejoignent (${t.gauche}) avec le même nombre dérivé (${t.deriveeGauche}).`}
+            </p>
+          </MessageSucces>
+        )}
+        {retour === 'faux' && (
+          <Retour type="faux">
+            <p>Oups, une erreur s'est glissée. {lib(juste)}.</p>
+            <Correction>
+              <li>
+                <strong>Continuité.</strong> À gauche de {x0}, f(x) = {f1.replace(/\^\{2\}/g, '²')}, donc{' '}
+                <MathTex tex={`\\lim_{x \\to ${x0Tex}^-} f(x) = f(${x0Tex}) = ${t.gauche}`} />. À droite, f(x) = {f2},
+                donc <MathTex tex={`\\lim_{x \\to ${x0Tex}^+} f(x) = ${t.droite}`} />.
+              </li>
+              {t.gauche !== t.droite ? (
+                <li>
+                  Les deux limites sont différentes ({t.gauche} ≠ {t.droite}) : f n'est pas continue en {x0}, donc elle n'est pas
+                  dérivable en {x0}.
+                </li>
+              ) : (
+                <>
+                  <li>
+                    Les deux limites sont égales à {t.gauche} = f({x0}) : f est continue en {x0}.
+                  </li>
+                  <li>
+                    <strong>Dérivabilité.</strong> À gauche, f'(x) = {2 * a}x, donc le nombre dérivé à gauche est{' '}
+                    <MathTex tex={`${2 * a} \\times ${x0 < 0 ? `(${x0})` : x0} = ${t.deriveeGauche}`} />. À droite, f'(x) = {c}, donc le
+                    nombre dérivé à droite est {t.deriveeDroite}.
+                  </li>
+                  <li>
+                    {t.deriveeGauche === t.deriveeDroite
+                      ? `Les deux nombres dérivés sont égaux (${t.deriveeGauche}) : f est dérivable en ${x0}.`
+                      : `Les nombres dérivés sont différents (${t.deriveeGauche} ≠ ${t.deriveeDroite}) : f n'est pas dérivable en ${x0} (la courbe a un point anguleux).`}
+                  </li>
+                </>
+              )}
+            </Correction>
+            <Astuce titre="Pour réussir la prochaine fois">
+              <ul>
+                <li>Commence par la continuité : compare les valeurs obtenues à gauche et à droite du point.</li>
+                <li>Une fonction non continue en un point n'est jamais dérivable en ce point.</li>
+                <li>Pour la dérivabilité, compare les dérivées de chaque morceau (et non les valeurs de f) au point étudié.</li>
+              </ul>
+            </Astuce>
+          </Retour>
+        )}
+      </ZoneRetour>
+    </Cadre>
   );
 }

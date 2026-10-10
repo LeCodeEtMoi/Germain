@@ -1,11 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_26_T.tsx';
+import InequationTrigoDegre2 from '../../components/Ex_26_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Inéquation trigonométrique du second degré",
+  description: "Résous une inéquation du type a·cos²(x) + b·cos(x) + c > 0 dans [0 ; 2π]",
+  chapitre: "Fonctions cosinus et sinus",
+};
 ---
 
-<LeconLayout title="Étude de fonction  trigonométrique">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    Pour info inspiration : https://manuel.sesamath.net/numerique/diapo.php?atome=92423&ordre=1
-    <PythonThresholdAnalysis client:load />
+    <InequationTrigoDegre2 client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

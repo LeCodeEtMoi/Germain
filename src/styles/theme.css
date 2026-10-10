@@ -1,0 +1,28 @@
+/* Variables et réglages communs à toutes les pages de Germain.
+   À importer dans chaque page : import '../styles/theme.css'; */
+
+:root {
+  --violet: #6528d9;
+  --violet-profond: #2a1466;
+  --lavande: #a28bfa;
+  --lavande-pale: #efeaff;
+  --papier: #faf9ff;
+  --encre: #1f1a3d;
+  --craie: #ffd25e;
+  --primary-color: var(--violet); /* utilisé par le footer */
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--encre);
+  background: #fff;
+}
+
+.righteous {
+  font-family: 'Righteous', sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--violet);
+  outline-offset: 3px;
+}

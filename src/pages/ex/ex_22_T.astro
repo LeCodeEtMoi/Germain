@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_22_T.tsx';
+import TableauValeurs from '../../components/Ex_22_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Valeurs remarquables de sin et cos",
+  description: "Complète un tableau de valeurs exactes de sinus et cosinus",
+  chapitre: "Fonctions cosinus et sinus",
+};
 ---
 
-<LeconLayout title=" Continuité et dérivabilité en un point">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <TableauValeurs client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>

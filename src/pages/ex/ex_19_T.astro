@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_19_T.tsx';
+import SeuilNumerique from '../../components/Ex_19_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Seuil d'une suite : condition et valeur renvoyée",
+  description: "Complète la condition d'un while puis indique la valeur renvoyée par le script",
+  chapitre: "Algorithmique et suites",
+};
 ---
 
-<LeconLayout title="Exercice 19T - Algorithmique - Analyse de seuil">
+<LeconLayout title={exerciceMeta.description}>
   <main>
-    <PythonThresholdAnalysis client:load />
+    <SeuilNumerique client:load />
   </main>
 </LeconLayout>

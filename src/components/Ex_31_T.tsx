@@ -1,93 +1,163 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import MathTex from './MathTex.tsx';
+import { Cadre, Chargement, Enonce, Titre, useTirage } from './ExerciceUI.tsx';
+import Questions, { apercuExpression, type Question, type ResultatExpression } from './Questions.tsx';
+import { analyser, combinaison, entier, evaluer, signeAleatoire } from '../lib/maths.ts';
 
-function generateTangentAnalysisProblem() {
-  // Choix aléatoire de coefficients pour f(x) = a·ln(x) + b
-  const a = Math.floor(Math.random() * 4) + 1; // entre 1 et 4
-  const b = Math.floor(Math.random() * 5) - 2; // entre -2 et 2
+/**
+ * Exercice : tangente à la courbe de f(x) = a·ln(x) + b·x au point d'abscisse 1, puis position de la courbe.
+ *
+ *   f'(x) = a/x + b          f(1) = b          f'(1) = a + b
+ *   T : y = (a + b)(x − 1) + b = (a + b)x − a
+ *   f''(x) = −a/x²  →  a > 0 : f concave, la courbe est SOUS ses tangentes ;  a < 0 : f convexe, elle est AU-DESSUS.
+ *
+ * La tangente saisie est lue par l'analyseur, puis comparée en plusieurs points : toute écriture équivalente est acceptée.
+ */
 
-  // f(x) = a ln(x) + b
-  const fx = (x: number): number => a * Math.log(x) + b;
-  const dfx = (x: number): number => a / x;
-  const f1 = fx(1);
-  const df1 = dfx(1);
+/* ===== Logique ===== */
 
-  const tangent = `${df1}·(x - 1) + ${f1}`;
+export type Exercice = { a: number; b: number };
 
-  // g(x) = ln(x) - x + 1
-  const gx = (x: number): number => Math.log(x) - x + 1;
-  const dgx = (x: number): number => 1 / x - 1;
-
-  return {
-    a,
-    b,
-    fx: `f(x) = ${a}·ln(x) + ${b}`,
-    tangent,
-    f1: f1.toFixed(2),
-    df1: df1.toFixed(2),
-    g1: gx(1).toFixed(2),
-    gxExpression: 'g(x) = ln(x) - x + 1',
-    dgxExpression: `g'(x) = 1/x - 1`,
-  };
+export function genererExercice(): Exercice {
+  for (;;) {
+    const a = signeAleatoire() * entier(1, 5);
+    const b = signeAleatoire() * entier(1, 4);
+    if (a + b !== 0) return { a, b };
+  }
 }
 
-export default function LnTangentAnalysis() {
-  const [problem, setProblem] = useState(generateTangentAnalysisProblem());
-  const [showCorrection, setShowCorrection] = useState(false);
+export const pente = ({ a, b }: Exercice) => a + b;
+export const ordonnee = ({ a }: Exercice) => -a;
+export const positionAttendue = ({ a }: Exercice) => (a > 0 ? 'dessous' : 'dessus');
+
+const proche = (x: number, y: number) => Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x), Math.abs(y));
+
+export function verifierTangente(exo: Exercice, saisie: string): ResultatExpression {
+  const lu = analyser(saisie.replace(/^\s*y\s*=/i, ''), { variables: ['x'] });
+  if (!lu.ok) return { ok: false, incompris: lu.message };
+  const g = (x: number) => evaluer(lu.noeud, { x });
+  const g0 = g(0);
+  const m = g(1) - g0;
+  if (![2, -3, 0.5, 7].every((x) => proche(g(x), g0 + m * x))) {
+    return { ok: false, indice: 'Une tangente est une droite : ta réponse doit pouvoir s’écrire mx + p.' };
+  }
+  const mT = pente(exo);
+  const pT = ordonnee(exo);
+  if (proche(m, mT) && proche(g0, pT)) return { ok: true };
+  if (proche(m, mT)) return { ok: false, indice: 'Le coefficient directeur est bon, mais pas l’ordonnée à l’origine : pense à ajouter f(1) puis à développer.' };
+  if (proche(m, exo.a) || proche(m, exo.b)) return { ok: false, indice: 'Le coefficient directeur doit être f′(1) en entier : n’oublie aucun des deux termes de f′.' };
+  return { ok: false, indice: 'Le coefficient directeur d’une tangente en 1 est f′(1).' };
+}
+
+export function questions(exo: Exercice): Question[] {
+  return [
+    {
+      type: 'expression',
+      id: 'tangente',
+      libelle: <>Équation réduite de la tangente T à la courbe <MathTex tex="\mathcal{C}_f" /> au point d'abscisse 1 : y =</>,
+      placeholder: 'Ex : 3x - 2',
+      aide: 'Écris le second membre : 3x - 2, -x/2 + 1…',
+      verifier: (s) => verifierTangente(exo, s),
+      apercu: (s) => apercuExpression(s, 'y', { retirer: /^\s*y\s*=/i }),
+    },
+    {
+      type: 'choix',
+      id: 'position',
+      libelle: <>Sur ]0 ; +∞[, la courbe <MathTex tex="\mathcal{C}_f" /> est :</>,
+      attendu: positionAttendue(exo),
+      options: [
+        { valeur: 'dessus', contenu: 'au-dessus de T' },
+        { valeur: 'dessous', contenu: 'en dessous de T' },
+        { valeur: 'traverse', contenu: 'de part et d’autre de T (elle traverse T)' },
+      ],
+    },
+  ];
+}
+
+/* ===== Affichage ===== */
+
+const par = (n: number) => (n < 0 ? `(${n})` : `${n}`);
+
+export default function TangenteLn() {
+  const [exo, regenerer] = useTirage(genererExercice);
+  const [essai, setEssai] = useState(0);
+  if (!exo) return <Chargement />;
+
+  const { a, b } = exo;
+  const m = pente(exo);
+  const p = ordonnee(exo);
+  const fTex = combinaison([[a, '\\ln(x)'], [b, 'x']], true);
+  const dTex = `${a < 0 ? '-' : ''}\\frac{${Math.abs(a)}}{x} ${b < 0 ? '-' : '+'} ${Math.abs(b)}`;
+  const secondeTex = `${a > 0 ? '-' : ''}\\frac{${Math.abs(a)}}{x^{2}}`;
 
   return (
-    <div className="columns is-centered mt-6">
-      <div className="column is-10">
-        <div className="box content">
-          <h2 className="title is-4">Étude d'une tangente et fonction ln</h2>
-          <p>Soit la fonction <strong>{problem.fx}</strong> définie sur ]0 ; +∞[.</p>
-
-          <ol>
-            <li>
-              Déterminer l'équation de la tangente <strong>T₁</strong> à la courbe de <strong>f</strong> au point d'abscisse 1.
-            </li>
-            <li>
-              <strong>a)</strong> Montrer qu'étudier la position relative de <strong>𝒞<sub>f</sub></strong> et de sa tangente revient à étudier le signe de <strong>{problem.a}(ln(x) - x + 1)</strong>.
-            </li>
-            <li>
-              <strong>b)</strong> Soit <strong>{problem.gxExpression}</strong>. Étudier le signe de g(x).
-            </li>
-            <li>
-              <strong>c)</strong> Calculer <strong>g(1)</strong> et en déduire le signe de g(x) sur ]0 ; +∞[.
-            </li>
-            <li>
-              <strong>d)</strong> En déduire la position relative de <strong>𝒞<sub>f</sub></strong> et <strong>T₁</strong>.
-            </li>
-          </ol>
-
-          <button className="button is-primary mr-2" onClick={() => setShowCorrection(true)}>
-            Afficher la correction
-          </button>
-          <button
-            className="button is-light"
-            onClick={() => {
-              setProblem(generateTangentAnalysisProblem());
-              setShowCorrection(false);
-            }}
-          >
-            Nouvel exercice
-          </button>
-
-          {showCorrection && (
-            <div className="notification is-info mt-4">
-              <h3 className="title is-5">Correction</h3>
-              <ul>
-                <li><strong>f(1) =</strong> {problem.f1} ; <strong>f'(1) =</strong> {problem.df1}</li>
-                <li><strong>Équation de T₁ :</strong> y = {problem.tangent}</li>
-                <li>On étudie le signe de g(x) = ln(x) - x + 1.</li>
-                <li><strong>g'(x) =</strong> {problem.dgxExpression} → g décroît sur ]0 ; 1[ et croît sur ]1 ; +∞[</li>
-                <li><strong>g(1) =</strong> {problem.g1}</li>
-                <li><strong>Signe de g(x)</strong> : négatif puis positif, donc ln(x) &lt; x - 1 sur ]0 ; 1[ et ln(x) &gt; x - 1 sur ]1 ; +∞[</li>
-                <li>Donc <strong>f(x) &lt; T₁(x)</strong> sur ]0 ; 1[ et <strong>f(x) &gt; T₁(x)</strong> sur ]1 ; +∞[</li>
-              </ul>
-            </div>
-          )}
+    <Cadre>
+      <Titre />
+      <Enonce>
+        <p>
+          Soit <MathTex tex="f" /> la fonction définie sur ]0 ; +∞[ par :
+        </p>
+        <div className="exercice-formule">
+          <MathTex tex={`f(x) = ${fTex}`} />
         </div>
-      </div>
-    </div>
+        <p>
+          On note <MathTex tex="\mathcal{C}_f" /> sa courbe représentative et T sa tangente au point d'abscisse 1.
+        </p>
+      </Enonce>
+
+      <Questions
+        key={essai}
+        questions={questions(exo)}
+        onNouveau={() => {
+          regenerer();
+          setEssai((e) => e + 1);
+        }}
+        succes={
+          <p>
+            <MathTex tex={`T : y = ${combinaison([[m, 'x'], [p, '']], true)}`} /> et la courbe est {a > 0 ? 'en dessous' : 'au-dessus'} de T.
+          </p>
+        }
+        correction={
+          <>
+            <li>
+              La tangente en 1 a pour équation <MathTex tex="y = f'(1)(x - 1) + f(1)" />.
+            </li>
+            <li>
+              On dérive (<MathTex tex="\ln'(x) = \frac{1}{x}" />) : <MathTex tex={`f'(x) = ${dTex}`} />.
+            </li>
+            <li>
+              En 1 : <MathTex tex={`f(1) = ${a === 1 ? '' : a === -1 ? '-' : par(a) + ' \\times '}\\ln(1) ${b < 0 ? '-' : '+'} ${Math.abs(b)} = ${b}`} /> car{' '}
+              <MathTex tex="\ln(1) = 0" />, et <MathTex tex={`f'(1) = ${par(a)} + ${par(b)} = ${m}`} />.
+            </li>
+            <li>
+              Donc <MathTex tex={`y = ${par(m)}(x - 1) ${b < 0 ? '-' : '+'} ${Math.abs(b)}`} />, soit{' '}
+              <MathTex tex={`y = ${combinaison([[m, 'x'], [p, '']], true)}`} />.
+            </li>
+            <li>
+              Pour la position, on étudie le signe de <MathTex tex={`f''(x) = ${secondeTex}`} /> sur ]0 ; +∞[ : il est{' '}
+              {a > 0 ? 'strictement négatif, f est concave' : 'strictement positif, f est convexe'}.
+            </li>
+            <li>
+              Une fonction {a > 0 ? 'concave' : 'convexe'} a sa courbe {a > 0 ? 'en dessous' : 'au-dessus'} de ses tangentes : ici{' '}
+              <strong>{a > 0 ? 'en dessous de T' : 'au-dessus de T'}</strong> (et elle ne la traverse nulle part).
+            </li>
+          </>
+        }
+        conseils={
+          <>
+            <li>
+              Retiens la formule <MathTex tex="y = f'(a)(x - a) + f(a)" /> et calcule séparément <MathTex tex="f(1)" /> et <MathTex tex="f'(1)" />.
+            </li>
+            <li>
+              <MathTex tex="\ln(1) = 0" /> : le terme en ln disparaît dans f(1), mais pas dans f′(1) (il devient <MathTex tex="\frac{a}{1}" />).
+            </li>
+            <li>Ne confonds pas f(1) et f′(1) : l’un est l’ordonnée du point, l’autre la pente.</li>
+            <li>
+              Concave (<MathTex tex="f'' < 0" />) : courbe sous ses tangentes. Convexe (<MathTex tex="f'' > 0" />) : courbe au-dessus.
+            </li>
+          </>
+        }
+      />
+    </Cadre>
   );
 }

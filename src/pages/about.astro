@@ -2,173 +2,131 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import About from '../components/About.tsx';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import '../styles/bulma.min.css';
+import '../styles/theme.css';
 
-const cards = [
-  {
-    title: '',
-    content: `
-      <p>
-        <a href="https://www.education.gouv.fr/pisa-programme-international-pour-le-suivi-des-acquis-des-eleves-41558" target="_blank">
-          En France, le niveau en mathématiques n'est plus au sommet depuis quelque temps.
-        </a>
-        L'équipe de Germain a donc pour objectif de rendre les mathématiques plus accessibles et de permettre à celles et ceux qui en ont le désir de s'y intéresser, en éveillant la curiosité pour cette discipline millénaire.
-      </p>
-    `
-  },
-  {
-    title: '',
-    content: `
-      <p>
-        Les femmes sont encore sous-représentées dans le domaine des mathématiques, et cela doit changer. Rien ne justifie qu'elles soient moins capables que les hommes dans ce domaine.
-      </p>
-
-      <p>
-        C'est pourquoi nous avons choisi le nom <strong>Germain</strong>, en hommage à <strong>Sophie Germain</strong>, une pionnière des mathématiques, qui a dû se battre pour avoir le droit d'étudier cette science.
-        C'est grâce à ses travaux que la Tour Eiffel tient encore debout aujourd'hui.
-      </p>
-    `
-  },
-  {
-    title: '"',
-    content: `
-      <figure class="image is-3by2" style="margin: 2em auto; max-width: 600px;">
-        <img
-          src="https://sorciersdesalem.math.cnrs.fr/Posters/PosterLesMathsCaSertARien.png"
-          alt="Affiche humoristique sur l'utilité des mathématiques"
-        >
-      </figure>
-      <p>
-        Comme l'explique très bien <a href="https://sorciersdesalem.math.cnrs.fr/SaufA/LesMathsCaSertARien.html" target="_blank">cette page</a>, 
-        les mathématiques permettent de réaliser d'innombrables choses dans des domaines aussi variés que :
-        la musique, l'économie, la météorologie, la cryptographie, la médecine, l'informatique, ou encore le sport.
-      </p>
-    `
-  }
-];
-
+const base = '/Germain/';
 ---
+
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={`À propos – ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-      .card {
-        margin: 2rem auto;
-        max-width: 800px;
-        display: none;
-      }
-      .card:first-child {
-        display: block;
-      }
-      .card-footer {
-        padding: 1rem;
-        border-top: 1px solid #f5f5f5;
-      }
-      .card-footer-item {
-        justify-content: center;
-      }
-		section{
-			height: 100vh;
-			width:100%;
-		}
-
-    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
     <Header />
 
     <main>
-      <section class="section">
+      <section class="apropos-intro">
         <div class="container">
-          <div class="columns is-centered">
-            <div class="column is-10">
-              {cards.map((card, index) => (
-                <div
-                  id={`card-${index}`}
-                  class="card"
-                  data-index={index}
-                >
-                  <header class="card-header">
-                    <p class="card-header-title">{card.title}</p>
-                  </header>
-                  <div class="card-content">
-                    <div class="content" set:html={card.content} />
-                  </div>
-                  <footer class="card-footer">
-                    <div class="card-footer-item">
-                      <button class="button prev-card">
-                        <span class="icon">
-                          <i class="fas fa-chevron-left"></i>
-                        </span>
-                        <span>Précédent</span>
-                      </button>
-                    </div>
-                    <div class="card-footer-item">
-                      <span class="tag card-counter">
-                        {index + 1}/{cards.length}
-                      </span>
-                    </div>
-                    <div class="card-footer-item">
-                      <button class="button next-card">
-                        <span>Suivant</span>
-                        <span class="icon">
-                          <i class="fas fa-chevron-right"></i>
-                        </span>
-                      </button>
-                    </div>
-                  </footer>
-                </div>
-              ))}
-            </div>
-          </div>
+          <h1 class="apropos-titre righteous"><span aria-hidden="true">//</span> À propos</h1>
+          <p class="apropos-chapeau">
+            Germain est un projet éducatif et open source pour explorer les mathématiques. Voici d'où il
+            vient, d'où vient son nom, et pourquoi nous pensons que les maths servent à quelque chose.
+          </p>
+        </div>
+      </section>
+
+      <section class="apropos-contenu">
+        <div class="container">
+          <About client:load />
+        </div>
+      </section>
+
+      <section class="apropos-appel">
+        <div class="container">
+          <p>Germain s'écrit à plusieurs mains, et il y a de la place pour la vôtre.</p>
+          <a class="button bouton-principal" href={`${base}aide`}>Participer au projet</a>
         </div>
       </section>
     </main>
 
     <Footer />
-
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const cards = Array.from(document.querySelectorAll('.card'));
-        const totalCards = cards.length;
-        let currentCardIndex = 0;
-
-        function showCard(index) {
-          // Masquer toutes les cartes
-          cards.forEach(card => card.style.display = 'none');
-          // Afficher la carte actuelle
-          cards[index].style.display = 'block';
-          // Mettre à jour le compteur
-          document.querySelectorAll('.card-counter').forEach(counter => {
-            counter.textContent = `${index + 1}/${totalCards}`;
-          });
-        }
-
-        // Gestionnaire d'événement pour le bouton suivant
-        document.querySelectorAll('.next-card').forEach(button => {
-          button.addEventListener('click', () => {
-            currentCardIndex = (currentCardIndex + 1) % totalCards;
-            showCard(currentCardIndex);
-          });
-        });
-
-        // Gestionnaire d'événement pour le bouton précédent
-        document.querySelectorAll('.prev-card').forEach(button => {
-          button.addEventListener('click', () => {
-            currentCardIndex = (currentCardIndex - 1 + totalCards) % totalCards;
-            showCard(currentCardIndex);
-          });
-        });
-
-        // Afficher la première carte au chargement
-        showCard(0);
-      });
-    </script>
   </body>
 </html>
+
+<style>
+  /* Un seul rythme vertical pour toute la page : modifiez cette valeur
+     pour resserrer ou aérer l'ensemble. */
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .apropos-intro {
+    /* le header est fixe : on laisse la place en haut ; pas de marge en bas,
+       l'espace avec la section suivante vient d'un seul côté */
+    padding: 7rem 0 0;
+  }
+
+  .apropos-titre {
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--encre);
+    margin: 0 0 1.25rem;
+  }
+
+  .apropos-titre span {
+    color: var(--violet);
+  }
+
+  .apropos-chapeau {
+    font-size: 1.2rem;
+    line-height: 1.65;
+    max-width: 55ch;
+    color: #3b3555;
+  }
+
+  .apropos-contenu {
+    padding: var(--espace) 0;
+  }
+
+  .apropos-appel {
+    background: var(--papier);
+    padding: var(--espace) 0;
+  }
+
+  .apropos-appel .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .apropos-appel p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .button.bouton-principal {
+    background: var(--violet);
+    border-color: var(--violet);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .button.bouton-principal:hover {
+    background: var(--violet-profond);
+    border-color: var(--violet-profond);
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .apropos-intro {
+      padding-top: 6rem;
+    }
+  }
+</style>

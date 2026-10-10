@@ -1,10 +1,17 @@
 ---
 import LeconLayout from '../../layouts/Exercice.astro';
-import PythonThresholdAnalysis from '../../components/Ex_32_T.tsx';
+import FonctionUsuelle from '../../components/Ex_32_T.tsx';
+import '../../styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Reconnaître une fonction usuelle",
+  description: "Retrouve une fonction usuelle à partir de sa dérivée, d'une valeur et d'une propriété",
+  chapitre: "Dérivation et fonctions usuelles",
+};
 ---
 
-<LeconLayout title="Ln">
-  <main>   
-    <PythonThresholdAnalysis client:load />
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <FonctionUsuelle client:load />
   </main>
-</LeconLayout> 
+</LeconLayout>
