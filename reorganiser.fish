@@ -23,7 +23,7 @@ if not git rev-parse --is-inside-work-tree >/dev/null 2>&1
     exit 1
 end
 
-if test $apply -eq 1; and test -n "(git status --porcelain)"
+if test $apply -eq 1; and test -n "$(git status --porcelain)"
     echo "Erreur : il reste des modifications non commitées."
     echo "Faites un commit avant, pour pouvoir annuler avec : git reset --hard; git clean -fd src"
     exit 1
@@ -93,7 +93,7 @@ for n in $niveaux
     echo "  src/exercices/$n/"
     if test $apply -eq 1
         mkdir -p src/exercices/$n
-        if test -z "(ls -A src/exercices/$n)"
+        if test -z "$(ls -A src/exercices/$n)"
             touch src/exercices/$n/.gitkeep
         end
     end
