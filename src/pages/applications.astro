@@ -1,0 +1,511 @@
+---
+/**
+ * Page « Applications des mathématiques » : catalogue filtrable par catégorie, avec recherche.
+ * Le contenu est dans src/data/applications.ts.
+ */
+import BaseHead from '@/components/layout/BaseHead.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { SITE_TITLE } from '@/consts';
+import { applications, categories } from '@/data/applications';
+import '@/styles/bulma.min.css';
+import '@/styles/theme.css';
+import '@/styles/mobile.css';
+
+const base = '/Germain/';
+const pageTitle = 'Applications des mathématiques';
+const pageDescription =
+  'Musique, médecine, météo, cryptographie, sport, économie : découvre à quoi servent les mathématiques dans des domaines très variés.';
+
+const categorieParId = Object.fromEntries(categories.map((c) => [c.id, c]));
+const compte = (id: string) => applications.filter((a) => a.categorie === id).length;
+
+// Chaque application est vérifiée : sa catégorie doit exister.
+for (const a of applications) {
+  if (!categorieParId[a.categorie]) throw new Error(`Catégorie inconnue « ${a.categorie} » pour « ${a.titre} »`);
+}
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <!-- ============ Introduction ============ -->
+      <section class="ap-intro">
+        <div class="container">
+          <h1 class="ap-titre righteous"><span aria-hidden="true">//</span> {pageTitle}</h1>
+          <p class="ap-chapeau">
+            « À quoi ça sert ? » Voici des exemples concrets, rangés par domaine, de ce que les mathématiques
+            permettent de faire.
+          </p>
+
+          <!-- Recherche + filtres -->
+          <div class="ap-outils">
+            <label class="ap-recherche" for="ap-recherche">
+              <span class="sr-only">Rechercher une application</span>
+              <input id="ap-recherche" type="search" placeholder="Rechercher : GPS, musique, probabilités…" autocomplete="off" />
+            </label>
+
+            <div class="ap-filtres" role="group" aria-label="Filtrer par catégorie">
+              <button type="button" class="ap-filtre" data-categorie="" aria-pressed="true">
+                Tout <span class="ap-filtre-nb">{applications.length}</span>
+              </button>
+              {
+                categories.map((c) => (
+                  <button type="button" class="ap-filtre" data-categorie={c.id} aria-pressed="false">
+                    <span aria-hidden="true">{c.icone}</span> {c.nom}
+                    <span class="ap-filtre-nb">{compte(c.id)}</span>
+                  </button>
+                ))
+              }
+            </div>
+
+            <p class="ap-resultat" id="ap-resultat" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Cartes ============ -->
+      <section class="ap-liste" aria-label="Applications">
+        <div class="container">
+          <ul class="ap-grille" role="list" id="ap-grille">
+            {
+              applications.map((a) => {
+                const cat = categorieParId[a.categorie];
+                const recherche = [a.titre, a.accroche, a.texte, cat.nom, ...a.maths].join(' ');
+                return (
+                  <li class="ap-item" data-categorie={a.categorie} data-recherche={recherche}>
+                    <article class="ap-carte">
+                      <header class="ap-carte-tete">
+                        <span class="ap-icone" aria-hidden="true">{cat.icone}</span>
+                        <span class="ap-cat">{cat.nom}</span>
+                      </header>
+                      <h2 class="ap-carte-titre righteous">{a.titre}</h2>
+                      <p class="ap-accroche">{a.accroche}</p>
+                      <p class="ap-texte">{a.texte}</p>
+                      <div class="ap-maths">
+                        <span class="ap-maths-titre">Maths utilisées</span>
+                        <ul role="list">
+                          {a.maths.map((m) => (
+                            <li>{m}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      {a.lien && (
+                        <a class="ap-lien" href={`${base}${a.lien.chemin}`}>
+                          {a.lien.texte} <span aria-hidden="true">→</span>
+                        </a>
+                      )}
+                    </article>
+                  </li>
+                );
+              })
+            }
+          </ul>
+
+          <p class="ap-vide" id="ap-vide" hidden>
+            Aucune application ne correspond à ta recherche. Essaie un autre mot ou
+            <button type="button" id="ap-reinit">réinitialise les filtres</button>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ Appel ============ -->
+      <section class="ap-appel">
+        <div class="container">
+          <p>Un domaine manque à la liste ?</p>
+          <div class="ap-appel-boutons">
+            <a class="ap-bouton" href={`${base}aide`}>Proposer une application</a>
+            <a class="ap-bouton ap-bouton--clair" href={`${base}MathsEtMetier`}>Lire des témoignages</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+
+    <script>
+      // Filtrage côté navigateur : catégorie (bouton) + texte (champ de recherche).
+      const normaliser = (s: string) =>
+        s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
+      const champ = document.getElementById('ap-recherche') as HTMLInputElement | null;
+      const boutons = Array.from(document.querySelectorAll<HTMLButtonElement>('.ap-filtre'));
+      const items = Array.from(document.querySelectorAll<HTMLElement>('.ap-item'));
+      const resultat = document.getElementById('ap-resultat');
+      const vide = document.getElementById('ap-vide');
+      const reinit = document.getElementById('ap-reinit');
+
+      const index = items.map((el) => normaliser(el.dataset.recherche ?? ''));
+      let categorie = '';
+
+      function appliquer() {
+        const mots = normaliser(champ?.value ?? '').split(/\s+/).filter(Boolean);
+        let visibles = 0;
+
+        items.forEach((el, i) => {
+          const okCat = categorie === '' || el.dataset.categorie === categorie;
+          const okTexte = mots.every((m) => index[i].includes(m));
+          const montre = okCat && okTexte;
+          el.hidden = !montre;
+          if (montre) visibles++;
+        });
+
+        boutons.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.categorie ?? '') === categorie)));
+
+        if (resultat) {
+          resultat.textContent = `${visibles} application${visibles > 1 ? 's' : ''} affichée${visibles > 1 ? 's' : ''}`;
+        }
+        if (vide) vide.hidden = visibles > 0;
+
+        // Mémorise la catégorie dans l'adresse (#sante, #numerique…) pour pouvoir partager le lien.
+        const hash = categorie ? `#${categorie}` : location.pathname + location.search;
+        history.replaceState(null, '', hash);
+      }
+
+      boutons.forEach((b) =>
+        b.addEventListener('click', () => {
+          categorie = b.dataset.categorie ?? '';
+          appliquer();
+        })
+      );
+      champ?.addEventListener('input', appliquer);
+      reinit?.addEventListener('click', () => {
+        categorie = '';
+        if (champ) champ.value = '';
+        appliquer();
+      });
+
+      // Catégorie demandée dans l'adresse
+      const demande = location.hash.replace('#', '');
+      if (boutons.some((b) => b.dataset.categorie === demande)) categorie = demande;
+      appliquer();
+    </script>
+  </body>
+</html>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ---------- Introduction ---------- */
+  .ap-intro {
+    /* le header est fixe : on laisse la place en haut */
+    padding: 7rem 0 0;
+  }
+  .ap-titre {
+    font-size: clamp(2.2rem, 6.5vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--encre, #1f1a3d);
+    margin: 0 0 1.25rem;
+  }
+  .ap-titre span {
+    color: var(--violet, #6528d9);
+  }
+  .ap-chapeau {
+    max-width: 56ch;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: #3b3555;
+    margin: 0 0 1.5rem;
+  }
+
+  /* ---------- Recherche et filtres ---------- */
+  .ap-outils {
+    display: grid;
+    gap: 1rem;
+  }
+  .ap-recherche input {
+    width: 100%;
+    max-width: 32rem;
+    min-height: 3rem;
+    padding: 0.6rem 1.2rem;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--encre, #1f1a3d);
+    font: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ap-recherche input:focus {
+    outline: none;
+    border-color: var(--violet, #6528d9);
+    box-shadow: 0 0 0 3px rgba(101, 40, 217, 0.18);
+  }
+
+  .ap-filtres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .ap-filtre {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    padding: 0.3rem 1rem;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--violet-profond, #2a1466);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .ap-filtre:hover,
+  .ap-filtre:focus-visible {
+    border-color: var(--violet, #6528d9);
+  }
+  .ap-filtre[aria-pressed='true'] {
+    background: var(--violet, #6528d9);
+    border-color: var(--violet, #6528d9);
+    color: #fff;
+  }
+  .ap-filtre-nb {
+    min-width: 1.5rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .ap-filtre[aria-pressed='true'] .ap-filtre-nb {
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+  }
+  .ap-resultat {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #5b5476;
+  }
+
+  /* ---------- Grille ---------- */
+  .ap-liste {
+    padding: clamp(1.5rem, 4vw, 2.5rem) 0 clamp(2.5rem, 6vw, 4rem);
+  }
+  .ap-grille {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+    gap: 1.25rem;
+  }
+  .ap-item[hidden] {
+    display: none;
+  }
+
+  /* ---------- Carte ---------- */
+  .ap-carte {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    height: 100%;
+    padding: clamp(1.1rem, 3vw, 1.5rem);
+    background: #fff;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 1.25rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ap-carte:hover {
+    border-color: var(--lavande, #a28bfa);
+    box-shadow: 0 10px 24px -16px rgba(101, 40, 217, 0.45);
+  }
+  .ap-carte-tete {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .ap-icone {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--craie, #ffd25e);
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+  .ap-cat {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--violet, #6528d9);
+  }
+  .ap-carte-titre {
+    margin: 0;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    line-height: 1.2;
+    color: var(--encre, #1f1a3d);
+  }
+  .ap-accroche {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--violet-profond, #2a1466);
+  }
+  .ap-texte {
+    margin: 0;
+    line-height: 1.65;
+    color: #3b3555;
+  }
+
+  .ap-maths {
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+  .ap-maths-titre {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #5b5476;
+  }
+  .ap-maths ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .ap-maths li {
+    padding: 0.1rem 0.7rem;
+    border-radius: 999px;
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .ap-lien {
+    font-weight: 700;
+    color: var(--violet, #6528d9);
+    text-decoration: none;
+  }
+  .ap-lien:hover,
+  .ap-lien:focus-visible {
+    text-decoration: underline;
+  }
+
+  .ap-vide {
+    margin: 2rem 0 0;
+    padding: 1.25rem;
+    border: 2px dashed var(--lavande, #a28bfa);
+    border-radius: 1rem;
+    text-align: center;
+    color: #3b3555;
+  }
+  .ap-vide[hidden] {
+    display: none;
+  }
+  .ap-vide button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--violet, #6528d9);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* ---------- Appel ---------- */
+  .ap-appel {
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+    background: var(--violet-profond, #2a1466);
+    color: #fff;
+    text-align: center;
+  }
+  .ap-appel p {
+    margin: 0 0 1.25rem;
+    font-family: 'Righteous', sans-serif;
+    font-size: clamp(1.4rem, 3.4vw, 2rem);
+  }
+  .ap-appel-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .ap-bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.8rem 1.8rem;
+    border-radius: 999px;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+  .ap-bouton--clair {
+    background: #fff;
+  }
+  .ap-bouton:hover,
+  .ap-bouton:focus-visible {
+    background: var(--lavande, #a28bfa);
+    color: var(--violet-profond, #2a1466);
+  }
+
+  @media (max-width: 768px) {
+    .ap-intro {
+      padding-top: 6rem;
+    }
+    /* filtres sur une seule ligne défilante plutôt que sur 4 lignes */
+    .ap-filtres {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-inline: calc(var(--gouttiere, 1.25rem) * -1);
+      padding: 0.25rem var(--gouttiere, 1.25rem);
+      scrollbar-width: none;
+    }
+    .ap-filtres::-webkit-scrollbar {
+      display: none;
+    }
+    .ap-filtre {
+      flex: none;
+    }
+    .ap-bouton {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ap-filtre,
+    .ap-carte,
+    .ap-bouton,
+    .ap-recherche input {
+      transition: none;
+    }
+  }
+</style>

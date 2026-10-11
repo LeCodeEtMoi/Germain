@@ -1,0 +1,46 @@
+---
+/**
+ * Appel de référence numéroté : <Cite id="dunlosky2013" /> ou <Cite id={['a', 'b']} />
+ * La liste complète est dans src/data/apprendre.ts et s'affiche en bas de la page.
+ */
+import { numeroRef } from '@/data/apprendre';
+
+interface Props {
+  id: string | string[];
+}
+
+const ids = Array.isArray(Astro.props.id) ? Astro.props.id : [Astro.props.id];
+const refs = ids.map((id) => ({ id, n: numeroRef(id) }));
+---
+
+<sup class="cite"
+  >[{
+    refs.map((r, i) => (
+      <>
+        {i > 0 && ', '}
+        <a href={`#ref-${r.id}`} aria-label={`Référence ${r.n}`}>{r.n}</a>
+      </>
+    ))
+  }]</sup
+>
+
+<style>
+  .cite {
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 0;
+    white-space: nowrap;
+    color: var(--violet, #6528d9);
+  }
+  .cite a {
+    color: inherit;
+    text-decoration: none;
+    padding: 0 0.1em;
+    border-radius: 0.25em;
+  }
+  .cite a:hover,
+  .cite a:focus-visible {
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+  }
+</style>

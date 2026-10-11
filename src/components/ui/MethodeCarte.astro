@@ -1,0 +1,181 @@
+---
+/**
+ * Carte d'une méthode d'apprentissage.
+ * Slots : (défaut) = explication, « etapes » = <ol>, « preuves » = <ul> avec <Cite>, « conseil » = encart facultatif.
+ */
+interface Props {
+  id: string;
+  numero?: number | string;
+  titre: string;
+  niveau: 'solide' | 'moyenne' | 'nuancee';
+}
+
+const { id, numero, titre, niveau } = Astro.props;
+
+const NIVEAUX = {
+  solide: { texte: 'Preuve solide', icone: '●●●' },
+  moyenne: { texte: 'Preuve moyenne', icone: '●●○' },
+  nuancee: { texte: 'À nuancer', icone: '●○○' },
+} as const;
+
+const n = NIVEAUX[niveau];
+const hasEtapes = Astro.slots.has('etapes');
+const hasConseil = Astro.slots.has('conseil');
+---
+
+<article class={`methode methode--${niveau}`} id={id} aria-labelledby={`${id}-titre`}>
+  <header class="methode-tete">
+    {numero !== undefined && <span class="methode-num righteous" aria-hidden="true">{numero}</span>}
+    <h3 class="methode-titre righteous" id={`${id}-titre`}>{titre}</h3>
+    <span class="methode-badge">
+      <span aria-hidden="true">{n.icone}</span>
+      {n.texte}
+    </span>
+  </header>
+
+  <div class="methode-texte"><slot /></div>
+
+  {
+    hasEtapes && (
+      <div class="methode-bloc">
+        <h4>Comment faire</h4>
+        <slot name="etapes" />
+      </div>
+    )
+  }
+
+  <div class="methode-bloc methode-preuves">
+    <h4>Ce que dit la recherche</h4>
+    <slot name="preuves" />
+  </div>
+
+  {
+    hasConseil && (
+      <p class="methode-conseil">
+        <slot name="conseil" />
+      </p>
+    )
+  }
+</article>
+
+<style>
+  .methode {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1.1rem, 3vw, 1.75rem);
+    background: #fff;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 1.25rem;
+    scroll-margin-top: 6rem;
+  }
+
+  .methode-tete {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'num titre'
+      'num badge';
+    column-gap: 1rem;
+    row-gap: 0.4rem;
+    align-items: center;
+  }
+
+  .methode-num {
+    grid-area: num;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .methode-titre {
+    grid-area: titre;
+    margin: 0;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    line-height: 1.2;
+    color: var(--encre, #1f1a3d);
+  }
+
+  .methode-badge {
+    grid-area: badge;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.15rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .methode-badge span {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  .methode--solide .methode-badge {
+    background: var(--violet, #6528d9);
+    color: #fff;
+  }
+  .methode--moyenne .methode-badge {
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+  }
+  .methode--nuancee .methode-badge {
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+  }
+
+  .methode-texte {
+    line-height: 1.7;
+    color: #3b3555;
+  }
+  .methode-texte :global(p) {
+    margin: 0;
+  }
+
+  .methode-bloc h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--violet, #6528d9);
+  }
+
+  .methode-bloc :global(ol),
+  .methode-bloc :global(ul) {
+    margin: 0;
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.45rem;
+    line-height: 1.6;
+    color: #3b3555;
+  }
+
+  .methode-preuves {
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    background: var(--papier, #faf9ff);
+    border-left: 4px solid var(--lavande, #a28bfa);
+  }
+
+  .methode-conseil {
+    margin: 0;
+    padding: 0.8rem 1rem;
+    border-radius: 1rem;
+    background: #fff8e0;
+    border: 1px dashed var(--craie, #ffd25e);
+    color: #4a3d00;
+    line-height: 1.6;
+  }
+  .methode-conseil :global(a) {
+    font-weight: 600;
+  }
+</style>

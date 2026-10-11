@@ -1,66 +1,332 @@
 ---
-// Importation des composants réutilisables (en-tête, pied de page, etc.)
+/**
+ * Page « Maths et métier » : liste des témoignages de personnes qui utilisent les maths dans leur métier.
+ * Pour ajouter un métier : ajouter un objet dans le tableau `metiers` ci-dessous.
+ */
 import BaseHead from '@/components/layout/BaseHead.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-// Importation des constantes globales du site (titre, description)
-import { SITE_TITLE, SITE_DESCRIPTION }  from '../consts';
-const pageTitle = "Maths et métier";
+import { SITE_TITLE } from '@/consts';
+import '@/styles/bulma.min.css';
+import '@/styles/theme.css';
+import '@/styles/mobile.css';
+
+const base = '/Germain/';
+const titre = 'Maths et métier';
+const description =
+  'Des personnes racontent comment les mathématiques interviennent dans leur métier, de l’animation scientifique à l’ingénierie.';
+
+interface Metier {
+  /** Intitulé du métier. */
+  titre: string;
+  /** Employeur ou structure. */
+  structure: string;
+  /** Domaine, affiché en pastille. */
+  domaine: string;
+  /** Résumé court (2–3 phrases). */
+  resume: string;
+  /** Citation facultative, entre guillemets sur la carte. */
+  citation?: string;
+  /** Adresse de la page détaillée. */
+  href: string;
+}
+
+const metiers: Metier[] = [
+  {
+    titre: 'Médiateur scientifique',
+    structure: 'Planète Sciences Occitanie',
+    domaine: 'Animation scientifique',
+    resume:
+      'Un métier proche de celui d’animateur scientifique et technique : à Planète Sciences, les enfants réalisent des projets techniques et acquièrent des connaissances scientifiques en les menant à bien. Un regard personnel sur cette pédagogie, qui laisse peu de place aux maths « inutiles ».',
+    citation: 'C’est cool aussi, des fois, de faire des trucs qui ne servent à rien, pourvu que l’on trouve cela drôle.',
+    href: `${base}MathsEtMetier/MediateurScientifique`,
+  },
+];
 ---
-<!-- --- Template (partie HTML) --- -->
+
 <!doctype html>
 <html lang="fr">
-	<head>
-		<!-- Utilisation du composant BaseHead pour générer les balises <head> communes (meta, title, etc.) -->
-		<BaseHead title={pageTitle}/>
-		<!-- Liens vers les feuilles de style externes (CDN) pour Bulma et Font-Awesome -->
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-	</head>
-	<style>
-		section{
-			height: 100vh;
-			width:100%;
-		}
-	</style>
-	<body>
-		<!-- Inclusion du composant Header (barre de navigation) -->
-		<Header />
+  <head>
+    <BaseHead title={`${titre} – ${SITE_TITLE}`} description={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-			<!-- Section "hero" pour afficher le titre de la page de manière proéminente -->
-			<section class="hero">
-				<div class="hero-body">
-					<div class="container font-Righteous ">
-							
-							<h1><strong class="righteous-regular title">{pageTitle}</strong></h1>
-            <p class="subtitle has-text-left has-text-white">Découvrez comment les mathématiques s'appliquent dans différents domaines .</p> 
-						
-					</div>
-				</div>
-			
+  <body>
+    <Header />
 
-			<!-- Contenu principal de la page -->
-			<main class="section" >
-				<div class="container">
-					<!-- Utilisation du système de colonnes de Bulma pour créer une grille responsive -->
-					<div class="columns is-multiline">
-						<div class="metier-title">
-              <a href="/Germain/MathsEtMetier/MédiateurScientifique">
-              <h1><strong class="righteous-regular lesson-title font-Righteous">Médiateur scientifique à Planete Sciences Occitanie</strong></h1>
-              <p class="subtitle has-text-left ">Mon métier se rapproche d'intervenant technique / animateur scientifique et technique. La péda à planete science est de passez par des projets techniques que les enfants réalisent, et que c'est en réalisant ce projet que les enfants acquieront des connaissances scientifiques.
-                Cette démarche me pose parfois probleme, notamment car c'est une vision tres utilitaire des sciences, un point de vue d'ingénieur∙e, car cela ne me permet pas de parler de trucs "inutiles" comme les mathématiques des rubik's cubes ou d'écologie. Et puis je trouve cela problématique de toujours s'attacher à l'utilitité, car ça se trouve, un truc que l'on trouve inutile maintenant sera peut-etre utile dans 100 ans. et puis c'est cool aussi des fois de faire des trucs qui ne servent à rien, pourvu que l'on trouve cela drole</p>
-              </div>
-              </a>  
-              <div class="metier-title">
-                <h1><strong class="righteous-regular lesson-title  font-Righteous">Médiateur scientifique à Planete Sciences Occitanie</strong></h1>
-                <p class="subtitle has-text-left">Mon métier se rapproche d'intervenant technique / animateur scientifique et technique. La péda à planete science est de passez par des projets techniques que les enfants réalisent, et que c'est en réalisant ce projet que les enfants acquieront des connaissances scientifiques.
-                  Cette démarche me pose parfois probleme, notamment car c'est une vision tres utilitaire des sciences, un point de vue d'ingénieur∙e, car cela ne me permet pas de parler de trucs "inutiles" comme les mathématiques des rubik's cubes ou d'écologie. Et puis je trouve cela problématique de toujours s'attacher à l'utilitité, car ça se trouve, un truc que l'on trouve inutile maintenant sera peut-etre utile dans 100 ans. et puis c'est cool aussi des fois de faire des trucs qui ne servent à rien, pourvu que l'on trouve cela drole</p>
-                </div>
-					</div>
-				</div>
-			</main>
-		</section>
-		<!-- Inclusion du composant Footer (pied de page) -->
-		<Footer />
-	</body>
+    <main>
+      <!-- ============ Introduction ============ -->
+      <section class="mm-intro">
+        <div class="container">
+          <h1 class="mm-titre righteous"><span aria-hidden="true">//</span> {titre}</h1>
+          <p class="mm-chapeau">
+            « À quoi ça sert, les maths ? » Des personnes racontent ici ce qu’elles en font au quotidien, dans leur
+            métier, et ce qu’elles en pensent.
+          </p>
+          <p class="mm-total">
+            {metiers.length} témoignage{metiers.length > 1 ? 's' : ''}
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ Liste des métiers ============ -->
+      <section class="mm-liste" aria-label="Liste des métiers">
+        <div class="container">
+          <ul class="mm-grille" role="list">
+            {
+              metiers.map((m) => (
+                <li>
+                  <article class="mm-carte">
+                    <span class="mm-domaine">{m.domaine}</span>
+                    <h2 class="mm-carte-titre righteous">
+                      <a class="mm-lien" href={m.href}>
+                        {m.titre}
+                      </a>
+                    </h2>
+                    <p class="mm-structure">{m.structure}</p>
+                    <p class="mm-resume">{m.resume}</p>
+                    {m.citation && (
+                      <blockquote class="mm-citation">
+                        <p>{m.citation}</p>
+                      </blockquote>
+                    )}
+                    <span class="mm-suite" aria-hidden="true">
+                      Lire le témoignage <span class="mm-fleche">→</span>
+                    </span>
+                  </article>
+                </li>
+              ))
+            }
+
+            <!-- Carte d'invitation à contribuer -->
+            <li>
+              <article class="mm-carte mm-carte--appel">
+                <span class="mm-domaine mm-domaine--clair">À toi de jouer</span>
+                <h2 class="mm-carte-titre righteous">Ton métier utilise les maths ?</h2>
+                <p class="mm-resume">
+                  Ingénieur·e, soignant·e, musicien·ne, développeur·se, artisan·e… Raconte en quelques lignes comment tu
+                  utilises les mathématiques, ou pourquoi tu les as laissées de côté.
+                </p>
+                <a class="mm-bouton" href={`${base}aide`}>Proposer un témoignage</a>
+              </article>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
 </html>
+
+<style>
+  /* ---------- Introduction ---------- */
+  .mm-intro {
+    /* le header est fixe : on laisse la place en haut */
+    padding: 7rem 0 0;
+  }
+  .mm-titre {
+    font-size: clamp(2.4rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--encre, #1f1a3d);
+    margin: 0 0 1.25rem;
+  }
+  .mm-titre span {
+    color: var(--violet, #6528d9);
+  }
+  .mm-chapeau {
+    max-width: 56ch;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: #3b3555;
+    margin: 0 0 1rem;
+  }
+  .mm-total {
+    display: inline-block;
+    margin: 0;
+    padding: 0.25rem 0.9rem;
+    border-radius: 999px;
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  /* ---------- Grille ---------- */
+  .mm-liste {
+    padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(2.5rem, 6vw, 4rem);
+  }
+  .mm-grille {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ---------- Carte ---------- */
+  .mm-carte {
+    position: relative; /* pour étendre la zone cliquable du lien à toute la carte */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    background: #fff;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 1.25rem;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .mm-carte:hover,
+  .mm-carte:focus-within {
+    border-color: var(--violet, #6528d9);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -14px rgba(101, 40, 217, 0.5);
+  }
+
+  .mm-domaine {
+    align-self: flex-start;
+    padding: 0.15rem 0.8rem;
+    border-radius: 999px;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .mm-domaine--clair {
+    background: var(--craie, #ffd25e);
+  }
+
+  .mm-carte-titre {
+    margin: 0;
+    font-size: clamp(1.3rem, 3vw, 1.6rem);
+    line-height: 1.2;
+    color: var(--encre, #1f1a3d);
+  }
+  .mm-lien {
+    color: inherit;
+    text-decoration: none;
+  }
+  /* Le lien couvre toute la carte (une seule cible, lisible par les lecteurs d'écran) */
+  .mm-lien::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1.25rem;
+  }
+  .mm-lien:focus-visible {
+    outline: none;
+  }
+  .mm-lien:focus-visible::after {
+    outline: 3px solid var(--violet, #6528d9);
+    outline-offset: 3px;
+  }
+
+  .mm-structure {
+    margin: 0;
+    font-weight: 600;
+    color: var(--violet, #6528d9);
+  }
+  .mm-resume {
+    margin: 0;
+    line-height: 1.65;
+    color: #3b3555;
+  }
+
+  .mm-citation {
+    margin: 0;
+    padding: 0.7rem 1rem;
+    border-left: 4px solid var(--lavande, #a28bfa);
+    background: var(--papier, #faf9ff);
+    border-radius: 0 0.75rem 0.75rem 0;
+    font-style: italic;
+    line-height: 1.55;
+    color: #3b3555;
+  }
+  .mm-citation p {
+    margin: 0;
+  }
+  .mm-citation p::before {
+    content: '« ';
+  }
+  .mm-citation p::after {
+    content: ' »';
+  }
+
+  .mm-suite {
+    margin-top: auto;
+    padding-top: 0.25rem;
+    font-weight: 700;
+    color: var(--violet, #6528d9);
+  }
+  .mm-fleche {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+  .mm-carte:hover .mm-fleche,
+  .mm-carte:focus-within .mm-fleche {
+    transform: translateX(0.3rem);
+  }
+
+  /* ---------- Carte d'appel ---------- */
+  .mm-carte--appel {
+    background: var(--violet-profond, #2a1466);
+    border-color: var(--violet-profond, #2a1466);
+  }
+  .mm-carte--appel:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .mm-carte--appel .mm-carte-titre {
+    color: #fff;
+  }
+  .mm-carte--appel .mm-resume {
+    color: #ece7ff;
+  }
+  .mm-bouton {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 999px;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+  .mm-bouton:hover,
+  .mm-bouton:focus-visible {
+    background: #fff;
+    color: var(--violet-profond, #2a1466);
+  }
+
+  @media (max-width: 768px) {
+    .mm-intro {
+      padding-top: 6rem;
+    }
+    .mm-bouton {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mm-carte,
+    .mm-fleche,
+    .mm-bouton {
+      transition: none;
+    }
+    .mm-carte:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import PageChoixNiveau from '@/components/layout/PageChoixNiveau.astro';
+import { cycles, compterLecons } from '@/lib/niveaux';
+
+const base = '/Germain/';
+
+// Pour ouvrir un niveau : ajouter une page .astro dans src/pages/lecons/<slug>/ (voir [niveau].astro)
+const groupes = cycles.map((c) => ({
+  ...c,
+  niveaux: c.niveaux.map((n) => ({ ...n, nombre: compterLecons(n), href: `${base}lecons/${n.slug}/` })),
+}));
+---
+
+<PageChoixNiveau
+  titre="Leçons"
+  description="Choisissez votre niveau : de la 6ᵉ à l’enseignement supérieur, des leçons de mathématiques claires et progressives."
+  chapeau="Choisissez votre niveau. Des cours clairs, expliqués pas à pas, pour comprendre avant de s'entraîner."
+  unite="leçon"
+  groupes={groupes}
+  appel="Une leçon à proposer ? Germain s'écrit à plusieurs mains."
+/>
