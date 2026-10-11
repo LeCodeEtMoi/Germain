@@ -179,6 +179,15 @@ export const REFS: Reference[] = [
     url: 'https://doi.org/10.1038/s41586-019-1466-y',
   },
   {
+    id: 'pashler2008',
+    type: 'synthese',
+    auteurs: 'Pashler, H., McDaniel, M., Rohrer, D. & Bjork, R.',
+    annee: 2008,
+    titre: 'Learning Styles: Concepts and Evidence',
+    source: 'Psychological Science in the Public Interest, 9(3), 105–119',
+    url: 'https://doi.org/10.1111/j.1539-6053.2009.01038.x',
+  },
+  {
     id: 'ace_lille',
     type: 'ressource',
     auteurs: 'Académie de Lille, DSDEN du Nord (Pédagogie Nord)',

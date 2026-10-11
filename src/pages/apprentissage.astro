@@ -1,131 +1,1139 @@
 ---
+/**
+ * Page « Comment apprendre les maths ? »
+ * Chaque affirmation renvoie à une référence numérotée (src/data/apprendre.ts, composant <Cite />).
+ */
 import BaseHead from '@/components/layout/BaseHead.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import Cite from '@/components/ui/Cite.astro';
+import MethodeCarte from '@/components/ui/MethodeCarte.astro';
+import { SITE_TITLE } from '@/consts';
+import { REFS, LIBELLE_TYPE } from '@/data/apprendre';
+import '@/styles/bulma.min.css';
+import '@/styles/theme.css';
+import '@/styles/mobile.css';
 
-const pageTitle = "Aider le Projet Germain";
-const pageDescription = "Découvrez comment vous pouvez contribuer à l'amélioration et à l'enrichissement du projet Germain.";
+const base = '/Germain/';
+const titre = 'Comment apprendre les maths ?';
+const description =
+  "Ce que dit la recherche sur les façons les plus efficaces d'apprendre et d'enseigner les mathématiques : méthodes pour les élèves et pour les enseignants, avec les sources.";
+
+const sommaire = [
+  { href: '#eleves', texte: 'Pour les élèves' },
+  { href: '#enseignants', texte: 'Pour les enseignants' },
+  { href: '#synthese', texte: 'En un coup d’œil' },
+  { href: '#routine', texte: 'Une routine de 20 min' },
+  { href: '#limites', texte: 'Limites' },
+  { href: '#references', texte: 'Références' },
+];
+
+/* Tableau de synthèse : le texte est volontairement court, le détail est dans les sections. */
+const synthese = [
+  { methode: "S'auto-tester", preuve: 'Solide', effort: 'Moyen', quand: 'Chaque fois que tu revois un chapitre', lien: '#test' },
+  { methode: 'Espacer les révisions', preuve: 'Solide', effort: 'Faible', quand: 'Dès le jour du cours, puis sur plusieurs semaines (boîte de Leitner)', lien: '#espacement' },
+  { methode: 'Mélanger les exercices', preuve: 'Moyenne', effort: 'Moyen', quand: 'Une fois plusieurs chapitres vus', lien: '#melange' },
+  { methode: 'Refaire les exemples', preuve: 'Moyenne', effort: 'Faible', quand: 'Pour un chapitre nouveau', lien: '#exemples' },
+  { methode: 'Analyser ses erreurs', preuve: 'Moyenne', effort: 'Faible', quand: 'Après chaque exercice ou contrôle', lien: '#erreurs' },
+  { methode: 'Expliquer à voix haute', preuve: 'Moyenne', effort: 'Faible', quand: 'En fin de séance de travail', lien: '#expliquer' },
+  { methode: 'Carte mentale', preuve: 'Moyenne', effort: 'Moyen', quand: 'Pour organiser un chapitre, puis la redessiner de mémoire', lien: '#cartes' },
+  { methode: 'Surligner, résumer, relire, recopier', preuve: 'Faible', effort: 'Faible', quand: 'À éviter comme méthode principale', lien: '#eviter' },
+];
 ---
+
+<!DOCTYPE html>
 <html lang="fr">
-<head>
-    <BaseHead title={pageTitle} description={pageDescription} />
+  <head>
+    <BaseHead title={`${titre} – ${SITE_TITLE}`} description={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-<body>
+  <body>
     <Header />
+
     <main>
-        <section class="section">
-            <div class="container">
-                <h1 class="title is-2 mt-6">{pageTitle}</h1>
-                <p class="subtitle is-4">{pageDescription}</p>
+      <!-- ============ Introduction ============ -->
+      <section class="ap-intro">
+        <div class="container">
+          <h1 class="ap-titre righteous"><span aria-hidden="true">//</span> {titre}</h1>
+          <p class="ap-chapeau">
+            Pas de recette miracle : quelques méthodes ont été testées par des chercheurs, sur des milliers d’élèves
+            et d’étudiants, et ressortent clairement. Cette page les présente, dit à quel point la preuve est solide,
+            et renvoie vers les études pour que tu puisses vérifier toi-même.
+          </p>
 
-                <h2 class="title is-4 mt-6">Pour les enseignants</h2>
-                <p><h3 class="title is-5 my-6">La méthode ACE – A rithmEcole</h3>
-                    La méthode ACE – ArithmEcole a été développer en France . Elle pour but de donner du sens aux nombres grâce à la mise en correspondance entre les nombres
-                    écrits (nombres et calculs) et leur représentation sous forme de grandeurs. Pour cela, un entraînement régulier à l’estimation numérique a lieu toute l’année ;<br>
-                    - Amener les élèves à identifier les types de problèmes et l’équivalence de certaines
-                    procédures de calcul pour résoudre des problèmes ;<br>
-                    - Consolider les faits arithmétiques en liaison avec l’acquisition de procédures de
-                    calcul par une pratique intense et quotidienne du calcul mental ;<br>
-                    - Expérimenter les mathématiques en maniant différentes représentations
-                    numériques et procédures de calcul comme la composition/décomposition, le
-                    groupement par 10, … dans des situations d’apprentissage numériques
-                    évolutives.
-                </p>
-                <p><h3 class="title is-5 my-6">La méthode de Singapour</h3>
-                    La méthode de Singapour développée à Singapour dans les années 1980. Elle repose sur trois aspects fondamentaux : la modélisation, l'approche « concrète-imagée-abstraite » et la verbalisation. 
-                    Cette méthode a été conçue par une équipe de professeurs de mathématiques mandatée par le ministère de l'Éducation de Singapour, s'inspirant des travaux de pédagogues comme Jerome Bruner, Jean Piaget, George Pólya et Maria Montessori.
-                    La réputation mondiale de cette méthode s'est établie lorsque Singapour s'est classée première aux évaluations TIMSS en 1995 et aux évaluations PISA en 2008. Depuis, Singapour a maintenu sa position de leader dans ces évaluations.
+          <aside class="ap-avertissement" role="note">
+            <strong>À savoir.</strong> Le projet Germain ne remplace en rien un cours de mathématiques à l’école. Il
+            complète le travail fait en classe, avec un professeur, pour s’entraîner et donner envie d’en faire plus.
+          </aside>
 
-                    La méthode de Singapour a été adoptée par plusieurs pays, dont Israël en 2002, la France en 2007, les États-Unis en 2008 et le Royaume-Uni en 2016. En France, elle a été adaptée aux programmes scolaires par des experts en didactique des mathématiques et est utilisée dans de nombreux manuels scolaires.
+          <nav class="ap-sommaire" aria-label="Sommaire de la page">
+            <ul role="list">
+              {
+                sommaire.map((s) => (
+                  <li>
+                    <a href={s.href}>{s.texte}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </section>
 
-                    Les trois aspects fondamentaux de la méthode sont :<br>
-                    <ul>
-                        <li>La modélisation : Les problèmes mathématiques sont représentés par des « schémas en barres », aidant les élèves à visualiser les quantités et à donner du sens aux nombres et aux opérations.</li>
-                        <li>L'approche « concrète-imagée-abstraite » : Chaque notion est abordée d'abord de manière concrète, puis imagée, et enfin abstraite. Cette approche s'inspire de la pédagogie de Maria Montessori et permet aux élèves de manipuler des objets avant de passer à des représentations schématiques et abstraites.</li>
-                        <li>La verbalisation : Les élèves sont encouragés à verbaliser leur pensée et à expliquer les étapes de résolution des problèmes. Cette étape est cruciale pour la métacognition et la compréhension profonde des concepts mathématiques.</li>
-                    </ul>
-                    La méthode de Singapour repose également sur six temps d'apprentissage : la manipulation, l'observation, la modélisation mathématique, l'entraînement, l'utilisation de jeux mathématiques et la résolution de problèmes. Cette méthode met l'élève en action et favorise la collaboration et la communication entre les élèves.
+      <!-- ============ Comment lire les niveaux de preuve ============ -->
+      <section class="ap-section">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Comment lire cette page</h2>
+          <p class="ap-texte">
+            Toutes les idées ne se valent pas. Pour chaque méthode, un badge indique la solidité des preuves. Nous nous appuyons sur les
+            grandes synthèses de la recherche en éducation<Cite id={['dunlosky2013', 'pashler2007']} /> ; le classement exact est celui de Germain :
+          </p>
+          <ul class="ap-legende" role="list">
+            <li>
+              <span class="badge badge--solide"><span aria-hidden="true">●●●</span> Preuve solide</span>
+              Effet observé dans de nombreuses études, dans des contextes variés, y compris en classe.
+            </li>
+            <li>
+              <span class="badge badge--moyenne"><span aria-hidden="true">●●○</span> Preuve moyenne</span>
+              Effet observé, mais dans moins d’études ou dans des conditions plus précises.
+            </li>
+            <li>
+              <span class="badge badge--nuancee"><span aria-hidden="true">●○○</span> À nuancer</span>
+              Utile sous conditions, ou preuve plus limitée. Nous le disons clairement.
+            </li>
+          </ul>
+        </div>
+      </section>
 
-                </p>
-                <p><h3 class="title is-5 my-6">Le rapport de Cédric Villani et Charles Torossian sur l'enseignement des mathématiques en France propose 21 mesures pour améliorer le niveau des élèves et redonner le goût de cette discipline.</h3>
+      <!-- ============ ÉLÈVES ============ -->
+      <section class="ap-section ap-section--teinte" id="eleves">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Les méthodes pour les élèves</h2>
+          <p class="ap-texte">
+            Huit pistes, des mieux établies aux plus nuancées. Aucune n’exige du matériel : un cahier, une feuille et un
+            peu de régularité suffisent.
+          </p>
 
-                    Voici un résumé des principales mesures :
+          <div class="ap-cartes">
+            <MethodeCarte id="test" numero={1} titre="S’auto-tester plutôt que relire" niveau="solide">
+              <p>
+                Relire sa leçon donne l’impression qu’on la connaît, parce que tout nous paraît familier. Aller
+                chercher l’information dans sa mémoire, sans regarder, est bien plus efficace pour la retenir
+                durablement. En maths : cache le cours, puis redonne une définition, une formule ou une méthode.
+              </p>
+              <ol slot="etapes">
+                <li>Ferme le cahier.</li>
+                <li>
+                  Sur une feuille blanche, écris tout ce dont tu te souviens du chapitre : définitions, formules,
+                  méthodes. C’est le « rappel libre ». Continue 5 à 10 minutes, jusqu’à être à sec.
+                </li>
+                <li>Rouvre le cours et corrige, d’une autre couleur, ce qui manquait ou était faux.</li>
+                <li>Idéalement, fais-le le soir même du cours, avant la première nuit de sommeil.</li>
+                <li>Recommence sur les points ratés le lendemain, ou transforme-les en questions pour tes fiches (voir méthode 2).</li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  Dans une expérience classique, relire convient pour un test dans les 5 minutes, mais 2 jours et une
+                  semaine plus tard, les élèves qui s’étaient testés retenaient nettement plus que ceux qui avaient
+                  relu. Pourtant, les relecteurs se sentaient plus confiants<Cite id="roediger2006" />.
+                </li>
+                <li>
+                  Dans la grande synthèse de Dunlosky et ses collègues, les tests pratiques (« practice testing ») et
+                  la pratique espacée sont les deux techniques jugées les plus utiles parmi dix<Cite id="dunlosky2013" />.
+                </li>
+                <li>
+                  Dans l’expérience de Karpicke et Blunt, « s’entraîner à retrouver » consistait justement à écrire de
+                  mémoire tout ce dont on se souvenait d’un texte, c’est-à-dire du rappel libre<Cite id="karpicke2011" />.
+                </li>
+                <li>
+                  Le guide de l’Institute of Education Sciences donne un niveau de preuve « fort » à l’usage de quiz
+                  qui obligent à retrouver l’information, à tous les moments de l’apprentissage<Cite id="pashler2007" />.
+                </li>
+              </ul>
+              <Fragment slot="conseil">
+                <strong>Conseil Germain :</strong> en maths, teste-toi avec des exercices que tu n’as jamais vus. C’est
+                ce que font les <a href={`${base}exercices`}>exercices du site</a> : les valeurs changent à chaque
+                « Nouvel exercice ».
+              </Fragment>
+            </MethodeCarte>
 
-    
+            <MethodeCarte id="espacement" numero={2} titre="Espacer les révisions dans le temps" niveau="solide">
+              <p>
+                Retenir une leçon, c’est la revoir plusieurs fois, à des intervalles qui s’allongent, plutôt que de tout
+                concentrer la veille du contrôle. Entre deux révisions, un peu d’oubli est même utile : le rappel demande
+                plus d’effort et ancre mieux le souvenir.
+              </p>
+              <ol slot="etapes">
+                <li>Fais une fiche avec les points clés : formules, méthodes, erreurs à éviter.</li>
+                <li>
+                  Revois-la, en te testant, à J+1, J+3, J+7, puis environ un mois plus tard (J = jour du cours).
+                </li>
+                <li>Note ces dates dans ton agenda dès le premier jour.</li>
+                <li>
+                  Pour automatiser l’espacement, essaie la <strong>boîte de Leitner</strong> : des fiches
+                  question / réponse rangées dans 7 compartiments. Une bonne réponse envoie la fiche dans le compartiment
+                  suivant, qu’on ouvre moins souvent ; une erreur la ramène au premier. Des applications comme Anki font
+                  la même chose<Cite id="video_se" />.
+                </li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  Une synthèse quantitative de la littérature sur l’espacement conclut qu’étaler les séances
+                  améliore la rétention par rapport à une même durée de travail concentrée. Elle porte surtout sur des
+                  tâches de rappel verbal<Cite id="cepeda2006" />.
+                </li>
+                <li>
+                  Une grande expérience montre que l’écart idéal entre deux révisions dépend du délai avant l’évaluation
+                  : plus l’échéance est lointaine, plus il faut espacer<Cite id="cepeda2008" />.
+                </li>
+                <li>
+                  <strong>Nuance :</strong> J+1, J+3, J+7 puis un mois est une règle pratique, pas une loi
+                  scientifique. Il n’existe pas de chiffre magique : ce qui compte, c’est d’espacer, et de plus en plus.
+                </li>
+                <li>
+                  Le guide de l’IES recommande de revoir les contenus essentiels sur des semaines, voire des mois
+                  (preuve moyenne)<Cite id="pashler2007" />.
+                </li>
+              </ul>
+            </MethodeCarte>
 
-    <ol>
-    <li><strong>Formation initiale des professeurs des écoles :</strong> Construire une formation initiale dès Bac+1 pour assurer un volume suffisant d’enseignements dédié aux disciplines fondamentales, y compris les mathématiques</li>
-    <li><strong>Laboratoires de mathématiques :</strong> Expérimenter et financer la mise en place de laboratoires de mathématiques dans les établissements scolaires, en lien avec l’enseignement supérieur, pour servir de lieux de formation et de réflexion pédagogique</li>
-    <li><strong>Formation continue des enseignants :</strong> Développer la formation continue des enseignants du primaire, en insistant sur la formation en équipe et en créant des laboratoires de mathématiques </li>
-    <li><strong>Activités périscolaires :</strong> Encourager les partenariats institutionnels avec le périscolaire et favoriser le développement de clubs de mathématiques, d’informatique, de jeux intelligents, etc. Rémunérer les intervenants et adapter les emplois du temps des enseignants </li>
-    <li><strong>Plaisir et beauté des mathématiques :</strong> Introduire la notion de plaisir dans l'enseignement des mathématiques et montrer leur beauté à travers des activités ludiques et des concours </li>
-    <li><strong>Renforcement du calcul mental :</strong> Développer les automatismes de calcul à tous les âges par des pratiques rituelles comme le calcul mental et intelligent </li>
-    <li><strong>Manipulation d’objets :</strong> Encourager la manipulation d’objets à l’école pour faciliter l’apprentissage des concepts mathématiques </li>
-    <li><strong>Module de réconciliation avec les maths :</strong> Proposer aux lycéens un module annuel de réconciliation avec les mathématiques sur des thématiques et démarches nouvelles </li>
-    <li><strong>Priorité nationale :</strong> Inscrire les mathématiques comme une priorité nationale avec une mobilisation des acteurs de toute la chaîne éducative, des recteurs aux enseignants.</li>
-    <li><strong>Cours structuré et trace écrite :</strong> Redonner leur place au cours structuré et à sa trace écrite, à la notion de preuve et aux apprentissages explicites.</li>
-    <li><strong>Sens des quatre opérations :</strong> Cultiver le sens des quatre opérations dès le CP pour renforcer les bases mathématiques des élèves.</li>
-    <li><strong>Évaluation et suivi :</strong> Mettre en place des évaluations régulières pour suivre les progrès des élèves et adapter les méthodes d'enseignement en conséquence.</li>
-    <li><strong>Utilisation des technologies :</strong> Intégrer les technologies numériques dans l'enseignement des mathématiques pour rendre l'apprentissage plus interactif et engageant.</li>
-    <li><strong>Collaboration avec les parents :</strong> Impliquer les parents dans l'apprentissage des mathématiques de leurs enfants à travers des ateliers et des ressources en ligne.</li>
-    <li><strong>Ressources pédagogiques :</strong> Développer et diffuser des ressources pédagogiques de qualité pour soutenir les enseignants dans leur pratique quotidienne.</li>
-    <li><strong>Innovation pédagogique :</strong> Encourager l'innovation pédagogique et les projets expérimentaux pour trouver de nouvelles méthodes d'enseignement efficaces.</li>
-    <li><strong>Partenariats avec les entreprises :</strong> Établir des partenariats avec les entreprises pour montrer aux élèves les applications concrètes des mathématiques dans le monde professionnel.</li>
-    <li><strong>Formation des formateurs :</strong> Renforcer la formation des formateurs d'enseignants pour assurer une transmission de qualité des connaissances et des méthodes pédagogiques.</li>
-    <li><strong>Recherche en didactique :</strong> Soutenir la recherche en didactique des mathématiques pour améliorer les méthodes d'enseignement et les outils pédagogiques.</li>
-    <li><strong>Échanges internationaux :</strong> Favoriser les échanges internationaux pour s'inspirer des meilleures pratiques d'enseignement des mathématiques dans le monde.</li>
-    <li><strong>Sensibilisation aux métiers des mathématiques :</strong> Sensibiliser les élèves aux métiers liés aux mathématiques pour leur montrer les débouchés professionnels de cette discipline.</li>
-</ol>
-<a href="https://www.education.gouv.fr/21-mesures-pour-l-enseignement-des-mathematiques-3242">Pour plus d'informations sur cette mesure, cliquez ici</a>
-<p>Ces mesures visent à améliorer l'enseignement des mathématiques en France et à redonner aux élèves le goût pour cette discipline fondamentale.</p>
+            <MethodeCarte id="melange" numero={3} titre="Mélanger les types d’exercices" niveau="moyenne">
+              <p>
+                Faire dix exercices identiques d’affilée est confortable, mais on applique alors la méthode sans se
+                demander laquelle choisir. Mélanger des exercices de chapitres différents oblige à reconnaître le type de
+                problème avant de calculer. C’est exactement ce qu’on demande à un contrôle.
+              </p>
+              <ol slot="etapes">
+                <li>Après quelques exercices par chapitre, compose une feuille qui mélange dérivées, suites, probabilités…</li>
+                <li>Avant de calculer, écris en une ligne : « De quel type de problème s’agit-il ? »</li>
+                <li>Ne t’inquiète pas si c’est moins fluide : c’est normal et utile.</li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  Des élèves qui s’entraînaient sur des problèmes mélangés réussissaient moins bien pendant
+                  l’entraînement, mais mieux au test différé que ceux qui s’entraînaient par blocs<Cite id="rohrer2007" />.
+                </li>
+                <li>
+                  Un essai contrôlé randomisé sur 787 élèves de 7ᵉ année (début du collège américain) a comparé des devoirs de
+                  maths mélangés à des devoirs par blocs. Le score moyen au test final était d’environ 62 contre 38, et
+                  l’étude répond aux standards du What Works Clearinghouse sans réserve<Cite id="rohrer2020" />.
+                </li>
+                <li>
+                  La pratique mélangée figure parmi les techniques d’utilité « moyenne » de la synthèse de Dunlosky<Cite
+                    id="dunlosky2013"
+                  />.
+                </li>
+              </ul>
+            </MethodeCarte>
 
-                </p>
+            <MethodeCarte id="exemples" numero={4} titre="Refaire les exemples du cours" niveau="moyenne">
+              <p>
+                Refaire un exemple du cours sans le regarder te dit tout de suite si tu as compris la leçon. Pour les
+                débutants, étudier des exemples résolus est même une manière très efficace d’apprendre une méthode, à
+                condition de se demander <em>pourquoi</em> chaque étape est faite.
+              </p>
+              <ol slot="etapes">
+                <li>Lis un exemple bien rédigé dans ton cahier.</li>
+                <li>
+                  À chaque ligne, demande-toi : pourquoi fait-on cette étape ? Qu’est-ce qu’elle permet de trouver ?
+                </li>
+                <li>Cache l’exemple et refais-le sans regarder.</li>
+                <li>Compare avec le corrigé, puis corrige ce qui diffère.</li>
+                <li>Quand c’est facile, passe à un exercice similaire sans exemple devant toi.</li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  En algèbre, des élèves débutants qui étudiaient des exemples résolus apprenaient plus vite et avec
+                  moins d’erreurs que ceux qui ne faisaient que résoudre des problèmes<Cite id="sweller1985" />.
+                </li>
+                <li>
+                  Une revue de la recherche sur les exemples résolus insiste sur deux choses : inciter l’élève à
+                  s’expliquer chaque étape, et passer progressivement des exemples aux problèmes à résoudre<Cite
+                    id="atkinson2000"
+                  />.
+                </li>
+                <li>
+                  Les élèves qui s’expliquent à eux-mêmes chaque ligne d’un exemple comprennent mieux que ceux qui le
+                  lisent simplement<Cite id="chi1994" />.
+                </li>
+                <li>
+                  Le guide de l’IES recommande d’alterner exemples résolus et problèmes (preuve moyenne), et
+                  d’inciter les élèves à répondre à des questions « pourquoi » (preuve forte)<Cite id="pashler2007" />.
+                </li>
+              </ul>
+            </MethodeCarte>
 
-                <h2 class="title is-4 mt-6">Pour les élèves</h2>
-                <ol>
-                    <li>
-                        <p>Refaire les exemples du cours</p>
-                        <p>Refaire les exemples du cours permet de savoir si on compris la leçon .</p>
-                        <p>Étape à suivre :</p>
-                        <ul>
-                            <li>Lis un exemple bien fait dans ton cahier</li>
-                            <li>À chaque ligne, demande-toi :</li>
-                            <ul>
-                                <li>Pourquoi on fait cette étape ?</li>
-                                <li>Qu’est-ce que ça permet de trouver ?</li>
-                            </ul>
-                            <li>Cache l’exemple → refais-le sans regarder.</li>
-                            <li>Puis compare avec le corrigé.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p>Répétition espacée (Spaced Repetition)</p>
-                        <p>Faire des cartes mentale de la leçon</p>
-                        <p>Manque les sources pour la 1</p>
-                        <p>Étape à suivre :</p>
-                        <ul>
-                            <li>Fais une carte mentale avec les points clés (formules, méthodes, erreurs à éviter).</li>
-                            <li>Revois la carte mentale à ces intervalles :</li>
-                            <ul>
-                                <li>J+1</li>
-                                <li>J+3</li>
-                                <li>J+7</li>
-                                <li>J+14</li>
-                            </ul>
-                        </ul>
-                    </li>
-                    <li>
-                        <p>Faire des exercices</p>
-                        <p>Faire des exercices encore et encore</p>
-                        <p>Reprer nos erreur ocurantes pour pouvoir les travaillait pour ne plus les refaires</p>
-                        <p>Expliquer une notion a quelqu'un d'autre montre si tu as bien compris la notion</p>
-                    </li>
-                </ol>
-            </div>
-        </section>
+            <MethodeCarte id="erreurs" numero={5} titre="Repérer et analyser ses erreurs" niveau="moyenne">
+              <p>
+                Faire des exercices encore et encore ne suffit pas si l’on refait toujours la même erreur. Chercher
+                <em>pourquoi</em> on s’est trompé, puis le corriger, transforme l’erreur en apprentissage.
+              </p>
+              <ol slot="etapes">
+                <li>Tiens un « cahier d’erreurs » : l’énoncé, ta réponse, la bonne réponse.</li>
+                <li>Note la cause : étourderie de calcul, formule oubliée, énoncé mal lu, notion pas comprise.</li>
+                <li>Écris en une phrase la règle à retenir.</li>
+                <li>Relis le cahier tous les 15 jours et refais un exercice du même type.</li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  Une revue de la recherche montre que se tromper peut aider à apprendre, à condition de recevoir
+                  ensuite une correction<Cite id="metcalfe2017" />.
+                </li>
+                <li>
+                  En algèbre, comparer des exemples corrects <em>et</em> des exemples erronés a aidé des élèves à
+                  mieux comprendre qu’avec des exemples corrects seuls<Cite id="booth2013" />.
+                </li>
+              </ul>
+              <Fragment slot="conseil">
+                <strong>Dans Germain :</strong> quand ta réponse est fausse, la correction détaillée explique la méthode,
+                les erreurs fréquentes et un conseil pour la prochaine fois. Recopie-la dans ton cahier d’erreurs.
+              </Fragment>
+            </MethodeCarte>
+
+            <MethodeCarte id="expliquer" numero={6} titre="Expliquer une notion à quelqu’un" niveau="moyenne">
+              <p>
+                Expliquer à voix haute révèle immédiatement ce qu’on n’a pas compris : si tu bloques ou si tu dis
+                « enfin, voilà », c’est là qu’il faut retravailler.
+              </p>
+              <ol slot="etapes">
+                <li>Choisis une notion du chapitre.</li>
+                <li>
+                  Explique-la à un camarade, à un proche ou à un mur. Variante popularisée par le physicien Richard
+                  Feynman : fais comme si tu l’expliquais à un enfant de 8 ans<Cite id="video_se" />.
+                </li>
+                <li>Note les endroits où tu hésites, puis retourne au cours pour les compléter.</li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  L’auto-explication (se justifier à soi-même chaque étape) améliore la compréhension<Cite id="chi1994" />.
+                  La synthèse de Dunlosky lui attribue une utilité moyenne<Cite id="dunlosky2013" />.
+                </li>
+                <li>
+                  Le guide de l’IES donne un niveau de preuve fort aux consignes qui amènent l’élève à poser et
+                  répondre à des questions d’explication<Cite id="pashler2007" />.
+                </li>
+                <li>
+                  <strong>Nuance :</strong> les preuves les plus nettes concernent l’explication à soi-même. Expliquer à
+                  autrui est très pratique pour se tester, mais les études sont moins nombreuses en mathématiques.
+                </li>
+              </ul>
+            </MethodeCarte>
+
+            <MethodeCarte id="cartes" numero={7} titre="Faire des cartes mentales" niveau="moyenne">
+              <p>
+                Une carte mentale résume un chapitre sur une seule feuille, en arbre : l’idée principale au centre, puis
+                des branches pour les idées et les sous-idées, avec des liens, des dessins et des couleurs. Pour
+                construire la carte, il faut choisir, reformuler et organiser : c’est un apprentissage « actif ». La
+                recherche la soutient surtout quand tu la construis toi-même, et elle <em>complète</em> l’auto-test
+                plutôt qu’elle ne le remplace.
+              </p>
+              <ol slot="etapes">
+                <li>À la main, sur une seule feuille : l’idée centrale au milieu, puis les branches principales.</li>
+                <li>Des mots-clés avec tes propres mots, pas des phrases recopiées du cours.</li>
+                <li>
+                  Fais ressortir les liens, les regroupements et les différences (« donc », « sert à », « condition »),
+                  avec des petits dessins et de la couleur.
+                </li>
+                <li>
+                  Quelques jours plus tard, redessine la carte de mémoire sur une feuille vierge, puis compare avec la
+                  première version.
+                </li>
+                <li>
+                  Prends le temps de t’approprier la technique. Si elle devient fastidieuse ou te bloque par peur de mal
+                  faire, simplifie-la.
+                </li>
+              </ol>
+              <ul slot="preuves">
+                <li>
+                  Une méta-analyse trouve que les cartes de concepts sont associées à de meilleurs apprentissages que la
+                  lecture de textes ou les listes, surtout quand l’élève les construit lui-même<Cite id="nesbit2006" />.
+                </li>
+                <li>
+                  ScienceÉtonnante la range parmi les méthodes d’apprentissage actif qu’il utilise lui-même, à côté de
+                  la boîte de Leitner et du rappel libre<Cite id="video_se" />.
+                </li>
+                <li>
+                  <strong>Nuance 1 :</strong> dans une expérience, construire une carte conceptuelle <em>en regardant le
+                  texte</em> donnait de moins bons résultats, une semaine plus tard, que s’entraîner à retrouver
+                  l’information de mémoire<Cite id="karpicke2011" />. La carte n’est donc pas inutile : mais elle ne
+                  dispense pas de se tester, d’où l’étape 4.
+                </li>
+                <li>
+                  <strong>Nuance 2 :</strong> la plupart des études portent sur les cartes de concepts (notions reliées
+                  par des liens nommés). Elles ressemblent aux cartes mentales en arbre sans leur être identiques.
+                </li>
+              </ul>
+            </MethodeCarte>
+
+            <MethodeCarte id="eviter" numero={8} titre="Ce qui marche moins bien" niveau="nuancee">
+              <p>
+                Surligner, faire des résumés, relire plusieurs fois ou recopier le cours en fiches plus petites sont les
+                techniques les plus répandues. Ce sont aussi parmi les moins efficaces quand elles sont utilisées seules.
+              </p>
+              <ul slot="preuves">
+                <li>
+                  La synthèse de Dunlosky classe le résumé, le surlignage et la relecture parmi les techniques d’utilité
+                  faible<Cite id="dunlosky2013" />.
+                </li>
+                <li>
+                  La relecture donne un sentiment de confiance plus fort, sans meilleure rétention à long terme<Cite
+                    id="roediger2006"
+                  />.
+                </li>
+                <li>
+                  Recopier un cours à l’identique, en plus petit et avec des abréviations, demande très peu d’effort de
+                  réflexion : on peut presque le faire en pilote automatique<Cite id="video_se" />.
+                </li>
+                <li>
+                  <strong>Nuance :</strong> relire reste une bonne première étape pour découvrir un chapitre, et une
+                  fiche devient utile quand c’est une <em>question</em> avec sa réponse au verso, pour s’auto-tester
+                  (boîte de Leitner). Le piège, c’est de s’arrêter à la relecture.
+                </li>
+              </ul>
+            </MethodeCarte>
+          </div>
+
+          <!-- ---- Bien-être ---- -->
+          <h3 class="ap-h3 righteous" id="bien-etre"><span aria-hidden="true">//</span> Dans la tête, et idées reçues</h3>
+          <div class="ap-trio">
+            <article class="ap-mini">
+              <h4 class="righteous">« Moi, je suis plutôt visuel »</h4>
+              <p>
+                Une grande revue de la recherche ne trouve pas de preuve qu’adapter l’enseignement au « style
+                d’apprentissage » de chacun (visuel, auditif…) améliore les résultats<Cite id="pashler2008" />. En
+                revanche, combiner plusieurs modes (texte, schéma, parole, geste) est recommandé pour tout le monde<Cite
+                  id="pashler2007"
+                />.
+              </p>
+            </article>
+            <article class="ap-mini">
+              <h4 class="righteous">Dormir</h4>
+              <p>
+                Le sommeil participe à la consolidation de la mémoire après l’apprentissage<Cite id="diekelmann2010" />.
+                Réviser le soir, puis dormir, vaut mieux que sacrifier sa nuit. (Conclusion pratique de Germain, tirée
+                de ce constat général.)
+              </p>
+            </article>
+            <article class="ap-mini">
+              <h4 class="righteous">Le stress des contrôles</h4>
+              <p>
+                Dans des expériences en laboratoire et en classe, écrire ses inquiétudes pendant environ dix minutes
+                avant une épreuve a amélioré les résultats des élèves les plus anxieux<Cite id="ramirez2011" />.
+              </p>
+            </article>
+            <article class="ap-mini">
+              <h4 class="righteous">« Je ne suis pas une tête en maths »</h4>
+              <p>
+                Une intervention courte sur l’état d’esprit de progression a eu, dans un grand essai national
+                américain, un effet modeste, surtout pour les élèves les plus en difficulté<Cite id="yeager2019" />. Ça
+                aide, mais ce n’est pas une baguette magique : le travail reste ce qui compte.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ENSEIGNANTS ============ -->
+      <section class="ap-section" id="enseignants">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Les méthodes pour les enseignants</h2>
+          <p class="ap-texte">
+            Côté enseignement, quelques programmes et recommandations s’appuient sur la recherche. Voici ceux que nous
+            avons retenus, en commençant par une méthode conçue en France.
+          </p>
+
+          <article class="ap-ace" id="ace">
+            <header>
+              <h3 class="righteous">Méthode ACE – ArithmÉcole</h3>
+              <span class="ap-ace-tag">CP et CE1 · France</span>
+            </header>
+            <p>
+              ACE (Arithmétique et Compréhension à l’École élémentaire) est un programme français d’enseignement des
+              nombres et du calcul. Il a été conçu par quatre laboratoires de recherche, financé par le Fonds
+              d’expérimentation pour la jeunesse puis par le Programme d’investissements d’avenir, et utilisé dans
+              environ 300 classes depuis 2012 avec une évaluation quasi-expérimentale<Cite id="ace_lea" />. Ses
+              progressions CP et CE1 sont diffusées par l’académie de Lille<Cite id="ace_lille" />.
+            </p>
+            <p>Ses objectifs principaux :</p>
+            <ul>
+              <li>
+                <strong>Donner du sens aux nombres</strong> en reliant les nombres écrits et les calculs à leur
+                représentation sous forme de grandeurs, avec un entraînement régulier à l’estimation tout au long de
+                l’année.
+              </li>
+              <li>
+                <strong>Identifier les types de problèmes</strong> et l’équivalence de certaines procédures de calcul pour
+                les résoudre.
+              </li>
+              <li>
+                <strong>Consolider les faits arithmétiques</strong> en lien avec les procédures de calcul, grâce à une
+                pratique intense et quotidienne du calcul mental.
+              </li>
+              <li>
+                <strong>Expérimenter</strong> différentes représentations numériques et procédures (composition et
+                décomposition, groupement par dix…) dans des situations d’apprentissage évolutives.
+              </li>
+            </ul>
+            <p class="ap-ace-note">
+              Les résultats chiffrés de l’évaluation sont détaillés dans l’article de la Revue française de
+              pédagogie<Cite id="ace_rfp" />. Les ressources pour les enseignants sont
+              <a href="https://pedagogie-nord.ac-lille.fr/ace-arithmecole-ressources-pour-lenseignant/" rel="noopener"
+                >sur le site de l’académie de Lille</a
+              >.
+            </p>
+          </article>
+
+          <h3 class="ap-h3 righteous"><span aria-hidden="true">//</span> Ce que recommandent les guides internationaux</h3>
+          <div class="ap-trio ap-trio--large">
+            <article class="ap-mini">
+              <h4 class="righteous">Un enseignement explicite</h4>
+              <p>
+                Présenter en petites étapes, poser beaucoup de questions, guider la pratique, vérifier la compréhension
+                et revoir régulièrement : ces principes se retrouvent chez les enseignants les plus efficaces<Cite
+                  id="rosenshine2012"
+                />. Pour les élèves en difficulté en maths, un enseignement explicite et systématique reçoit un niveau de
+                preuve fort<Cite id="gersten2009" />.
+              </p>
+            </article>
+            <article class="ap-mini">
+              <h4 class="righteous">Structures de problèmes et schémas</h4>
+              <p>
+                Apprendre à résoudre les problèmes à partir de leurs structures communes (preuve forte) et utiliser des
+                représentations visuelles des idées mathématiques (preuve moyenne)<Cite id="gersten2009" />. Relier le
+                concret et l’abstrait est aussi recommandé<Cite id="pashler2007" />.
+              </p>
+            </article>
+            <article class="ap-mini">
+              <h4 class="righteous">Automatiser les faits numériques</h4>
+              <p>
+                Consacrer environ 10 minutes par séance à la récupération rapide des faits arithmétiques de base (preuve
+                moyenne)<Cite id="gersten2009" />. C’est proche de l’esprit du calcul mental quotidien d’ACE.
+              </p>
+            </article>
+            <article class="ap-mini">
+              <h4 class="righteous">Quiz, espacement, mélange</h4>
+              <p>
+                Revenir sur les notions clés sur plusieurs semaines, faire des petits quiz de rappel, alterner exemples
+                résolus et problèmes<Cite id="pashler2007" />, et mélanger les types d’exercices dans les devoirs<Cite
+                  id="rohrer2020"
+                />.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SYNTHÈSE ============ -->
+      <section class="ap-section ap-section--teinte" id="synthese">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> En un coup d’œil</h2>
+          <div class="ap-tableau" role="region" aria-label="Synthèse des méthodes" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Méthode</th>
+                  <th scope="col">Preuve</th>
+                  <th scope="col">Effort</th>
+                  <th scope="col">Quand l’utiliser</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  synthese.map((l) => (
+                    <tr>
+                      <th scope="row">
+                        <a href={l.lien}>{l.methode}</a>
+                      </th>
+                      <td>{l.preuve}</td>
+                      <td>{l.effort}</td>
+                      <td>{l.quand}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ROUTINE ============ -->
+      <section class="ap-section" id="routine">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Une routine de 20 minutes</h2>
+          <p class="ap-texte">
+            Proposition de Germain pour combiner les méthodes ci-dessus. C’est un point de départ à adapter : la
+            recherche valide chaque technique, pas ce plan précis.
+          </p>
+          <ol class="ap-routine">
+            <li><strong>5 min.</strong> Rappel libre : écris de mémoire tout ce que tu te rappelles du dernier chapitre, sans regarder (idéalement le soir même du cours).</li>
+            <li><strong>3 min.</strong> Corrige avec le cours et note ce qui manquait.</li>
+            <li><strong>8 min.</strong> Fais 2 ou 3 exercices mélangeant des chapitres déjà vus.</li>
+            <li><strong>4 min.</strong> Note tes erreurs dans le cahier d’erreurs, avec la cause et la règle à retenir.</li>
+          </ol>
+          <p class="ap-texte">
+            Programme ensuite la même routine à J+1, J+3, J+7, puis environ un mois plus tard sur le même chapitre<Cite id="cepeda2008" />.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ VIDÉO ============ -->
+      <section class="ap-section ap-section--teinte" id="video">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Pour aller plus loin en vidéo</h2>
+          <p class="ap-texte">
+            ScienceÉtonnante passe en revue les techniques d’étude validées par la recherche<Cite id="video_se" />. Elle
+            rejoint cette page sur l’essentiel : espacer, se tester, reformuler et schématiser avec ses propres mots.
+          </p>
+          <figure class="ap-video">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/RVB3PBPxMWg"
+              title="MIEUX APPRENDRE & ÉTUDIER : les (vraies) techniques scientifiques – ScienceÉtonnante"
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+            <figcaption>
+              Vidéo hébergée sur YouTube (mode sans cookies).
+              <a href="https://www.youtube.com/watch?v=RVB3PBPxMWg" rel="noopener">La voir sur YouTube</a>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ LIMITES ============ -->
+      <section class="ap-section" id="limites">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Les limites de ces résultats</h2>
+          <ul class="ap-limites">
+            <li>
+              <strong>Ce sont des moyennes.</strong> Une méthode qui aide en moyenne ne marche pas forcément pour chacun.
+              Essaie, observe, ajuste.
+            </li>
+            <li>
+              <strong>Contextes variés.</strong> Plusieurs études portent sur la mémorisation de mots ou de textes, ou sur
+              des étudiants. On les transpose aux maths avec prudence : c’est pourquoi nous citons aussi les études
+              menées sur des problèmes de maths<Cite id={['rohrer2020', 'sweller1985', 'booth2013']} />.
+            </li>
+            <li>
+              <strong>Aucune méthode n’est supérieure aux autres.</strong> Il faut combiner l’espacement, l’auto-test et
+              l’apprentissage actif, et observer ce qui marche pour toi : réfléchir à sa façon d’apprendre s’appelle la
+              métacognition<Cite id="video_se" />.
+            </li>
+            <li>
+              <strong>Aucune méthode ne remplace le travail régulier</strong>, ni un enseignant qui explique et
+              corrige.
+            </li>
+            <li>
+              <strong>Des difficultés persistantes ?</strong> Parles-en à ton professeur. Elles peuvent avoir une cause
+              précise et se travailler avec un accompagnement adapté<Cite id="gersten2009" />.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ RÉFÉRENCES ============ -->
+      <section class="ap-section ap-section--teinte" id="references">
+        <div class="container">
+          <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Références</h2>
+          <p class="ap-texte">
+            Chaque numéro entre crochets dans la page renvoie à l’une de ces sources. Les liens ouvrent la publication ou
+            sa fiche officielle.
+          </p>
+          <ol class="ap-refs">
+            {
+              REFS.map((r) => (
+                <li id={`ref-${r.id}`}>
+                  <span class="ap-ref-type">{LIBELLE_TYPE[r.type]}</span>
+                  <span class="ap-ref-texte">
+                    {r.auteurs}
+                    {r.annee ? ` (${r.annee}). ` : ' '}
+                    <cite>{r.titre}</cite>. {r.source}.{' '}
+                    <a href={r.url} rel="noopener" target="_blank">
+                      Consulter<span class="sr-only"> (nouvel onglet)</span>
+                    </a>
+                  </span>
+                </li>
+              ))
+            }
+          </ol>
+          <p class="ap-texte ap-erreur">
+            Une erreur, une source plus récente à ajouter ? <a href={`${base}aide`}>Écris-nous via la page « Aider »</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ Appel ============ -->
+      <section class="ap-appel">
+        <div class="container">
+          <p>Prêt à t’entraîner ?</p>
+          <div class="ap-appel-boutons">
+            <a class="ap-bouton" href={`${base}exercices`}>Faire des exercices</a>
+            <a class="ap-bouton ap-bouton--clair" href={`${base}formulaire`}>Ouvrir le formulaire</a>
+          </div>
+        </div>
+      </section>
     </main>
+
     <Footer />
-</body>
+  </body>
 </html>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Texte en gras : couleur explicite (le thème global peut le mettre en blanc).
+     Placé avant .ap-ace strong, qui reste blanc sur le fond violet foncé. */
+  .ap-intro strong,
+  .ap-section strong {
+    color: var(--violet-profond, #2a1466);
+    font-weight: 700;
+  }
+  .ap-avertissement strong,
+  .ap-section :global(.methode-conseil) strong {
+    color: #4a3d00;
+  }
+
+  /* ---------- Introduction ---------- */
+  .ap-intro {
+    padding: 7rem 0 clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ap-titre {
+    font-size: clamp(2.2rem, 6.5vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--encre, #1f1a3d);
+    margin: 0 0 1.25rem;
+  }
+  .ap-titre span,
+  .ap-h2 span,
+  .ap-h3 span {
+    color: var(--violet, #6528d9);
+  }
+  .ap-chapeau {
+    max-width: 62ch;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: #3b3555;
+    margin: 0 0 1.25rem;
+  }
+  .ap-avertissement {
+    max-width: 62ch;
+    margin: 0 0 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 1rem;
+    background: #fff8e0;
+    border: 2px solid var(--craie, #ffd25e);
+    color: #4a3d00;
+    line-height: 1.6;
+  }
+
+  .ap-sommaire ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+  }
+  .ap-sommaire a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .ap-sommaire a:hover,
+  .ap-sommaire a:focus-visible {
+    background: var(--violet, #6528d9);
+    color: #fff;
+  }
+
+  /* ---------- Sections ---------- */
+  .ap-section {
+    padding: clamp(2rem, 5vw, 3.5rem) 0;
+    scroll-margin-top: 5rem;
+  }
+  .ap-section--teinte {
+    background: var(--papier, #faf9ff);
+  }
+  .ap-h2 {
+    font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+    line-height: 1.2;
+    margin: 0 0 1rem;
+    color: var(--encre, #1f1a3d);
+  }
+  .ap-h3 {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    line-height: 1.2;
+    margin: clamp(2rem, 5vw, 3rem) 0 1rem;
+    color: var(--encre, #1f1a3d);
+  }
+  .ap-texte {
+    max-width: 66ch;
+    line-height: 1.7;
+    color: #3b3555;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ---------- Légende des preuves ---------- */
+  .ap-legende {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+    max-width: 66ch;
+  }
+  .ap-legende li {
+    line-height: 1.6;
+    color: #3b3555;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-right: 0.5rem;
+    padding: 0.1rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge span {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+  .badge--solide {
+    background: var(--violet, #6528d9);
+    color: #fff;
+  }
+  .badge--moyenne {
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+  }
+  .badge--nuancee {
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+  }
+
+  /* ---------- Cartes ---------- */
+  .ap-cartes {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .ap-trio {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1rem;
+  }
+  .ap-trio--large {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  }
+  .ap-mini {
+    padding: 1.25rem;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 1.25rem;
+    background: #fff;
+  }
+  .ap-mini h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: var(--encre, #1f1a3d);
+  }
+  .ap-mini p {
+    margin: 0;
+    line-height: 1.65;
+    color: #3b3555;
+  }
+
+  /* ---------- ACE ---------- */
+  .ap-ace {
+    margin: 1.5rem 0 0;
+    padding: clamp(1.1rem, 3vw, 1.75rem);
+    border-radius: 1.5rem;
+    background: var(--violet-profond, #2a1466);
+    color: #fff;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .ap-ace header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+  .ap-ace h3 {
+    margin: 0;
+    font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+    color: #fff;
+  }
+  .ap-ace-tag {
+    padding: 0.15rem 0.8rem;
+    border-radius: 999px;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .ap-ace p,
+  .ap-ace ul {
+    margin: 0;
+    line-height: 1.7;
+    color: #ece7ff;
+  }
+  .ap-ace ul {
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .ap-ace strong {
+    color: #fff;
+  }
+  .ap-ace a,
+  .ap-ace :global(.cite),
+  .ap-ace :global(.cite a) {
+    color: var(--craie, #ffd25e);
+  }
+  .ap-ace :global(.cite a:hover),
+  .ap-ace :global(.cite a:focus-visible) {
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+  }
+  .ap-ace-note {
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    font-size: 0.95rem;
+  }
+
+  /* ---------- Tableau ---------- */
+  .ap-tableau {
+    overflow-x: auto;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    border-radius: 1.25rem;
+    background: #fff;
+  }
+  .ap-tableau table {
+    width: 100%;
+    min-width: 36rem;
+    border-collapse: collapse;
+  }
+  .ap-tableau th,
+  .ap-tableau td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--lavande-pale, #efeaff);
+    line-height: 1.5;
+    color: #3b3555;
+  }
+  .ap-tableau thead th {
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet-profond, #2a1466);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .ap-tableau tbody tr:last-child th,
+  .ap-tableau tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .ap-tableau tbody th a {
+    font-weight: 600;
+  }
+
+  /* ---------- Routine ---------- */
+  .ap-routine {
+    list-style: none;
+    counter-reset: etape;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+    max-width: 66ch;
+  }
+  .ap-routine li {
+    counter-increment: etape;
+    position: relative;
+    padding: 0.9rem 1rem 0.9rem 3.6rem;
+    border-radius: 1rem;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    background: #fff;
+    line-height: 1.6;
+    color: #3b3555;
+  }
+  .ap-routine li::before {
+    content: counter(etape);
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-family: 'Righteous', sans-serif;
+  }
+
+  /* ---------- Vidéo ---------- */
+  .ap-video {
+    margin: 0;
+    max-width: 52rem;
+  }
+  .ap-video iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 1.25rem;
+    background: var(--violet-profond, #2a1466);
+  }
+  .ap-video figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: #5b5476;
+  }
+
+  /* ---------- Limites ---------- */
+  .ap-limites {
+    margin: 0;
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.8rem;
+    max-width: 66ch;
+    line-height: 1.7;
+    color: #3b3555;
+  }
+
+  /* ---------- Références ---------- */
+  .ap-refs {
+    list-style: none;
+    counter-reset: ref;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .ap-refs li {
+    counter-increment: ref;
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3.2rem;
+    border-radius: 1rem;
+    background: #fff;
+    border: 2px solid var(--lavande-pale, #efeaff);
+    line-height: 1.55;
+    color: #3b3555;
+    font-size: 0.95rem;
+    scroll-margin-top: 6rem;
+    overflow-wrap: anywhere;
+  }
+  .ap-refs li::before {
+    content: counter(ref);
+    position: absolute;
+    left: 0.9rem;
+    top: 0.8rem;
+    font-weight: 700;
+    color: var(--violet, #6528d9);
+  }
+  .ap-refs li:target {
+    border-color: var(--violet, #6528d9);
+    background: #fff8e0;
+  }
+  .ap-ref-type {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    background: var(--lavande-pale, #efeaff);
+    color: var(--violet, #6528d9);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .ap-erreur {
+    font-size: 0.95rem;
+  }
+
+  /* ---------- Appel ---------- */
+  .ap-appel {
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+    background: var(--violet-profond, #2a1466);
+    color: #fff;
+    text-align: center;
+  }
+  .ap-appel p {
+    margin: 0 0 1.25rem;
+    font-family: 'Righteous', sans-serif;
+    font-size: clamp(1.4rem, 3.4vw, 2rem);
+  }
+  .ap-appel-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .ap-bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.8rem 1.8rem;
+    border-radius: 999px;
+    background: var(--craie, #ffd25e);
+    color: var(--violet-profond, #2a1466);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+  .ap-bouton--clair {
+    background: #fff;
+  }
+  .ap-bouton:hover,
+  .ap-bouton:focus-visible {
+    background: var(--lavande, #a28bfa);
+    color: var(--violet-profond, #2a1466);
+  }
+
+  @media (max-width: 768px) {
+    .ap-intro {
+      padding-top: 6rem;
+    }
+    .ap-bouton {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ap-sommaire a,
+    .ap-bouton {
+      transition: none;
+    }
+  }
+</style>

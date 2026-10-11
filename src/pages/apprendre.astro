@@ -31,13 +31,13 @@ const sommaire = [
 /* Tableau de synthèse : le texte est volontairement court, le détail est dans les sections. */
 const synthese = [
   { methode: "S'auto-tester", preuve: 'Solide', effort: 'Moyen', quand: 'Chaque fois que tu revois un chapitre', lien: '#test' },
-  { methode: 'Espacer les révisions', preuve: 'Solide', effort: 'Faible', quand: 'Dès le jour du cours, puis sur plusieurs semaines', lien: '#espacement' },
+  { methode: 'Espacer les révisions', preuve: 'Solide', effort: 'Faible', quand: 'Dès le jour du cours, puis sur plusieurs semaines (boîte de Leitner)', lien: '#espacement' },
   { methode: 'Mélanger les exercices', preuve: 'Moyenne', effort: 'Moyen', quand: 'Une fois plusieurs chapitres vus', lien: '#melange' },
   { methode: 'Refaire les exemples', preuve: 'Moyenne', effort: 'Faible', quand: 'Pour un chapitre nouveau', lien: '#exemples' },
   { methode: 'Analyser ses erreurs', preuve: 'Moyenne', effort: 'Faible', quand: 'Après chaque exercice ou contrôle', lien: '#erreurs' },
   { methode: 'Expliquer à voix haute', preuve: 'Moyenne', effort: 'Faible', quand: 'En fin de séance de travail', lien: '#expliquer' },
-  { methode: 'Carte mentale', preuve: 'À nuancer', effort: 'Moyen', quand: 'Comme support, jamais seule', lien: '#cartes' },
-  { methode: 'Surligner, résumer, relire', preuve: 'Faible', effort: 'Faible', quand: 'À éviter comme méthode principale', lien: '#eviter' },
+  { methode: 'Carte mentale', preuve: 'Moyenne', effort: 'Moyen', quand: 'Pour organiser un chapitre, puis la redessiner de mémoire', lien: '#cartes' },
+  { methode: 'Surligner, résumer, relire, recopier', preuve: 'Faible', effort: 'Faible', quand: 'À éviter comme méthode principale', lien: '#eviter' },
 ];
 ---
 
@@ -129,9 +129,13 @@ const synthese = [
               </p>
               <ol slot="etapes">
                 <li>Ferme le cahier.</li>
-                <li>Sur une feuille, écris tout ce dont tu te souviens du chapitre : définitions, formules, méthodes.</li>
+                <li>
+                  Sur une feuille blanche, écris tout ce dont tu te souviens du chapitre : définitions, formules,
+                  méthodes. C’est le « rappel libre ». Continue 5 à 10 minutes, jusqu’à être à sec.
+                </li>
                 <li>Rouvre le cours et corrige, d’une autre couleur, ce qui manquait ou était faux.</li>
-                <li>Recommence sur les points ratés le lendemain.</li>
+                <li>Idéalement, fais-le le soir même du cours, avant la première nuit de sommeil.</li>
+                <li>Recommence sur les points ratés le lendemain, ou transforme-les en questions pour tes fiches (voir méthode 2).</li>
               </ol>
               <ul slot="preuves">
                 <li>
@@ -142,6 +146,10 @@ const synthese = [
                 <li>
                   Dans la grande synthèse de Dunlosky et ses collègues, les tests pratiques (« practice testing ») et
                   la pratique espacée sont les deux techniques jugées les plus utiles parmi dix<Cite id="dunlosky2013" />.
+                </li>
+                <li>
+                  Dans l’expérience de Karpicke et Blunt, « s’entraîner à retrouver » consistait justement à écrire de
+                  mémoire tout ce dont on se souvenait d’un texte, c’est-à-dire du rappel libre<Cite id="karpicke2011" />.
                 </li>
                 <li>
                   Le guide de l’Institute of Education Sciences donne un niveau de preuve « fort » à l’usage de quiz
@@ -163,8 +171,16 @@ const synthese = [
               </p>
               <ol slot="etapes">
                 <li>Fais une fiche avec les points clés : formules, méthodes, erreurs à éviter.</li>
-                <li>Revois-la, en te testant, à J+1, J+3, J+7 puis J+14 (J = jour du cours).</li>
+                <li>
+                  Revois-la, en te testant, à J+1, J+3, J+7, puis environ un mois plus tard (J = jour du cours).
+                </li>
                 <li>Note ces dates dans ton agenda dès le premier jour.</li>
+                <li>
+                  Pour automatiser l’espacement, essaie la <strong>boîte de Leitner</strong> : des fiches
+                  question / réponse rangées dans 7 compartiments. Une bonne réponse envoie la fiche dans le compartiment
+                  suivant, qu’on ouvre moins souvent ; une erreur la ramène au premier. Des applications comme Anki font
+                  la même chose<Cite id="video_se" />.
+                </li>
               </ol>
               <ul slot="preuves">
                 <li>
@@ -177,8 +193,8 @@ const synthese = [
                   : plus l’échéance est lointaine, plus il faut espacer<Cite id="cepeda2008" />.
                 </li>
                 <li>
-                  <strong>Nuance :</strong> J+1, J+3, J+7, J+14 est une règle pratique, pas une loi scientifique. Ce
-                  qui compte, c’est d’espacer.
+                  <strong>Nuance :</strong> J+1, J+3, J+7 puis un mois est une règle pratique, pas une loi
+                  scientifique. Il n’existe pas de chiffre magique : ce qui compte, c’est d’espacer, et de plus en plus.
                 </li>
                 <li>
                   Le guide de l’IES recommande de revoir les contenus essentiels sur des semaines, voire des mois
@@ -287,7 +303,10 @@ const synthese = [
               </p>
               <ol slot="etapes">
                 <li>Choisis une notion du chapitre.</li>
-                <li>Explique-la à un camarade, à un proche ou à un mur, comme à un élève plus jeune.</li>
+                <li>
+                  Explique-la à un camarade, à un proche ou à un mur. Variante popularisée par le physicien Richard
+                  Feynman : fais comme si tu l’expliquais à un enfant de 8 ans<Cite id="video_se" />.
+                </li>
                 <li>Note les endroits où tu hésites, puis retourne au cours pour les compléter.</li>
               </ol>
               <ul slot="preuves">
@@ -306,16 +325,29 @@ const synthese = [
               </ul>
             </MethodeCarte>
 
-            <MethodeCarte id="cartes" numero={7} titre="Faire des cartes mentales" niveau="nuancee">
+            <MethodeCarte id="cartes" numero={7} titre="Faire des cartes mentales" niveau="moyenne">
               <p>
-                Une carte mentale peut aider à voir comment les notions d’un chapitre s’articulent. Mais la dessiner en
-                copiant le cours est moins efficace qu’on ne le croit : c’est la <em>récupération</em> en mémoire qui
-                fait progresser.
+                Une carte mentale résume un chapitre sur une seule feuille, en arbre : l’idée principale au centre, puis
+                des branches pour les idées et les sous-idées, avec des liens, des dessins et des couleurs. Pour
+                construire la carte, il faut choisir, reformuler et organiser : c’est un apprentissage « actif ». La
+                recherche la soutient surtout quand tu la construis toi-même, et elle <em>complète</em> l’auto-test
+                plutôt qu’elle ne le remplace.
               </p>
               <ol slot="etapes">
-                <li>Construis la carte toi-même, avec peu de mots et des liens nommés (« donc », « sert à », « condition »).</li>
-                <li>Mets-la de côté, puis redessine-la de mémoire sur une feuille vierge.</li>
-                <li>Compare avec la première version et corrige.</li>
+                <li>À la main, sur une seule feuille : l’idée centrale au milieu, puis les branches principales.</li>
+                <li>Des mots-clés avec tes propres mots, pas des phrases recopiées du cours.</li>
+                <li>
+                  Fais ressortir les liens, les regroupements et les différences (« donc », « sert à », « condition »),
+                  avec des petits dessins et de la couleur.
+                </li>
+                <li>
+                  Quelques jours plus tard, redessine la carte de mémoire sur une feuille vierge, puis compare avec la
+                  première version.
+                </li>
+                <li>
+                  Prends le temps de t’approprier la technique. Si elle devient fastidieuse ou te bloque par peur de mal
+                  faire, simplifie-la.
+                </li>
               </ol>
               <ul slot="preuves">
                 <li>
@@ -323,22 +355,26 @@ const synthese = [
                   lecture de textes ou les listes, surtout quand l’élève les construit lui-même<Cite id="nesbit2006" />.
                 </li>
                 <li>
-                  Mais dans une expérience comparative, s’entraîner à retrouver l’information donnait de meilleurs
-                  résultats une semaine plus tard que construire une carte conceptuelle en regardant le texte<Cite
-                    id="karpicke2011"
-                  />.
+                  ScienceÉtonnante la range parmi les méthodes d’apprentissage actif qu’il utilise lui-même, à côté de
+                  la boîte de Leitner et du rappel libre<Cite id="video_se" />.
                 </li>
                 <li>
-                  <strong>Conclusion :</strong> utilise la carte comme support pour t’auto-tester (méthode 1), pas comme
-                  une façon de relire autrement.
+                  <strong>Nuance 1 :</strong> dans une expérience, construire une carte conceptuelle <em>en regardant le
+                  texte</em> donnait de moins bons résultats, une semaine plus tard, que s’entraîner à retrouver
+                  l’information de mémoire<Cite id="karpicke2011" />. La carte n’est donc pas inutile : mais elle ne
+                  dispense pas de se tester, d’où l’étape 4.
+                </li>
+                <li>
+                  <strong>Nuance 2 :</strong> la plupart des études portent sur les cartes de concepts (notions reliées
+                  par des liens nommés). Elles ressemblent aux cartes mentales en arbre sans leur être identiques.
                 </li>
               </ul>
             </MethodeCarte>
 
             <MethodeCarte id="eviter" numero={8} titre="Ce qui marche moins bien" niveau="nuancee">
               <p>
-                Surligner, faire des résumés et relire plusieurs fois sont les techniques les plus répandues. Ce sont
-                aussi parmi les moins efficaces quand elles sont utilisées seules.
+                Surligner, faire des résumés, relire plusieurs fois ou recopier le cours en fiches plus petites sont les
+                techniques les plus répandues. Ce sont aussi parmi les moins efficaces quand elles sont utilisées seules.
               </p>
               <ul slot="preuves">
                 <li>
@@ -351,16 +387,31 @@ const synthese = [
                   />.
                 </li>
                 <li>
-                  <strong>Nuance :</strong> relire reste une bonne première étape pour découvrir un chapitre. Le piège,
-                  c’est de s’arrêter là.
+                  Recopier un cours à l’identique, en plus petit et avec des abréviations, demande très peu d’effort de
+                  réflexion : on peut presque le faire en pilote automatique<Cite id="video_se" />.
+                </li>
+                <li>
+                  <strong>Nuance :</strong> relire reste une bonne première étape pour découvrir un chapitre, et une
+                  fiche devient utile quand c’est une <em>question</em> avec sa réponse au verso, pour s’auto-tester
+                  (boîte de Leitner). Le piège, c’est de s’arrêter à la relecture.
                 </li>
               </ul>
             </MethodeCarte>
           </div>
 
           <!-- ---- Bien-être ---- -->
-          <h3 class="ap-h3 righteous" id="bien-etre"><span aria-hidden="true">//</span> Et dans la tête ?</h3>
+          <h3 class="ap-h3 righteous" id="bien-etre"><span aria-hidden="true">//</span> Dans la tête, et idées reçues</h3>
           <div class="ap-trio">
+            <article class="ap-mini">
+              <h4 class="righteous">« Moi, je suis plutôt visuel »</h4>
+              <p>
+                Une grande revue de la recherche ne trouve pas de preuve qu’adapter l’enseignement au « style
+                d’apprentissage » de chacun (visuel, auditif…) améliore les résultats<Cite id="pashler2008" />. En
+                revanche, combiner plusieurs modes (texte, schéma, parole, geste) est recommandé pour tout le monde<Cite
+                  id="pashler2007"
+                />.
+              </p>
+            </article>
             <article class="ap-mini">
               <h4 class="righteous">Dormir</h4>
               <p>
@@ -520,13 +571,13 @@ const synthese = [
             recherche valide chaque technique, pas ce plan précis.
           </p>
           <ol class="ap-routine">
-            <li><strong>5 min.</strong> Écris de mémoire ce que tu te rappelles du dernier chapitre, sans regarder.</li>
+            <li><strong>5 min.</strong> Rappel libre : écris de mémoire tout ce que tu te rappelles du dernier chapitre, sans regarder (idéalement le soir même du cours).</li>
             <li><strong>3 min.</strong> Corrige avec le cours et note ce qui manquait.</li>
             <li><strong>8 min.</strong> Fais 2 ou 3 exercices mélangeant des chapitres déjà vus.</li>
             <li><strong>4 min.</strong> Note tes erreurs dans le cahier d’erreurs, avec la cause et la règle à retenir.</li>
           </ol>
           <p class="ap-texte">
-            Programme ensuite la même routine à J+1, J+3, J+7 et J+14 sur le même chapitre<Cite id="cepeda2008" />.
+            Programme ensuite la même routine à J+1, J+3, J+7, puis environ un mois plus tard sur le même chapitre<Cite id="cepeda2008" />.
           </p>
         </div>
       </section>
@@ -536,7 +587,8 @@ const synthese = [
         <div class="container">
           <h2 class="ap-h2 righteous"><span aria-hidden="true">//</span> Pour aller plus loin en vidéo</h2>
           <p class="ap-texte">
-            ScienceÉtonnante passe en revue les techniques d’étude validées par la recherche<Cite id="video_se" />.
+            ScienceÉtonnante passe en revue les techniques d’étude validées par la recherche<Cite id="video_se" />. Elle
+            rejoint cette page sur l’essentiel : espacer, se tester, reformuler et schématiser avec ses propres mots.
           </p>
           <figure class="ap-video">
             <iframe
@@ -567,6 +619,11 @@ const synthese = [
               <strong>Contextes variés.</strong> Plusieurs études portent sur la mémorisation de mots ou de textes, ou sur
               des étudiants. On les transpose aux maths avec prudence : c’est pourquoi nous citons aussi les études
               menées sur des problèmes de maths<Cite id={['rohrer2020', 'sweller1985', 'booth2013']} />.
+            </li>
+            <li>
+              <strong>Aucune méthode n’est supérieure aux autres.</strong> Il faut combiner l’espacement, l’auto-test et
+              l’apprentissage actif, et observer ce qui marche pour toi : réfléchir à sa façon d’apprendre s’appelle la
+              métacognition<Cite id="video_se" />.
             </li>
             <li>
               <strong>Aucune méthode ne remplace le travail régulier</strong>, ni un enseignant qui explique et
