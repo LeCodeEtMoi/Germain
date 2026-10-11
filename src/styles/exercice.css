@@ -1,5 +1,6 @@
 /* Exercices interactifs de Germain (réutilisable pour les autres exercices).
-   À placer dans src/styles/exercice.css
+   À placer dans src/styles/exercice.css et à importer dans chaque page d'exercice (.astro) :
+     import '../../styles/exercice.css';
    Les variables viennent de theme.css ; les valeurs de repli permettent de
    réutiliser le composant sur une page qui ne l'importe pas. */
 
@@ -189,8 +190,369 @@
   color: var(--craie, #ffd25e);
 }
 
+/* ---------- Énoncé : texte, listes, formules ---------- */
+.exercice-enonce {
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+.exercice-enonce p {
+  margin: 0 0 0.75rem;
+}
+
+.exercice-enonce ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.4rem;
+}
+
+.exercice-formule {
+  margin: 0.75rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background: var(--lavande-pale, #efeaff);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.exercice-donnee__legende {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: #5b5476;
+}
+
+.exercice-code {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--encre, #1f1a3d);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ---------- Réponse : plusieurs champs, choix ---------- */
+.exercice-champ-groupe + .exercice-champ-groupe {
+  margin-top: 1rem;
+}
+
+.exercice-champs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.exercice-champs .exercice-champ-groupe + .exercice-champ-groupe {
+  margin-top: 0;
+}
+
+.exercice-champ:focus-visible,
+.exercice-bouton:focus-visible,
+.exercice-choix__option:has(input:focus-visible),
+math-field:focus-within {
+  outline: 3px solid var(--craie, #ffd25e);
+  outline-offset: 2px;
+}
+
+.exercice-choix {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.exercice-choix legend {
+  float: none;
+  padding: 0;
+}
+
+.exercice-choix__liste {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.exercice-choix__liste--ligne {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+
+.exercice-choix__option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--lavande-pale, #efeaff);
+  border-radius: 0.75rem;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.exercice-choix__option:hover {
+  background: var(--papier, #faf9ff);
+}
+
+.exercice-choix__option:has(input:checked) {
+  border-color: var(--violet, #6528d9);
+  background: var(--lavande-pale, #efeaff);
+  font-weight: 600;
+}
+
+.exercice-choix__option input {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--violet, #6528d9);
+}
+
+.exercice-choix__option > span {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Les formules KaTeX à l'intérieur d'une option ne doivent pas être rognées (indices, exposants) */
+.exercice-choix__option > span .katex,
+.exercice-choix__option > span .katex * {
+  overflow: visible;
+}
+
+/* Champ de saisie mathématique (MathLive) */
+math-field {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.9rem;
+  border: 2px solid var(--violet, #6528d9);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: var(--encre, #1f1a3d);
+  font-size: 1.4rem;
+}
+
+/* Boutons d'aide à la saisie + aperçu */
+.exercice-touches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.exercice-touche {
+  padding: 0.35rem 0.85rem;
+  border: 2px solid var(--lavande-pale, #efeaff);
+  border-radius: 999px;
+  background: var(--papier, #faf9ff);
+  color: var(--violet, #6528d9);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.exercice-touche:hover {
+  border-color: var(--violet, #6528d9);
+  background: var(--lavande-pale, #efeaff);
+}
+
+.exercice-apercu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--papier, #faf9ff);
+  overflow-x: auto;
+}
+
+.exercice-apercu__legende {
+  font-size: 0.95rem;
+  color: #5b5476;
+}
+
+/* ---------- Conseils de la correction ---------- */
+.exercice-astuce {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-left: 4px solid currentColor;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.exercice-astuce__titre {
+  margin: 0 0 0.3rem;
+  font-weight: 700;
+}
+
+.exercice-astuce ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.exercice-retour--correct .exercice-astuce {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.exercice-retour .exercice-formule {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--encre, #1f1a3d);
+}
+
 @media (max-width: 768px) {
   .exercice-bouton {
     flex: 1 1 100%;
   }
+}
+
+/* ---------- Sous-titres d'étapes et bilan ---------- */
+.exercice-sous-titre {
+  margin: 1.75rem 0 0.5rem;
+  font-family: 'Righteous', sans-serif;
+  font-size: 1.2rem;
+  color: var(--violet, #6528d9);
+}
+
+.exercice-formulaire > p {
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+}
+
+.exercice-bilan {
+  margin: 0 0 0.75rem;
+  padding-left: 0;
+  list-style: none;
+  font-weight: 600;
+}
+
+/* Bulma retire les puces des listes : on les remet à l'intérieur des exercices */
+.exercice ul {
+  list-style: disc;
+}
+
+.exercice .exercice-bilan {
+  list-style: none;
+}
+
+.exercice ol {
+  list-style: decimal;
+}
+
+/* ---------- Code Python, champs en ligne, tableaux ---------- */
+.exercice-code-bloc {
+  margin: 0.75rem 0 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background: var(--lavande-pale, #efeaff);
+  overflow-x: auto;
+}
+
+.exercice-code-bloc figcaption {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  color: #5b5476;
+}
+
+.exercice-code-bloc pre {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--encre, #1f1a3d);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.exercice-code-bloc code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.exercice-champ--ligne {
+  display: inline-block;
+  width: 11rem;
+  padding: 0.2rem 0.6rem;
+  border-width: 2px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  vertical-align: baseline;
+}
+
+.exercice-tableau {
+  width: 100%;
+  margin: 0.75rem 0 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 2px solid var(--lavande-pale, #efeaff);
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.exercice-tableau th,
+.exercice-tableau td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--lavande-pale, #efeaff);
+}
+
+.exercice-tableau thead th {
+  background: var(--lavande-pale, #efeaff);
+  font-family: 'Righteous', sans-serif;
+  font-weight: 400;
+}
+
+.exercice-tableau tbody tr:last-child td,
+.exercice-tableau tbody tr:last-child th {
+  border-bottom: 0;
+}
+
+.exercice-tableau .exercice-champ--ligne {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 5rem;
+  text-align: center;
+}
+
+.exercice-tableau .exercice-juste {
+  color: #166534;
+  font-weight: 700;
+}
+
+.exercice-tableau .exercice-faux {
+  color: #7f1d1d;
+  font-weight: 700;
+}
+
+.exercice-retour--correct .exercice-bilan {
+  color: #fff;
+}
+
+.exercice-sous-question {
+  margin: 1.5rem 0 0.5rem;
+  font-weight: 700;
+  color: var(--violet, #6528d9);
+}
+
+/* Tableau trop large pour un petit écran : il défile sans élargir la page */
+.exercice-tableau-conteneur {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ---------- Graphique (courbe en SVG) ---------- */
+.exercice-graphique {
+  margin: 1rem 0;
+}
+.exercice-graphique svg {
+  display: block;
+  color: inherit;
 }

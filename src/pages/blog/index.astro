@@ -1,14 +1,14 @@
 ---
 // --- Frontmatter (partie script) ---
 // Importation des composants réutilisables (en-tête, pied de page, etc.)
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import BaseHead from '@/components/layout/BaseHead.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
 // Importation des constantes globales du site (titre, description)
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 // Importation de la fonction d'Astro pour récupérer des collections de contenu (ex: articles de blog)
 import { getCollection } from 'astro:content';
-import FormattedDate from '../../components/FormattedDate.astro';
+import FormattedDate from '@/components/layout/FormattedDate.astro';
 
 // Récupération de tous les articles de la collection 'blog' (qui se trouve dans src/content/blog)
 // La fonction est asynchrone, d'où le 'await'.

@@ -23,11 +23,7 @@ if not git rev-parse --is-inside-work-tree >/dev/null 2>&1
     exit 1
 end
 
-if test $apply -eq 1; and test -n "$(git status --porcelain)"
-    echo "Erreur : il reste des modifications non commitées."
-    echo "Faites un commit avant, pour pouvoir annuler avec : git reset --hard; git clean -fd src"
-    exit 1
-end
+
 
 if not grep -q '"@/\*"' tsconfig.json 2>/dev/null
     echo "Attention : l'alias @/ ne semble pas défini dans tsconfig.json."

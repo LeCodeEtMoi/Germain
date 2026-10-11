@@ -1,0 +1,575 @@
+---
+import BaseHead from '@/components/layout/BaseHead.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+import fs from 'node:fs';
+import path from 'node:path';
+import '../../styles/bulma.min.css';
+import '../../styles/theme.css';
+
+const base = '/Germain/';
+
+const pageTitle = 'Exercices';
+const pageDescription =
+  'Tout le programme de terminale : des exercices pour pratiquer et renforcer vos connaissances, classés par chapitre.';
+
+/* ------------------------------------------------------------------
+   Ordre des chapitres, comme dans le programme.
+   - Un chapitre listé ici s'affiche toujours (avec « en cours de
+     réalisation » s'il n'a encore aucun exercice).
+   - Un chapitre absent de cette liste mais utilisé par un exercice
+     apparaît automatiquement à la fin.
+   Pour ajouter un exercice : aucune modification ici, seulement le
+   frontmatter du fichier de l'exercice.
+------------------------------------------------------------------ */
+const ordreChapitres = [
+  'Algorithmique',
+  'Espace',
+  'Étude de fonction',
+  'Dénombrement',
+  'Limites de fonction',
+  'Fonction cosinus et sinus',
+  'Continuité',
+  'Dérivation et convexité',
+  'Fonction logarithme népérien',
+  'Primitives et équations différentielles',
+  'Calcul intégral',
+  'Variables aléatoires et loi des grands nombres',
+  'Suites numériques et récurrence',
+];
+
+/* ------------------------------------------------------------------
+   Lecture automatique de tous les exercices : pages .astro de src/pages/ex/
+   (sous-dossiers compris)
+
+   Un exercice est une page .astro : on ne peut pas lire ses données en
+   l'important. On lit donc son fichier au moment du build et on en extrait
+   le petit bloc suivant, à placer dans son frontmatter :
+
+     const exerciceMeta = {
+       title: "Équation cartésienne d'un plan",
+       description: 'Détermine une équation cartésienne du plan passant par A…',
+       chapitre: 'Espace',
+       statut: 'valide', // optionnel : valide | fini | erreur
+       ordre: 1, // optionnel (sinon : numéro lu dans le nom du fichier)
+     };
+
+   Règles : une propriété par ligne, texte sur une seule ligne, et
+   l'accolade fermante seule au début de sa ligne.
+------------------------------------------------------------------ */
+const dossierExercices = path.join(process.cwd(), 'src/pages/ex');
+
+// Extrait les propriétés de `const exerciceMeta = { ... }` (sans exécuter le code)
+const lireMeta = (source: string) => {
+  const bloc = source.match(/const\s+exerciceMeta\s*=\s*\{([\s\S]*?)^\}/m)?.[1];
+  if (bloc === undefined) return null;
+
+  const meta: Record<string, string | number> = {};
+  const propriete =
+    /^\s*([A-Za-z_]\w*)\s*:\s*(?:(['"`])((?:\\.|(?!\2)[^\\])*)\2|(-?\d+(?:\.\d+)?))\s*,?\s*(?:\/\/.*)?$/gm;
+  for (const m of bloc.matchAll(propriete)) {
+    meta[m[1]] = m[4] !== undefined ? Number(m[4]) : m[3].replace(/\\(.)/g, '$1');
+  }
+  return meta;
+};
+
+// « Dérivation » et « derivation » doivent désigner le même chapitre
+const cle = (texte: string) =>
+  texte
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const identifiant = (texte: string) => cle(texte).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+type Statut = 'valide' | 'fini' | 'erreur' | null;
+
+const statutDe = (brut: unknown, slug: string): Statut => {
+  if (brut === undefined || brut === null || brut === '') return null;
+  const valeur = cle(String(brut));
+  if (valeur === 'valide' || valeur === 'fini' || valeur === 'erreur') return valeur;
+  console.warn(`[exercices] statut inconnu « ${brut} » dans ${slug} (attendu : valide, fini ou erreur)`);
+  return null;
+};
+
+// Tous les fichiers .astro de src/pages/ex (sauf index, routes dynamiques et fichiers _privés)
+const fichiers = fs.existsSync(dossierExercices)
+  ? fs
+      .readdirSync(dossierExercices, { recursive: true, encoding: 'utf8' })
+      .map((f) => f.replace(/\\/g, '/'))
+      .filter(
+        (f) =>
+          f.endsWith('.astro') &&
+          f !== 'index.astro' &&
+          !f.includes('[') &&
+          !f.split('/').some((morceau) => morceau.startsWith('_'))
+      )
+  : [];
+
+if (fichiers.length === 0) console.warn(`[exercices] aucun fichier .astro trouvé dans ${dossierExercices}`);
+
+const exercices = fichiers.map((fichier) => {
+  const slug = fichier.replace(/\.astro$/, '').replace(/\/index$/, '');
+  const meta = lireMeta(fs.readFileSync(path.join(dossierExercices, fichier), 'utf8'));
+  const fm = meta ?? {};
+  const numero = Number(slug.match(/\d+/)?.[0] ?? Number.MAX_SAFE_INTEGER);
+
+  if (!meta) console.warn(`[exercices] « ${slug} » n'a pas de bloc « exerciceMeta » : classé dans « Autres ».`);
+  else if (!fm.chapitre) console.warn(`[exercices] « ${slug} » n'a pas de champ « chapitre » : classé dans « Autres ».`);
+
+  return {
+    slug,
+    href: `${base}ex/${slug}/`,
+    titre: String(fm.title ?? slug),
+    description: String(fm.description ?? ''),
+    chapitre: String(fm.chapitre ?? 'Autres'),
+    statut: statutDe(fm.statut, slug),
+    ordre: typeof fm.ordre === 'number' ? fm.ordre : numero,
+  };
+});
+
+// Regroupement par chapitre
+const parCle = new Map<string, { nom: string; exercices: typeof exercices }>();
+
+for (const nom of ordreChapitres) parCle.set(cle(nom), { nom, exercices: [] });
+
+for (const exercice of exercices) {
+  const k = cle(exercice.chapitre);
+  if (!parCle.has(k)) parCle.set(k, { nom: exercice.chapitre, exercices: [] }); // chapitre inconnu : ajouté à la fin
+  parCle.get(k)!.exercices.push(exercice);
+}
+
+const chapitres = [...parCle.values()].map((c) => ({
+  id: identifiant(c.nom),
+  nom: c.nom,
+  exercices: c.exercices.sort((a, b) => a.ordre - b.ordre || a.slug.localeCompare(b.slug, 'fr', { numeric: true })),
+}));
+
+const libelles: Record<Exclude<Statut, null>, string> = {
+  valide: 'Validé',
+  fini: 'Fini',
+  erreur: 'Erreur',
+};
+
+const pluriel = (n: number) => `${n} exercice${n > 1 ? 's' : ''}`;
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <!-- ============ Introduction ============ -->
+      <section class="exo-intro">
+        <div class="container">
+          <h1 class="exo-titre righteous"><span aria-hidden="true">//</span> {pageTitle}</h1>
+          <p class="exo-chapeau">{pageDescription}</p>
+        </div>
+      </section>
+
+      <!-- ============ Légende des statuts ============ -->
+      <section class="exo-legende">
+        <div class="container">
+          <div class="legende">
+            <p class="legende-alerte">
+              Attention : un exercice sans pastille « Validé » peut comporter des erreurs ou ne pas être terminé.
+            </p>
+            <dl class="legende-liste">
+              <div>
+                <dt><span class="badge badge-valide">Validé</span></dt>
+                <dd>Plusieurs personnes ont testé l'exercice et n'ont trouvé aucune erreur.</dd>
+              </div>
+              <div>
+                <dt><span class="badge badge-fini">Fini</span></dt>
+                <dd>L'exercice est terminé, mais pas encore relu.</dd>
+              </div>
+              <div>
+                <dt><span class="badge badge-erreur">Erreur</span></dt>
+                <dd>L'exercice comporte des erreurs connues.</dd>
+              </div>
+              <div>
+                <dt class="sans-pastille">Sans pastille</dt>
+                <dd>L'exercice est en cours de création.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Accès rapide aux chapitres ============ -->
+      <section class="exo-nav">
+        <div class="container">
+          <nav aria-label="Chapitres">
+            <ul class="chapitres-liens" role="list">
+              {
+                chapitres.map((c) => (
+                  <li>
+                    <a href={`#${c.id}`}>
+                      {c.nom}
+                      {c.exercices.length > 0 && <span class="nb">{c.exercices.length}</span>}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+      <!-- ============ Chapitres ============ -->
+      <section class="exo-chapitres">
+        <div class="container">
+          {
+            chapitres.map((c) => (
+              <section class="chapitre" id={c.id}>
+                <div class="chapitre-tete">
+                  <h2 class="chapitre-titre righteous">
+                    <span aria-hidden="true">//</span> {c.nom}
+                  </h2>
+                  {c.exercices.length > 0 && <p class="chapitre-compte">{pluriel(c.exercices.length)}</p>}
+                </div>
+
+                {c.exercices.length > 0 ? (
+                  <ul class="exos" role="list">
+                    {c.exercices.map((e) => (
+                      <li class="exo">
+                        <a class="exo-lien" href={e.href}>
+                          <span class="exo-nom">{e.titre}</span>
+                          {e.description && <span class="exo-desc">{e.description}</span>}
+                        </a>
+                        {e.statut && <span class={`badge badge-${e.statut}`}>{libelles[e.statut]}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="exos-vide">Exercices en cours de réalisation.</p>
+                )}
+              </section>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- ============ Appel à contribuer ============ -->
+      <section class="exo-appel">
+        <div class="container">
+          <p>Une idée d'exercice ? Germain s'écrit à plusieurs mains.</p>
+          <a class="button bouton-principal" href={`${base}aide`}>Participer au projet</a>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Même rythme vertical que les autres pages */
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  /* ---------- Introduction ---------- */
+  .exo-intro {
+    /* le header est fixe : on laisse la place en haut */
+    padding: 7rem 0 0;
+  }
+
+  .exo-titre {
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--encre);
+    margin: 0 0 1.25rem;
+  }
+
+  .exo-titre span {
+    color: var(--violet);
+  }
+
+  .exo-chapeau {
+    font-size: 1.2rem;
+    line-height: 1.65;
+    max-width: 55ch;
+    color: #3b3555;
+  }
+
+  /* ---------- Légende ---------- */
+  .exo-legende {
+    padding: var(--espace) 0 0;
+  }
+
+  .legende {
+    background: var(--lavande-pale);
+    border-radius: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .legende-alerte {
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 0 1.25rem;
+  }
+
+  .legende-liste {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.25rem 2rem;
+    margin: 0;
+  }
+
+  .legende-liste dt {
+    margin-bottom: 0.4rem;
+  }
+
+  .legende-liste dd {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: #3b3555;
+  }
+
+  .sans-pastille {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #3b3555;
+  }
+
+  /* ---------- Pastilles de statut ---------- */
+  .badge {
+    display: inline-block;
+    flex: none;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .badge-valide {
+    background: var(--violet);
+    color: #fff;
+  }
+
+  .badge-fini {
+    background: #fff;
+    border: 1px solid var(--lavande);
+    color: var(--violet-profond);
+  }
+
+  .badge-erreur {
+    background: #fde8e8;
+    color: #9b1c1c;
+  }
+
+  /* ---------- Accès rapide ---------- */
+  .exo-nav {
+    padding: var(--espace) 0 0;
+  }
+
+  .chapitres-liens {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chapitres-liens a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    border: 2px solid var(--violet);
+    border-radius: 999px;
+    color: var(--violet);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .chapitres-liens a:hover {
+    background: var(--lavande-pale);
+  }
+
+  .chapitres-liens .nb {
+    color: #5b5476;
+    font-weight: 400;
+  }
+
+  /* ---------- Chapitres ---------- */
+  .exo-chapitres {
+    padding: var(--espace) 0;
+  }
+
+  .chapitre {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 1rem 2.5rem;
+    padding: 2rem 0;
+    border-top: 2px solid var(--lavande-pale);
+    scroll-margin-top: 4.5rem;
+  }
+
+  .chapitre:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .chapitre:last-child {
+    padding-bottom: 0;
+  }
+
+  .chapitre-tete {
+    align-self: start;
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .chapitre-titre {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    line-height: 1.25;
+    color: var(--encre);
+    margin: 0 0 0.4rem;
+  }
+
+  .chapitre-titre span {
+    color: var(--violet);
+  }
+
+  .chapitre-compte {
+    font-size: 0.95rem;
+    color: #5b5476;
+    margin: 0;
+  }
+
+  .exos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .exo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--lavande-pale);
+  }
+
+  .exo:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .exo:last-child {
+    padding-bottom: 0;
+  }
+
+  .exo-lien {
+    display: block;
+    min-width: 0;
+    color: var(--encre);
+  }
+
+  .exo-nom {
+    display: block;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 0.2s ease, color 0.2s ease;
+  }
+
+  .exo-lien:hover .exo-nom {
+    color: var(--violet);
+    text-decoration-color: currentColor;
+  }
+
+  .exo-desc {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 60ch;
+    color: #3b3555;
+  }
+
+  .exo .badge {
+    margin-top: 0.1rem;
+  }
+
+  .exos-vide {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #5b5476;
+  }
+
+  /* ---------- Bande finale ---------- */
+  .exo-appel {
+    background: var(--papier);
+    padding: var(--espace) 0;
+  }
+
+  .exo-appel .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .exo-appel p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .button.bouton-principal {
+    background: var(--violet);
+    border-color: var(--violet);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .button.bouton-principal:hover {
+    background: var(--violet-profond);
+    border-color: var(--violet-profond);
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .exo-intro {
+      padding-top: 6rem;
+    }
+
+    .chapitre {
+      grid-template-columns: 1fr;
+    }
+
+    .chapitre-tete {
+      position: static;
+    }
+  }
+</style>

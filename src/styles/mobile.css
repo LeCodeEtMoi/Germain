@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Germain — confort de lecture sur téléphone et tablette
+   --------------------------------------------------------------------------
+   À importer UNE fois, dans le composant commun à toutes les pages
+   (BaseHead.astro ou le layout), après Bulma :
+     import '../styles/bulma.min.css';
+     import '../styles/mobile.css';
+
+   Problème corrigé : sous 1024 px, le .container de Bulma n'a aucune marge
+   latérale, donc le texte colle au bord de l'écran. Ce fichier ajoute une
+   « gouttière » réutilisable et adoucit le reste (boutons, titres, zones
+   tactiles, tableaux, formulaires).
+   ========================================================================== */
+
+:root {
+  /* Marge latérale : 20 px sur un petit téléphone, jusqu'à 40 px sur tablette */
+  --gouttiere: clamp(1.25rem, 5.5vw, 2.5rem);
+  /* Rythme vertical entre sections sur petit écran */
+  --espace-section: clamp(2.5rem, 9vw, 4rem);
+}
+
+/* ---------- Bases sûres ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* Bulma le fait déjà ; on s'en assure pour width:100% + marges */
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 5rem; /* le menu est fixe : les ancres ne passent pas dessous */
+}
+
+body {
+  overflow-wrap: break-word;
+  -webkit-tap-highlight-color: rgba(101, 40, 217, 0.12);
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Un tableau trop large défile au lieu de faire déborder la page */
+.table-container,
+.exercice-tableau-conteneur {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================================================================
+   Jusqu'à 1023 px (téléphones et tablettes)
+   ========================================================================== */
+@media (max-width: 1023px) {
+  /* --- Marges latérales : le cœur du correctif --- */
+  .container {
+    padding-inline: max(var(--gouttiere), env(safe-area-inset-left, 0px)) max(var(--gouttiere), env(safe-area-inset-right, 0px));
+  }
+
+  /* Un exercice affiché hors .container reçoit la même marge */
+  .exercice {
+    box-sizing: border-box;
+    padding-inline: var(--gouttiere);
+  }
+  .container .exercice {
+    padding-inline: 0; /* déjà dans un .container : pas de double marge */
+  }
+
+  /* Les colonnes Bulma s'empilent : on resserre l'espace entre elles */
+  .columns {
+    row-gap: 0.5rem;
+  }
+  .column {
+    padding-block: 0.5rem;
+  }
+
+  /* --- Texte --- */
+  body {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+  p,
+  li {
+    max-width: 68ch; /* pas de lignes trop longues sur tablette */
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    hyphens: auto;
+  }
+}
+
+/* ==========================================================================
+   Jusqu'à 768 px (téléphones)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Sections moins hautes, mais plus aérées entre les blocs de texte */
+  .bloc,
+  section.section,
+  section[class*='-hero'] + section {
+    padding-block: var(--espace-section);
+  }
+
+  /* Boutons : pleine largeur, faciles à toucher au pouce */
+  .buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .buttons .button,
+  .button.bouton-principal,
+  .button.bouton-secondaire,
+  .button.bouton-clair {
+    width: 100%;
+    margin: 0 !important; /* Bulma ajoute des marges entre boutons */
+    justify-content: center;
+    text-align: center;
+    white-space: normal; /* un libellé long passe à la ligne au lieu de déborder */
+    min-height: 3rem;
+  }
+
+  /* Zones tactiles d'au moins 44 px (recommandation d'accessibilité) */
+  a.navbar-item,
+  .navbar-burger,
+  .button,
+  .exercice-bouton,
+  .exercice-choix__option,
+  summary {
+    min-height: 2.75rem;
+  }
+
+  /* Listes : un peu plus d'air pour ne pas confondre deux lignes voisines */
+  li + li {
+    margin-top: 0.35rem;
+  }
+
+  /* Cartes et panneaux : coins et marges internes adaptés */
+  .box,
+  .card,
+  [class*='panneau'],
+  [class*='carte'] {
+    padding: clamp(1.1rem, 5vw, 1.75rem);
+    border-radius: 1.1rem;
+  }
+
+  /* Illustrations : jamais plus larges que l'écran, centrées */
+  .hero-visuel {
+    max-width: min(100%, 24rem);
+    margin-top: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   Jusqu'à 480 px (petits téléphones)
+   ========================================================================== */
+@media (max-width: 480px) {
+  :root {
+    --gouttiere: 1.25rem;
+  }
+
+  /* Formulaires : 16 px minimum, sinon iOS zoome sur le champ à la saisie */
+  input,
+  select,
+  textarea,
+  .input,
+  .exercice-champ {
+    font-size: max(1rem, 16px);
+  }
+
+  /* Exercices : boutons « Valider » et « Nouvel exercice » pleine largeur */
+  .exercice-bouton {
+    flex: 1 1 100%;
+  }
+
+  /* Titres d'exercice et de section un peu plus compacts */
+  .exercice-titre {
+    font-size: 1.25rem;
+  }
+
+  /* Formules longues : défilement horizontal plutôt que débordement */
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Blocs de code : un peu plus petits, mais lisibles */
+  .exercice-code-bloc pre {
+    font-size: 0.85rem;
+  }
+}
+
+/* ==========================================================================
+   Écrans en paysage très bas (téléphone couché)
+   ========================================================================== */
+@media (max-height: 480px) and (orientation: landscape) {
+  .bloc,
+  section.section {
+    padding-block: 2rem;
+  }
+  html {
+    scroll-padding-top: 3.5rem;
+  }
+}
+
+/* ---------- Préférences utilisateur ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
