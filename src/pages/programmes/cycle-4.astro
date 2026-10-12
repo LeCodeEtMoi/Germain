@@ -1,0 +1,410 @@
+---
+import BaseHead from '@/components/layout/BaseHead.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { SITE_TITLE } from '@/consts';
+import '@/styles/bulma.min.css';
+import '@/styles/theme.css';
+import '@/styles/mobile.css';
+
+const base = '/Germain/';
+const pageTitle = 'Programme de maths – Cycle 4';
+const pageDescription =
+  'Le programme de mathématiques de la 5ᵉ, de la 4ᵉ et de la 3ᵉ, résumé : les cinq thèmes, ce qu’il faut savoir et savoir faire, et les automatismes à acquérir.';
+
+/* Compétences travaillées pendant tout le cycle */
+const competences = [
+  { nom: 'Chercher', texte: 'Extraire les informations utiles, essayer plusieurs pistes, émettre une conjecture, découper un problème en sous-problèmes.' },
+  { nom: 'Modéliser', texte: 'Traduire une situation par une équation, une fonction, une figure ou un outil statistique, et savoir si le modèle convient.' },
+  { nom: 'Représenter', texte: 'Choisir et relier les cadres numérique, algébrique et géométrique ; représenter des données, des solides, des situations.' },
+  { nom: 'Raisonner', texte: 'Résoudre des problèmes, analyser ses erreurs, démontrer avec des propriétés et théorèmes, défendre un jugement.' },
+  { nom: 'Calculer', texte: 'Calculer avec des rationnels (exact ou approché), vérifier la vraisemblance d’un résultat, utiliser le langage algébrique.' },
+  { nom: 'Communiquer', texte: 'Passer du langage courant au langage algébrique, expliquer une démarche, lire et produire tableaux et graphiques.' },
+];
+
+/* Les cinq thèmes */
+const themes = [
+  {
+    id: 'nombres-calculs',
+    lettre: 'A',
+    nom: 'Nombres et calculs',
+    chapeau:
+      'On consolide le sens des nombres et les procédures de calcul, sans chercher la virtuosité. On manipule des rationnels de signe quelconque et on aborde le calcul littéral.',
+    attendus: [
+      {
+        titre: 'Utiliser les nombres pour comparer, calculer et résoudre des problèmes',
+        points: [
+          'Nombres décimaux et rationnels (positifs et négatifs), opposé, inverse, fractions.',
+          'Carrés parfaits de 1 à 144 ; définition de la racine carrée ; préfixes de nano à giga.',
+          'Comparer, ranger, encadrer ; placer un nombre sur une droite graduée ; ordres de grandeur.',
+          'Calculs avec relatifs, fractions et décimaux ; puissances à exposants entiers (positifs ou négatifs) ; notation scientifique.',
+        ],
+      },
+      {
+        titre: 'Divisibilité et nombres premiers',
+        points: [
+          'Multiples et diviseurs ; critères de divisibilité par 2, 3, 5, 9 et 10 ; division euclidienne.',
+          'Nombres premiers (ceux inférieurs à 100 à déterminer) ; décomposition en facteurs premiers.',
+          'Fractions irréductibles : simplifier une fraction.',
+        ],
+      },
+      {
+        titre: 'Utiliser le calcul littéral',
+        points: [
+          'Inconnue, équation, indéterminée, identité ; distributivité simple et double.',
+          'Développer, factoriser, réduire dans des cas simples ; factorisation de a² − b².',
+          'Équations du premier degré ou s’y ramenant (équations produits), dont x² = a ; mise en équation d’un problème.',
+          'Annulation d’un produit (une démonstration est possible par disjonction de cas).',
+        ],
+      },
+    ],
+    automatismes: [
+      'Règles de calcul sur les relatifs et les fractions, et condition d’égalité de deux fractions.',
+      'Conventions d’écriture du calcul littéral et formules de distributivité.',
+      'L’identité a² − b² = (a − b)(a + b).',
+      'Résolution des équations a x = b et a + x = b.',
+    ],
+  },
+  {
+    id: 'donnees-fonctions',
+    lettre: 'B',
+    nom: 'Organisation et gestion de données, fonctions',
+    chapeau:
+      'On utilise, représente et interprète des données de façon critique, on aborde le hasard et les probabilités, la proportionnalité et la notion de fonction.',
+    attendus: [
+      {
+        titre: 'Interpréter, représenter et traiter des données',
+        points: [
+          'Effectifs, fréquences ; moyenne et médiane (position) ; étendue (dispersion).',
+          'Lire et interpréter tableaux, diagrammes en bâtons, circulaires et histogrammes ; utiliser un tableur-grapheur.',
+        ],
+      },
+      {
+        titre: 'Notions élémentaires de probabilités',
+        points: [
+          'Vocabulaire des probabilités ; une probabilité est comprise entre 0 et 1.',
+          'Événements certains, impossibles, contraires ; probabilité sous forme décimale, fractionnaire ou en pourcentage.',
+          'Lien entre fréquence et probabilité.',
+        ],
+      },
+      {
+        titre: 'Proportionnalité',
+        points: [
+          'Coefficient de proportionnalité, taux d’évolution et coefficient multiplicateur, ratio (par exemple a : b : c = 2 : 3 : 7).',
+          'Quatrième proportionnelle, partage selon un ratio, pourcentages, échelles, agrandissement et réduction.',
+        ],
+      },
+      {
+        titre: 'Notion de fonction',
+        points: [
+          'Variable, fonction, image, antécédent ; notations f(x) et x ↦ f(x).',
+          'Modes de représentation : expression, tableau de valeurs, graphique, programme de calcul.',
+          'Fonctions linéaires et affines ; modéliser un phénomène et résoudre des problèmes.',
+        ],
+      },
+    ],
+    automatismes: [
+      'Calcul d’une quatrième proportionnelle par plusieurs procédures.',
+      'Allure de la représentation graphique d’une fonction affine ou linéaire.',
+      'Calcul et application d’un pourcentage ou d’une échelle.',
+      'Recherche de l’image et de l’antécédent d’un nombre par une fonction.',
+    ],
+  },
+  {
+    id: 'grandeurs-mesures',
+    lettre: 'C',
+    nom: 'Grandeurs et mesures',
+    chapeau: 'Longueurs, aires et volumes servent aussi à introduire le calcul littéral : on se construit un répertoire de formules et on estime des ordres de grandeur.',
+    attendus: [
+      {
+        titre: 'Calculer avec des grandeurs mesurables',
+        points: [
+          'Grandeurs produit et grandeurs quotient (vitesse, débit…).',
+          'Aire du parallélogramme ; volumes du prisme, de la pyramide, du cylindre, du cône et de la boule.',
+          'Unités de volume et de contenance : 1 L = 1 dm³, 1 000 L = 1 m³ ; conversions et cohérence des unités.',
+        ],
+      },
+      {
+        titre: 'Effet de quelques transformations sur les figures',
+        points: [
+          'Effet d’un déplacement, d’un agrandissement ou d’une réduction sur les longueurs, les angles, les aires et les volumes.',
+          'Utiliser un rapport d’agrandissement ou de réduction, une échelle de carte ; lien avec Thalès et les triangles semblables.',
+        ],
+      },
+    ],
+    automatismes: ['Formules des longueurs, aires et volumes des figures et solides du programme.', 'Procédures de conversion d’unités.'],
+  },
+  {
+    id: 'espace-geometrie',
+    lettre: 'D',
+    nom: 'Espace et géométrie',
+    chapeau:
+      'On valide désormais par le raisonnement et la démonstration les propriétés qu’on conjecture. Les transformations (symétries, translations, rotations, homothéties) font l’objet d’une première approche.',
+    attendus: [
+      {
+        titre: 'Représenter l’espace',
+        points: [
+          'Abscisse, ordonnée, altitude ; latitude et longitude ; se repérer sur une droite, dans le plan, dans un pavé droit, sur une sphère.',
+          'Reconnaître les solides usuels et leurs représentations (perspective cavalière, vues, sections planes, patrons).',
+        ],
+      },
+      {
+        titre: 'Utiliser la géométrie plane pour démontrer',
+        points: [
+          'Parallélisme et angles alternes internes ou correspondants ; somme des angles d’un triangle.',
+          'Triangle : hauteurs, médiatrices, inégalité triangulaire, cas d’égalité, triangles semblables.',
+          'Parallélogramme : une définition et une propriété caractéristique.',
+          'Théorème de Thalès et sa réciproque ; théorème de Pythagore et sa réciproque.',
+          'Cosinus, sinus et tangente dans le triangle rectangle.',
+          'Effet d’une translation, d’une symétrie axiale ou centrale, d’une rotation, d’une homothétie sur une figure.',
+        ],
+      },
+    ],
+    automatismes: ['Images mentales des configurations de Pythagore et de Thalès et des lignes trigonométriques.', 'Procédures de repérage et de construction liées aux figures et transformations du programme.'],
+  },
+  {
+    id: 'algorithmique',
+    lettre: 'E',
+    nom: 'Algorithmique et programmation',
+    chapeau:
+      'On s’initie à la programmation par de petits projets (jeux de labyrinthe, Pong, bataille navale, jeu de nim…), sans viser la maîtrise experte d’un langage. Cet enseignement est partagé avec la technologie.',
+    attendus: [
+      {
+        titre: 'Écrire, mettre au point et exécuter un programme simple',
+        points: [
+          'Notions d’algorithme et de programme ; variable informatique.',
+          'Déclenchement d’une action par un événement ; séquences d’instructions, boucles, instructions conditionnelles.',
+          'Écrire, tester, corriger et exécuter un programme répondant à un problème donné.',
+        ],
+      },
+    ],
+    automatismes: [],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${pageTitle} – ${SITE_TITLE}`} description={pageDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet" />
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <section class="prog-intro">
+        <div class="container">
+          <h1 class="prog-titre righteous"><span aria-hidden="true">//</span> {pageTitle}</h1>
+          <p class="prog-chapeau">{pageDescription}</p>
+          <p class="prog-note">
+            Le cycle 4 regroupe les trois dernières années du collège : <strong>5ᵉ, 4ᵉ et 3ᵉ</strong>. Le programme officiel est écrit pour l’ensemble du cycle, sans découpage année par année : cette page est donc la même pour les trois niveaux. Les notions sont revues et approfondies d’une année à l’autre, à ton rythme et selon l’organisation de ton professeur.
+          </p>
+        </div>
+      </section>
+
+      <section class="prog-nav">
+        <div class="container">
+          <nav aria-label="Thèmes du programme">
+            <ul class="prog-liens" role="list">
+              <li><a href="#competences">Compétences</a></li>
+              {themes.map((t) => <li><a href={`#${t.id}`}>{t.lettre} · {t.nom}</a></li>)}
+              <li><a href="#source">Source</a></li>
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+      <section class="prog-bloc" id="competences">
+        <div class="container">
+          <h2 class="prog-h2 righteous"><span aria-hidden="true">//</span> Six compétences travaillées toute l’année</h2>
+          <p class="prog-texte">
+            Le programme insiste sur la résolution de problèmes, l’initiation à la démonstration (raisonnement déductif, par disjonction de cas ou par l’absurde) et la mémorisation d’automatismes de calcul. Six compétences sont visées :
+          </p>
+          <ul class="competences" role="list">
+            {competences.map((c) => (
+              <li class="competence">
+                <strong>{c.nom}</strong>
+                <span>{c.texte}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {themes.map((t) => (
+        <section class="prog-bloc" id={t.id}>
+          <div class="container">
+            <h2 class="prog-h2 righteous"><span aria-hidden="true">//</span> Thème {t.lettre} – {t.nom}</h2>
+            <p class="prog-texte">{t.chapeau}</p>
+            <div class="attendus">
+              {t.attendus.map((a) => (
+                <article class="attendu">
+                  <h3>{a.titre}</h3>
+                  <ul>
+                    {a.points.map((p) => <li>{p}</li>)}
+                  </ul>
+                </article>
+              ))}
+            </div>
+            {t.automatismes.length > 0 && (
+              <aside class="automatismes">
+                <h3>À connaître par cœur</h3>
+                <ul>
+                  {t.automatismes.map((p) => <li>{p}</li>)}
+                </ul>
+              </aside>
+            )}
+          </div>
+        </section>
+      ))}
+
+      <section class="prog-bloc" id="source">
+        <div class="container">
+          <h2 class="prog-h2 righteous"><span aria-hidden="true">//</span> Source</h2>
+          <p class="prog-texte">
+            Résumé du programme de mathématiques du cycle 4, Bulletin officiel de l’Éducation nationale n° 30 du 26 juillet 2018 (site <a href="https://www.education.gouv.fr">education.gouv.fr</a>). Seul le texte officiel fait foi.
+          </p>
+          <a class="button bouton-principal" href={`${base}exercices`}>Aller aux exercices</a>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  main {
+    --espace: clamp(2rem, 5vw, 3.5rem);
+  }
+  .prog-intro {
+    padding: 7rem 0 0;
+  }
+  .prog-titre {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.1;
+    color: var(--encre);
+    margin: 0 0 1.25rem;
+  }
+  .prog-titre span,
+  .prog-h2 span {
+    color: var(--violet);
+  }
+  .prog-chapeau {
+    font-size: 1.2rem;
+    line-height: 1.65;
+    max-width: 60ch;
+    color: #3b3555;
+  }
+  .prog-note {
+    background: var(--lavande-pale);
+    border-radius: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+    line-height: 1.6;
+    max-width: 70ch;
+  }
+  .prog-nav {
+    padding: var(--espace) 0 0;
+  }
+  .prog-liens {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .prog-liens a {
+    display: inline-block;
+    padding: 0.35rem 0.9rem;
+    border: 2px solid var(--violet);
+    border-radius: 999px;
+    color: var(--violet);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .prog-liens a:hover {
+    background: var(--lavande-pale);
+  }
+  .prog-bloc {
+    padding: var(--espace) 0 0;
+    scroll-margin-top: 4.5rem;
+  }
+  .prog-bloc:last-of-type {
+    padding-bottom: var(--espace);
+  }
+  .prog-h2 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.25;
+    color: var(--encre);
+    margin: 0 0 0.75rem;
+  }
+  .prog-texte {
+    line-height: 1.65;
+    max-width: 70ch;
+    margin-bottom: 1.25rem;
+  }
+  .competences {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+  }
+  .competence {
+    border: 2px solid var(--lavande-pale);
+    border-radius: 1rem;
+    padding: 1rem 1.15rem;
+    display: grid;
+    gap: 0.35rem;
+    line-height: 1.5;
+  }
+  .competence strong {
+    color: var(--violet);
+  }
+  .attendus {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1rem;
+  }
+  .attendu {
+    border: 2px solid var(--lavande-pale);
+    border-radius: 1rem;
+    padding: 1.1rem 1.25rem;
+  }
+  .attendu h3,
+  .automatismes h3 {
+    font-weight: 700;
+    color: var(--encre);
+    margin: 0 0 0.6rem;
+    line-height: 1.35;
+  }
+  .attendu ul,
+  .automatismes ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    line-height: 1.6;
+  }
+  .attendu li,
+  .automatismes li {
+    margin-bottom: 0.35rem;
+  }
+  .automatismes {
+    margin-top: 1rem;
+    background: var(--lavande-pale);
+    border-left: 6px solid var(--craie);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+  }
+  @media (max-width: 600px) {
+    .prog-intro {
+      padding-top: 6rem;
+    }
+  }
+</style>

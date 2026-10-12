@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import DeriveesComposees from '@/exercices/superieur/but2/Ex_1_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Dérivées de fonctions composées",
+  description: "Dérive un produit, un quotient ou une composée de fonctions usuelles",
+  chapitre: "Dérivation et limites",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <DeriveesComposees client:load />
+  </main>
+</LeconLayout>

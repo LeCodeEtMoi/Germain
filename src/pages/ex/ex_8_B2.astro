@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import DureeDeVie from '@/exercices/superieur/but2/Ex_8_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Loi exponentielle : durée de vie",
+  description: "Calcule des probabilités pour une durée de vie exponentielle et utilise l'absence de mémoire",
+  chapitre: "Probabilités continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <DureeDeVie client:load />
+  </main>
+</LeconLayout>

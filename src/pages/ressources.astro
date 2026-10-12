@@ -1,0 +1,271 @@
+---
+// Page /ressources : ressources mathématiques francophones (livres, vidéos, sites, associations).
+// Les données sont dans src/data/ressources.ts.
+// Style : charte Germain (theme.css). Aucune couleur en dur, uniquement var(--…).
+import BaseHead from "@/components/layout/BaseHead.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
+import "@/styles/theme.css";
+import { ressources, TYPES, PUBLICS } from "@/data/ressources";
+import type { TypeRessource } from "@/data/ressources";
+
+const titre = "Ressources mathématiques";
+const description =
+  "Livres, vidéos, sites d'exercices et associations pour apprendre et aimer les mathématiques, du collège aux études supérieures.";
+
+const ordreTypes = Object.keys(TYPES) as TypeRessource[];
+const parType = ordreTypes.map((type) => ({
+  type,
+  libelle: TYPES[type],
+  items: ressources
+    .filter((r) => r.type === type)
+    .sort((a, b) => a.titre.localeCompare(b.titre, "fr")),
+}));
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <BaseHead title={titre} description={description} />
+  </head>
+  <body>
+    <Header />
+
+    <main class="ressources">
+      <!-- Introduction -->
+      <header class="ressources__intro">
+        <h1 class="righteous ressources__titre">
+          <span class="signature" aria-hidden="true">//</span> {titre}
+        </h1>
+        <p class="ressources__chapo">{description}</p>
+      </header>
+
+      <!-- Filtres -->
+      <section class="panneau-clair ressources__filtres" aria-label="Filtrer les ressources">
+        <p class="ressources__filtre-label" id="filtre-type">Type</p>
+        <div class="ressources__boutons" data-filtre="type" role="group" aria-labelledby="filtre-type">
+          <button type="button" class="pilule" data-valeur="tous" aria-pressed="true">Tout</button>
+          {ordreTypes.map((t) => (
+            <button type="button" class="pilule" data-valeur={t} aria-pressed="false">{TYPES[t]}</button>
+          ))}
+        </div>
+
+        <p class="ressources__filtre-label" id="filtre-niveau">Niveau</p>
+        <div class="ressources__boutons" data-filtre="public" role="group" aria-labelledby="filtre-niveau">
+          <button type="button" class="pilule" data-valeur="tous-niveaux" aria-pressed="true">Tous les niveaux</button>
+          {Object.entries(PUBLICS).map(([cle, libelle]) => (
+            <button type="button" class="pilule" data-valeur={cle} aria-pressed="false">{libelle}</button>
+          ))}
+        </div>
+      </section>
+
+      <p class="ressources__compteur" aria-live="polite">
+        <span id="compteur">{ressources.length}</span> ressource(s) affichée(s)
+      </p>
+
+      <!-- Listes par type -->
+      {parType.map(({ type, libelle, items }) => (
+        <section class="ressources__groupe" data-type={type} aria-labelledby={`titre-${type}`}>
+          <h2 class="righteous ressources__sous-titre" id={`titre-${type}`}>
+            <span class="signature" aria-hidden="true">//</span> {libelle}
+          </h2>
+
+          <ul class="ressources__grille" role="list">
+            {items.map((r) => (
+              <li class="carte" data-type={r.type} data-publics={r.publics.join(" ")}>
+                <h3 class="carte__titre">{r.titre}</h3>
+                {r.auteur && <p class="carte__auteur">{r.auteur}</p>}
+                <p class="carte__texte">{r.description}</p>
+
+                <ul class="carte__etiquettes" role="list">
+                  {r.publics.map((p) => <li class="etiquette">{PUBLICS[p]}</li>)}
+                  <li class={`etiquette ${r.gratuit ? "etiquette--gratuit" : ""}`}>
+                    {r.gratuit ? "Gratuit" : "Payant"}
+                  </li>
+                </ul>
+
+                {r.url && (
+                  <a class="bouton-contour carte__lien" href={r.url} target="_blank" rel="noopener noreferrer">
+                    Découvrir<span class="visuellement-cache"> {r.titre} (nouvel onglet)</span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      <!-- Appel à contribution -->
+      <section class="panneau-sombre ressources__appel">
+        <h2 class="righteous ressources__sous-titre">
+          <span class="signature signature--craie" aria-hidden="true">//</span> Une ressource à nous conseiller ?
+        </h2>
+        <p>Vous connaissez un livre, une chaîne ou un site qui mérite d'être ici ? Écrivez-nous, nous l'ajouterons.</p>
+      </section>
+    </main>
+
+    <Footer />
+
+    <script>
+      const etat: Record<"type" | "public", string> = { type: "tous", public: "tous-niveaux" };
+
+      function appliquer() {
+        let visibles = 0;
+        document.querySelectorAll<HTMLElement>(".carte").forEach((carte) => {
+          const okType = etat.type === "tous" || carte.dataset.type === etat.type;
+          const publics = (carte.dataset.publics ?? "").split(" ");
+          const okPublic = etat.public === "tous-niveaux" || publics.includes(etat.public);
+          carte.hidden = !(okType && okPublic);
+          if (!carte.hidden) visibles++;
+        });
+
+        // Masque les rubriques devenues vides
+        document.querySelectorAll<HTMLElement>(".ressources__groupe").forEach((groupe) => {
+          groupe.hidden = !groupe.querySelector(".carte:not([hidden])");
+        });
+
+        const compteur = document.getElementById("compteur");
+        if (compteur) compteur.textContent = String(visibles);
+      }
+
+      document.querySelectorAll<HTMLElement>("[data-filtre]").forEach((groupe) => {
+        const cle = groupe.dataset.filtre as "type" | "public";
+        groupe.querySelectorAll<HTMLButtonElement>("button").forEach((bouton) => {
+          bouton.addEventListener("click", () => {
+            groupe.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", "false"));
+            bouton.setAttribute("aria-pressed", "true");
+            etat[cle] = bouton.dataset.valeur ?? "";
+            appliquer();
+          });
+        });
+      });
+    </script>
+
+    <style>
+      .ressources {
+        --espace: 2.5rem;
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: var(--espace) 1rem;
+        color: var(--encre);
+      }
+
+      /* ----- Titres ----- */
+      .signature { color: var(--violet); }
+      .signature--craie { color: var(--craie); }
+
+      .ressources__intro { margin-bottom: var(--espace); }
+      .ressources__titre { font-size: clamp(2rem, 5vw, 2.8rem); margin: 0 0 1rem; }
+      .ressources__chapo { max-width: 55ch; font-size: 1.2rem; line-height: 1.7; margin: 0; }
+
+      .ressources__sous-titre { font-size: 1.6rem; margin: 0 0 1.25rem; }
+
+      /* ----- Panneaux ----- */
+      .panneau-clair,
+      .panneau-sombre {
+        border-radius: 1.5rem;
+        padding: 1.75rem;
+      }
+      .panneau-clair { background: var(--lavande-pale); color: var(--encre); }
+      .panneau-sombre { background: var(--violet-profond); color: var(--papier); }
+      .panneau-sombre p { max-width: 55ch; line-height: 1.7; margin: 0; }
+
+      /* ----- Filtres ----- */
+      .ressources__filtres { margin-bottom: 1rem; }
+      .ressources__filtre-label { font-weight: 600; margin: 0 0 0.5rem; }
+      .ressources__boutons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+      .ressources__boutons:last-child { margin-bottom: 0; }
+
+      /* Boutons en pilule : contour par défaut, plein quand le filtre est actif */
+      .pilule,
+      .bouton-contour {
+        font: inherit;
+        font-size: 0.95rem;
+        border-radius: 999px;
+        border: 2px solid var(--violet);
+        background: transparent;
+        color: var(--violet);
+        padding: 0.45rem 1.1rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+      }
+      .pilule:hover,
+      .bouton-contour:hover { background: var(--papier); }
+
+      .pilule[aria-pressed="true"] {
+        background: var(--violet);
+        color: var(--papier);
+      }
+      .pilule[aria-pressed="true"]:hover {
+        background: var(--violet-profond);
+        border-color: var(--violet-profond);
+      }
+
+      .ressources__compteur { color: var(--violet); margin: 0 0 var(--espace); }
+
+      /* ----- Grille de cartes ----- */
+      .ressources__groupe { margin-bottom: var(--espace); }
+      .ressources__groupe[hidden] { display: none; }
+
+      .ressources__grille {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 1.25rem;
+      }
+
+      .carte {
+        display: flex;
+        flex-direction: column;
+        background: var(--papier);
+        border: 2px solid var(--lavande-pale);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        transition: border-color 0.2s;
+      }
+      .carte:hover { border-color: var(--lavande); }
+      .carte[hidden] { display: none; }
+
+      .carte__titre { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.25rem; }
+      .carte__auteur { color: var(--violet); font-size: 0.95rem; margin: 0 0 0.75rem; }
+      .carte__texte { line-height: 1.6; margin: 0 0 1rem; flex-grow: 1; }
+
+      .carte__etiquettes {
+        list-style: none;
+        margin: 0 0 1rem;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .etiquette {
+        font-size: 0.8rem;
+        border-radius: 999px;
+        padding: 0.2rem 0.7rem;
+        background: var(--lavande-pale);
+        color: var(--encre);
+      }
+      .etiquette--gratuit { background: var(--violet); color: var(--papier); }
+
+      .carte__lien { align-self: flex-start; }
+
+      /* ----- Accessibilité ----- */
+      .visuellement-cache {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      @media (max-width: 600px) {
+        .panneau-clair,
+        .panneau-sombre { padding: 1.25rem; }
+      }
+    </style>
+  </body>
+</html>

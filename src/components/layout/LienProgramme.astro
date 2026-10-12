@@ -1,0 +1,52 @@
+---
+/**
+ * Encadré « Programme officiel » à placer sur la page d'exercices d'un niveau.
+ * Exemple, dans src/pages/exercices/5eme.astro (juste après la section d'introduction) :
+ *
+ *   import LienProgramme from '@/components/layout/LienProgramme.astro';
+ *   <LienProgramme page="cycle-4" libelle="Programme de mathématiques du cycle 4" />
+ */
+interface Props {
+  /** nom du fichier dans src/pages/programmes/, sans « .astro » */
+  page: string;
+  libelle?: string;
+}
+const { page, libelle = 'Voir le programme officiel' } = Astro.props;
+const href = `/Germain/programmes/${page}/`;
+---
+
+<section class="lien-programme">
+  <div class="container">
+    <a class="lien-programme-carte" href={href}>
+      <span class="lien-programme-titre">{libelle}</span>
+      <span class="lien-programme-texte">Ce qu'il faut savoir et savoir faire, résumé en une page.</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .lien-programme {
+    padding: 1.5rem 0 0;
+  }
+  .lien-programme-carte {
+    display: block;
+    background: var(--lavande-pale);
+    border-left: 6px solid var(--violet);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    color: var(--encre);
+  }
+  .lien-programme-carte:hover {
+    background: #e4dcff;
+  }
+  .lien-programme-titre {
+    display: block;
+    font-weight: 700;
+    color: var(--violet);
+  }
+  .lien-programme-texte {
+    display: block;
+    font-size: 0.95rem;
+    color: #3b3555;
+  }
+</style>

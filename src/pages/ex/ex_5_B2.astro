@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import IntegrationParties from '@/exercices/superieur/but2/Ex_5_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Intégration par parties",
+  description: "Calcule une intégrale en choisissant u et v' puis en appliquant la formule",
+  chapitre: "Intégration",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <IntegrationParties client:load />
+  </main>
+</LeconLayout>

@@ -51,6 +51,7 @@ export const cycles: Cycle[] = [
     niveaux: [
       { slug: 'superieur', court: 'Sup', nom: 'Supérieur', resume: 'Analyse, algèbre linéaire, probabilités.', dossier: 'superieur' },
       { slug: 'prepa2', court: 'P2', nom: 'Prépa 2ᵉ année', resume: 'Espaces vectoriels normés : normes, boules, topologie, applications linéaires continues, suites de matrices.', dossier: 'superieur/prepa2' },
+      { slug: 'but2', court: 'B2', nom: 'BUT Informatique 2ᵉ année', resume: 'Dérivées, limites, intégrales et probabilités continues (densité, loi exponentielle, loi normale).', dossier: 'superieur/but2' },
     ],
   },
 ];

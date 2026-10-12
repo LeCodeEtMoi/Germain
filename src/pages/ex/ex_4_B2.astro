@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import PrimitivesComposees from '@/exercices/superieur/but2/Ex_4_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Primitives de fonctions composées",
+  description: "Reconnais la forme u'·g(u) pour trouver une primitive",
+  chapitre: "Intégration",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <PrimitivesComposees client:load />
+  </main>
+</LeconLayout>

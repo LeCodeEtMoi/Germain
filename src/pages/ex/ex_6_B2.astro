@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import SuiteIntegrales from '@/exercices/superieur/but2/Ex_6_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Suite d'intégrales et relation de récurrence",
+  description: "Établis une récurrence entre Jₙ et Jₙ₋₁, calcule les premiers termes et la limite de nJₙ",
+  chapitre: "Intégration",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <SuiteIntegrales client:load />
+  </main>
+</LeconLayout>

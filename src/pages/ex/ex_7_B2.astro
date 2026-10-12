@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import DensitePuissance from '@/exercices/superieur/but2/Ex_7_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Densité de probabilité : constante, espérance, variance",
+  description: "Détermine la constante d'une densité en xⁿ puis calcule E(X), P(X ≤ c) et V(X)",
+  chapitre: "Probabilités continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <DensitePuissance client:load />
+  </main>
+</LeconLayout>

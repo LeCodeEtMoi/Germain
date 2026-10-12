@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import LoiNormale from '@/exercices/superieur/but2/Ex_9_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Loi normale et table de Φ",
+  description: "Centre et réduis pour lire la table de la loi normale, puis cherche un seuil",
+  chapitre: "Probabilités continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <LoiNormale client:load />
+  </main>
+</LeconLayout>

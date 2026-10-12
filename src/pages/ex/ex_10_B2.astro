@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import FonctionRepartition from '@/exercices/superieur/but2/Ex_10_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Fonction de répartition par morceaux",
+  description: "Détermine le paramètre d'une fonction de répartition, des probabilités et la densité",
+  chapitre: "Probabilités continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <FonctionRepartition client:load />
+  </main>
+</LeconLayout>
