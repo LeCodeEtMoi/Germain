@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import SerieGeometriqueMatrices from '@/exercices/superieur/prepa2/Ex_8_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Série géométrique de matrices",
+  description: "Rayon spectral, critère de la norme et somme de la série Σ Aᵏ = (I−A)⁻¹",
+  chapitre: "Suites et séries de matrices",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <SerieGeometriqueMatrices client:load />
+  </main>
+</LeconLayout>

@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import SupAffine from '@/exercices/superieur/prepa2/Ex_1_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Norme définie par un supremum de fonctions affines",
+  description: "Calcule N(x,y)=sup|x+λty|, localise le maximum et trouve la meilleure constante d'équivalence",
+  chapitre: "Normes",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <SupAffine client:load />
+  </main>
+</LeconLayout>

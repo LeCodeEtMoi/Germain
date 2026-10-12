@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import NormeDerivees from '@/exercices/superieur/prepa2/Ex_6_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Une norme sur ℝ[X] définie par les dérivées en 0",
+  description: "Calcule N₁(P)=Σ|P⁽ᵏ⁾(0)| et montre qu'elle n'est pas équivalente à la norme des coefficients",
+  chapitre: "Applications linéaires continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <NormeDerivees client:load />
+  </main>
+</LeconLayout>

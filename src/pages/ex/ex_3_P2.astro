@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import NormePerturbee from '@/exercices/superieur/prepa2/Ex_3_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Norme perturbée et constantes d'équivalence",
+  description: "Compare N(f)=‖f‖∞+p|f(0)|+q|f(1)| à la norme infinie et trouve les constantes optimales",
+  chapitre: "Normes",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <NormePerturbee client:load />
+  </main>
+</LeconLayout>

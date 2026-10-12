@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import Boules from '@/exercices/superieur/prepa2/Ex_4_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Position relative de deux boules",
+  description: "Inclusion, disjonction ou intersection de deux boules pour la norme 1, 2 ou infinie",
+  chapitre: "Boules et topologie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <Boules client:load />
+  </main>
+</LeconLayout>

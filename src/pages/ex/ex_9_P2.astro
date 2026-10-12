@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import LimitePuissancesMatrice from '@/exercices/superieur/prepa2/Ex_9_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Limite des puissances d'une matrice",
+  description: "Détermine la limite de Aᵏ quand A est diagonalisable de valeurs propres 1 et λ, |λ|<1",
+  chapitre: "Suites et séries de matrices",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <LimitePuissancesMatrice client:load />
+  </main>
+</LeconLayout>

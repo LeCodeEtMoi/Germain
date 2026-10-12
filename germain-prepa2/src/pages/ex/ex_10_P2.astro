@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import FormeLineairePositive from '@/exercices/superieur/prepa2/Ex_10_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Norme d'une forme linéaire intégrale",
+  description: "Calcule la norme de φ(f)=∫f(t)(a+bt)dt sur (C([0,1]), ‖·‖∞) et étudie sa positivité",
+  chapitre: "Formes linéaires continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <FormeLineairePositive client:load />
+  </main>
+</LeconLayout>

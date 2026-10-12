@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import FormeQuadratique from '@/exercices/superieur/prepa2/Ex_2_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Une racine de forme quadratique est-elle une norme ?",
+  description: "Étudie N=√Q pour une forme quadratique : norme euclidienne ou simple semi-norme ?",
+  chapitre: "Normes",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <FormeQuadratique client:load />
+  </main>
+</LeconLayout>

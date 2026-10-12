@@ -50,6 +50,7 @@ export const cycles: Cycle[] = [
     nom: 'Études supérieures',
     niveaux: [
       { slug: 'superieur', court: 'Sup', nom: 'Supérieur', resume: 'Analyse, algèbre linéaire, probabilités.', dossier: 'superieur' },
+      { slug: 'prepa2', court: 'P2', nom: 'Prépa 2ᵉ année', resume: 'Espaces vectoriels normés : normes, boules, topologie, applications linéaires continues, suites de matrices.', dossier: 'superieur/prepa2' },
     ],
   },
 ];

@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import Topologie from '@/exercices/superieur/prepa2/Ex_5_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Intérieur, adhérence et frontière d'une partie de ℝ",
+  description: "Détermine l'adhérence, l'intérieur et la frontière d'une partie de ℝ",
+  chapitre: "Boules et topologie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <Topologie client:load />
+  </main>
+</LeconLayout>

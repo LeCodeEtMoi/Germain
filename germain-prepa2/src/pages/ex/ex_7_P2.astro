@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ContinuitePolynomes from '@/exercices/superieur/prepa2/Ex_7_P2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Continuité d'un endomorphisme de ℝ[X]",
+  description: "Décide si un endomorphisme de ℝ[X] est continu en testant sur les monômes Xⁿ",
+  chapitre: "Applications linéaires continues",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ContinuitePolynomes client:load />
+  </main>
+</LeconLayout>
