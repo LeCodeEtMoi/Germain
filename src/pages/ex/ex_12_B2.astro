@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ChiffreCesar from '@/exercices/superieur/but2/Ex_12_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Le chiffre de César",
+  description: "Compte les clés, déchiffre un message par décalage et mène une attaque par force brute",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ChiffreCesar client:load />
+  </main>
+</LeconLayout>

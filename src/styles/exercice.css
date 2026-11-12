@@ -4,6 +4,56 @@
    Les variables viennent de theme.css ; les valeurs de repli permettent de
    réutiliser le composant sur une page qui ne l'importe pas. */
 
+/* ---------- Palette ----------
+   Les couleurs de theme.css sont redéfinies ici sur .exercice pour deux raisons :
+   les pages d'exercices n'importent pas toutes theme.css, et le thème sombre du
+   système doit faire basculer toute la palette d'un coup. En thème clair, les
+   valeurs sont exactement celles de theme.css : l'affichage ne change pas. */
+.exercice {
+  --violet: #6528d9;
+  --violet-profond: #2a1466;
+  --lavande: #a28bfa;
+  --lavande-pale: #efeaff;
+  --papier: #faf9ff;
+  --encre: #1f1a3d;
+  --craie: #ffd25e;
+
+  --ex-gris: #5b5476; /* textes secondaires : aide, légendes */
+  --ex-placeholder: #7b7498;
+  --ex-fond-champ: #fff; /* fond des champs et des options */
+  --ex-bouton-fond: var(--violet);
+  --ex-bouton-texte: #fff;
+  --ex-bouton-survol: var(--violet-profond);
+  --ex-faux-fond: #fde8e8;
+  --ex-faux-texte: #7f1d1d;
+  --ex-juste: #166534;
+  --ex-voile: rgba(255, 255, 255, 0.55); /* encadré de conseils */
+  --ex-voile-fort: rgba(255, 255, 255, 0.7); /* formule dans une correction */
+}
+
+@media (prefers-color-scheme: dark) {
+  .exercice {
+    --violet: #a98dff;
+    --violet-profond: #3b2a7a;
+    --lavande: #c7b4ff;
+    --lavande-pale: #272051;
+    --papier: #1b1838;
+    --encre: #ece9ff;
+    --craie: #ffd766;
+
+    --ex-gris: #b3abd6;
+    --ex-placeholder: #8d85b5;
+    --ex-fond-champ: #1b1838;
+    --ex-bouton-texte: #14122b; /* le violet clair demande un texte sombre */
+    --ex-bouton-survol: var(--lavande);
+    --ex-faux-fond: #3a1d26;
+    --ex-faux-texte: #ffc9cf;
+    --ex-juste: #7ee0a1;
+    --ex-voile: rgba(255, 255, 255, 0.08);
+    --ex-voile-fort: rgba(255, 255, 255, 0.1);
+  }
+}
+
 .exercice {
   width: 100%;
   max-width: 46rem;
@@ -11,10 +61,24 @@
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+/* global.css met tous les <strong> en blanc (surlignement des pages de
+   présentation) : dans un exercice, ils doivent suivre la couleur du texte. */
+.exercice strong {
+  color: inherit;
+}
+
+/* Bulma colore les <code> en rouge sur gris : on reste dans la charte. */
+.exercice code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
 .exercice-chargement {
   min-height: 12rem;
   margin: 0;
-  color: #5b5476;
+  color: var(--ex-gris);
 }
 
 /* ---------- Énoncé ---------- */
@@ -46,7 +110,7 @@
 .exercice-donnee dt {
   margin: 0 0 0.25rem;
   font-size: 0.95rem;
-  color: #5b5476;
+  color: var(--ex-gris);
 }
 
 .exercice-donnee dd {
@@ -74,7 +138,7 @@
   padding: 0.8rem 1rem;
   border: 2px solid var(--violet, #6528d9);
   border-radius: 0.75rem;
-  background: #fff;
+  background: var(--ex-fond-champ);
   color: var(--encre, #1f1a3d);
   font: inherit;
   font-size: 1.2rem;
@@ -82,14 +146,14 @@
 }
 
 .exercice-champ::placeholder {
-  color: #7b7498;
+  color: var(--ex-placeholder);
 }
 
 .exercice-aide {
   margin: 0.6rem 0 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: #5b5476;
+  color: var(--ex-gris);
 }
 
 .exercice-boutons {
@@ -110,13 +174,13 @@
 }
 
 .exercice-bouton--principal {
-  background: var(--violet, #6528d9);
-  color: #fff;
+  background: var(--ex-bouton-fond);
+  color: var(--ex-bouton-texte);
 }
 
 .exercice-bouton--principal:hover {
-  background: var(--violet-profond, #2a1466);
-  border-color: var(--violet-profond, #2a1466);
+  background: var(--ex-bouton-survol);
+  border-color: var(--ex-bouton-survol);
 }
 
 .exercice-bouton--secondaire {
@@ -155,8 +219,8 @@
 }
 
 .exercice-retour--faux {
-  background: #fde8e8;
-  color: #7f1d1d;
+  background: var(--ex-faux-fond);
+  color: var(--ex-faux-texte);
 }
 
 .exercice-retour--incompris {
@@ -220,7 +284,7 @@
 .exercice-donnee__legende {
   margin: 0 0 0.35rem;
   font-size: 0.95rem;
-  color: #5b5476;
+  color: var(--ex-gris);
 }
 
 .exercice-code {
@@ -288,7 +352,7 @@ math-field:focus-within {
   padding: 0.75rem 1rem;
   border: 2px solid var(--lavande-pale, #efeaff);
   border-radius: 0.75rem;
-  background: #fff;
+  background: var(--ex-fond-champ);
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
@@ -329,7 +393,7 @@ math-field {
   padding: 0.5rem 0.9rem;
   border: 2px solid var(--violet, #6528d9);
   border-radius: 0.75rem;
-  background: #fff;
+  background: var(--ex-fond-champ);
   color: var(--encre, #1f1a3d);
   font-size: 1.4rem;
 }
@@ -374,7 +438,7 @@ math-field {
 
 .exercice-apercu__legende {
   font-size: 0.95rem;
-  color: #5b5476;
+  color: var(--ex-gris);
 }
 
 /* ---------- Conseils de la correction ---------- */
@@ -383,7 +447,7 @@ math-field {
   padding: 0.9rem 1.1rem;
   border-left: 4px solid currentColor;
   border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--ex-voile);
 }
 
 .exercice-astuce__titre {
@@ -401,7 +465,7 @@ math-field {
 }
 
 .exercice-retour .exercice-formule {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--ex-voile-fort);
   color: var(--encre, #1f1a3d);
 }
 
@@ -456,7 +520,7 @@ math-field {
 .exercice-code-bloc figcaption {
   margin-bottom: 0.4rem;
   font-size: 0.95rem;
-  color: #5b5476;
+  color: var(--ex-gris);
 }
 
 .exercice-code-bloc pre {
@@ -523,12 +587,12 @@ math-field {
 }
 
 .exercice-tableau .exercice-juste {
-  color: #166534;
+  color: var(--ex-juste);
   font-weight: 700;
 }
 
 .exercice-tableau .exercice-faux {
-  color: #7f1d1d;
+  color: var(--ex-faux-texte);
   font-weight: 700;
 }
 

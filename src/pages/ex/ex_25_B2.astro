@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ForceBrute from '@/exercices/superieur/but2/Ex_25_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "La force brute",
+  description: "Estime le temps moyen d'une recherche exhaustive de clé, d'une machine à tout Internet",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ForceBrute client:load />
+  </main>
+</LeconLayout>

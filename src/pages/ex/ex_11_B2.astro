@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ChiffrementPermutation from '@/exercices/superieur/but2/Ex_11_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Chiffrement par permutation",
+  description: "Chiffre un message par blocs avec une clé de permutation et compte les clés possibles",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ChiffrementPermutation client:load />
+  </main>
+</LeconLayout>

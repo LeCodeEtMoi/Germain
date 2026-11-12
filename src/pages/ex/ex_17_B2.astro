@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import MasqueJetable from '@/exercices/superieur/but2/Ex_17_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Le masque jetable",
+  description: "Chiffre avec un masque à usage unique et explique pourquoi il est indécryptable",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <MasqueJetable client:load />
+  </main>
+</LeconLayout>

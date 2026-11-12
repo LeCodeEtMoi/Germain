@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import SchemaFeistel from '@/exercices/superieur/but2/Ex_23_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Schéma de Feistel",
+  description: "Calcule une fonction de Feistel puis chiffre un mot avec un mini-DES à deux tours",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <SchemaFeistel client:load />
+  </main>
+</LeconLayout>

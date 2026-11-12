@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ModeCTS from '@/exercices/superieur/but2/Ex_19_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Le mode CBC avec vol de chiffré",
+  description: "Découpe un nom de fichier en blocs et reconstitue le déchiffrement du mode CTS",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ModeCTS client:load />
+  </main>
+</LeconLayout>

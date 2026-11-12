@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import CleInvolutive from '@/exercices/superieur/but2/Ex_13_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "La clé qui déchiffre en rechiffrant",
+  description: "Trouve la clé de décalage égale à son propre inverse et décode un mot en ROT13",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <CleInvolutive client:load />
+  </main>
+</LeconLayout>

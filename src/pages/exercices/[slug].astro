@@ -1,0 +1,94 @@
+---
+// Une page par exercice de BUT 2 : /exercices/superieur/but2/ex_11_b2 … ex_25_b2.
+import BaseHead from "@/components/layout/BaseHead.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
+import ExerciceB2 from "@/exercices/superieur/but2/ExerciceB2";
+import { exercicesB2 } from "@/exercices/superieur/but2";
+import "@/styles/theme.css";
+import "@/styles/exercice.css";
+
+export function getStaticPaths() {
+  return exercicesB2.map((exercice, i) => ({
+    params: { slug: exercice.slug },
+    props: {
+      exercice,
+      numero: i + 1,
+      precedent: exercicesB2[i - 1],
+      suivant: exercicesB2[i + 1],
+    },
+  }));
+}
+
+const { exercice, numero, precedent, suivant } = Astro.props;
+const base = "/exercices/superieur/but2";
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <BaseHead title={`${exercice.nom} · ${exercice.titre}`} description={exercice.description} />
+  </head>
+  <body>
+    <Header />
+
+    <main class="page-exercice">
+      <header class="page-exercice__intro">
+        <p class="page-exercice__fil">BUT 2 · Cryptographie · {exercice.nom}</p>
+        <h1 class="righteous page-exercice__titre">
+          <span class="signature" aria-hidden="true">//</span> {exercice.titre}
+        </h1>
+        <p class="page-exercice__chapo">{exercice.description} Chaque clic sur « Nouvel exercice » tire de nouvelles valeurs, et parfois une autre question.</p>
+      </header>
+
+      <!-- Les valeurs sont tirées au hasard dans le navigateur : pas de rendu côté serveur. -->
+      <ExerciceB2 client:only="react" slug={exercice.slug} />
+
+      <nav class="page-exercice__navigation" aria-label="Exercices du chapitre">
+        {precedent ? (
+          <a class="bouton-contour" href={`${base}/${precedent.slug}`}>← {precedent.titre}</a>
+        ) : <span />}
+        {suivant && (
+          <a class="bouton-contour" href={`${base}/${suivant.slug}`}>{suivant.titre} →</a>
+        )}
+      </nav>
+    </main>
+
+    <Footer />
+
+    <style>
+      .page-exercice {
+        --espace: 2.5rem;
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: var(--espace) 1rem;
+        color: var(--encre);
+      }
+      .page-exercice__intro { margin-bottom: var(--espace); }
+      .page-exercice__fil { color: var(--violet); font-size: 0.95rem; margin: 0 0 0.5rem; }
+      .page-exercice__titre { font-size: clamp(1.8rem, 5vw, 2.5rem); margin: 0 0 1rem; }
+      .page-exercice__chapo { max-width: 55ch; font-size: 1.15rem; line-height: 1.7; margin: 0; }
+      .signature { color: var(--violet); }
+
+      .page-exercice__navigation {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: var(--espace);
+      }
+
+      /* Boutons en pilule, redéfinis dans chaque page qui les utilise (charte). */
+      .bouton-contour {
+        border-radius: 999px;
+        border: 2px solid var(--violet);
+        background: transparent;
+        color: var(--violet);
+        padding: 0.5rem 1.2rem;
+        text-decoration: none;
+        transition: background-color 0.2s;
+      }
+      .bouton-contour:hover { background: var(--lavande-pale); }
+    </style>
+  </body>
+</html>

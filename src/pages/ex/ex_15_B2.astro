@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import AnalyseFrequences from '@/exercices/superieur/but2/Ex_15_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Analyse des fréquences",
+  description: "Repère la lettre qui remplace le E pour casser une substitution sans connaître la clé",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <AnalyseFrequences client:load />
+  </main>
+</LeconLayout>

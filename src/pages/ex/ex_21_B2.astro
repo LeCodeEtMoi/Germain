@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ErreursTransmission from '@/exercices/superieur/but2/Ex_21_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Erreurs de transmission",
+  description: "Prévois les blocs faussés par un bit erroné selon le mode opératoire utilisé",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ErreursTransmission client:load />
+  </main>
+</LeconLayout>

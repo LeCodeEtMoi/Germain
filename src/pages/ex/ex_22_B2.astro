@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ModeOperatoireFragile from '@/exercices/superieur/but2/Ex_22_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Un mode opératoire à analyser",
+  description: "Trouve le déchiffrement d'un chaînage mal placé et mets sa faiblesse en évidence",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ModeOperatoireFragile client:load />
+  </main>
+</LeconLayout>

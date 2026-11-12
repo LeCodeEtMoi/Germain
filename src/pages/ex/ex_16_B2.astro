@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import ChiffreVigenere from '@/exercices/superieur/but2/Ex_16_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Le chiffre de Vigenère",
+  description: "Chiffre un mot avec une clé répétée et traduis la méthode dans Z/26Z",
+  chapitre: "Cryptographie",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <ChiffreVigenere client:load />
+  </main>
+</LeconLayout>
