@@ -6,8 +6,8 @@
  * c'est ICI (et seulement ici) qu'il faut le corriger.
  */
 export { useTirage, Chargement, Cadre, Titre, Enonce } from '@/components/exercice/ExerciceUI.tsx';
-export { default as Questions, type Question } from '@/components/exercice/Questions.tsx';
+export { default as Questions, apercuExpression, type Question } from '@/components/exercice/Questions.tsx';
 export { default as MathTex } from '@/components/math/MathTex.tsx';
 export { entier, choisir, melanger, signeAleatoire, nombre, entreParentheses, fraction, texteFraction, type Fraction } from '@/lib/maths.ts';
-export { attenduFraction, AIDE_FRACTION, texFrac } from '@/lib/reponses.ts';
+export { attenduFraction, AIDE_FRACTION, texFrac, verifierFonction, verifierPrimitive, type ResultatExpression } from '@/lib/reponses.ts';
 export * from '@/lib/prepa.ts';
