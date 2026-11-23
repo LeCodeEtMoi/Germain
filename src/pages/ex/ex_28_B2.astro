@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import PgcdEtInversibilite from '@/exercices/superieur/but2/Ex_28_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Le pgcd décide de l'inversibilité",
+  description: "Compare deux pgcd pour dire qui est inversible dans Z/nZ, puis calcule l'inverse",
+  chapitre: "Arithmétique et chiffrement affine",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <PgcdEtInversibilite client:load />
+  </main>
+</LeconLayout>

@@ -1,0 +1,17 @@
+---
+import LeconLayout from '@/layouts/Exercice.astro';
+import EuclideBezout from '@/exercices/superieur/but2/Ex_27_B2.tsx';
+import '@/styles/exercice.css';
+
+const exerciceMeta = {
+  title: "Euclide-Bézout et inverse modulaire",
+  description: "Déroule l'algorithme d'Euclide étendu pour trouver un couple de Bézout et un inverse",
+  chapitre: "Arithmétique et chiffrement affine",
+};
+---
+
+<LeconLayout title={exerciceMeta.description}>
+  <main>
+    <EuclideBezout client:load />
+  </main>
+</LeconLayout>
